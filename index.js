@@ -1,7 +1,7 @@
 const scrapeIt = require('scrape-it')
 const rx = require('rx')
 
-const Nightmare = require('./nightmare')
+const Browser = require('zombie')
 const eachSeries = require('async/eachSeries')
 const each = require('async/each')
 
@@ -37,55 +37,43 @@ const campgrounds = [
 ]
 
 const source = rx.Observable.create((observer) => {
-  return each(campgrounds, ({ url, sites }, cb) => {
-    const nightmare = Nightmare({ webPreferences: { images: false } })
+  const browser = new Browser()
+  return eachSeries(campgrounds, ({ url, sites }, cb) => {
     return eachSeries(fridays, (friday, cb2) => {
-      nightmare
-        .goto(url)
-        .evaluate(function () {
-          return document.body.innerHTML
-        })
-        .insert('#lengthOfStay', null)
-        .insert('#lengthOfStay', 2)
-        .insert('#campingDate', null)
-        .insert('#campingDate', friday)
-        .insert('#siteCode', null)
-        .insert('#siteCode', sites)
-        .click('#search_avail')
-        .wait(1000)
-        .evaluate(function () {
-          return document.body.innerHTML
-        })
-        .then((result) => {
-          const data = scrapeIt
-            .scrapeHTML(result, {
-              campsites: {
-                listItem: '#shoppingitems tr',
-                data: {
-                  availIcon: '.sitemarker',
-                  unavailIcon: '.sitemarker.unavail',
-                  adaIcon: {
-                    selector: 'img[alt="Accessible"]',
-                    attr: 'src'
+      browser
+        .visit(url, () => {
+          browser.fill('#lengthOfStay', null)
+          browser.fill('#lengthOfStay', 2)
+          browser.fill('#campingDate', null)
+          browser.fill('#campingDate', friday)
+          browser.fill('#siteCode', null)
+          browser.fill('#siteCode', sites)
+          browser.pressButton('#search_avail', () => {
+            const data = scrapeIt
+              .scrapeHTML(browser.html(), {
+                campsites: {
+                  listItem: '#shoppingitems tr',
+                  data: {
+                    availIcon: '.sitemarker',
+                    unavailIcon: '.sitemarker.unavail',
+                    adaIcon: {
+                      selector: 'img[alt="Accessible"]',
+                      attr: 'src'
+                    }
                   }
                 }
-              }
-            })
-          const available = data
-            .campsites
-            .filter(site => site.availIcon && !site.unavailIcon && !site.adaIcon)
-          console.log(url)
-          console.log(friday)
-          console.log(available)
-          console.log('done')
-          cb2()
-        })
-        .catch(function (error) {
-          console.error('Search failed:', error)
-          cb2()
+              })
+            const available = data
+              .campsites
+              .filter(site => site.availIcon && !site.unavailIcon && !site.adaIcon)
+            console.log(url)
+            console.log(friday)
+            console.log(available)
+            console.log('done')
+            cb2()
+          })
         })
     }, () => {
-      nightmare.end()
       return cb()
     })
   }, () => {
