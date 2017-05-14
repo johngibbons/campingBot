@@ -2,8 +2,8 @@ const scrapeIt = require('scrape-it')
 const rx = require('rx')
 
 const Nightmare = require('./nightmare')
-const nightmare = Nightmare()
 const eachSeries = require('async/eachSeries')
+const each = require('async/each')
 
 const fridays = (function () {
   const fridayNum = 5
@@ -38,19 +38,22 @@ const campgrounds = [
 
 console.time('timer')
 const source = rx.Observable.create((observer) => {
-  return eachSeries(campgrounds, ({ url, sites }, cb) => {
+  return each(campgrounds, ({ url, sites }, cb) => {
+    const nightmare = Nightmare({ webPreferences: { images: false } })
     return eachSeries(fridays, (friday, cb2) => {
       nightmare
         .goto(url)
-        .type('#lengthOfStay', null)
-        .type('#lengthOfStay', 2)
-        .type('#campingDate', null)
-        .type('#campingDate', friday)
-        .type('#siteCode', null)
-        .type('#siteCode', sites)
+        .evaluate(function () {
+          return document.body.innerHTML
+        })
+        .insert('#lengthOfStay', null)
+        .insert('#lengthOfStay', 2)
+        .insert('#campingDate', null)
+        .insert('#campingDate', friday)
+        .insert('#siteCode', null)
+        .insert('#siteCode', sites)
         .click('#search_avail')
         .wait(1000)
-        .ewait('did-finish-load')
         .evaluate(function () {
           return document.body.innerHTML
         })
@@ -80,8 +83,12 @@ const source = rx.Observable.create((observer) => {
         })
         .catch(function (error) {
           console.error('Search failed:', error)
+          cb2()
         })
-    }, () => cb())
+    }, () => {
+      nightmare.end()
+      return cb()
+    })
   }, () => {
     console.timeEnd('timer')
     return observer.onCompleted()
