@@ -36,7 +36,6 @@ const campgrounds = [
   }
 ]
 
-console.time('timer')
 const source = rx.Observable.create((observer) => {
   return each(campgrounds, ({ url, sites }, cb) => {
     const nightmare = Nightmare({ webPreferences: { images: false } })
@@ -90,7 +89,6 @@ const source = rx.Observable.create((observer) => {
       return cb()
     })
   }, () => {
-    console.timeEnd('timer')
     return observer.onCompleted()
   })
 })
