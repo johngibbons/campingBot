@@ -1,8 +1,5 @@
 const scrapeIt = require('scrape-it')
 const rx = require('rx')
-
-const Browser = require('zombie')
-const eachSeries = require('async/eachSeries')
 const each = require('async/each')
 
 const fridays = (function () {
@@ -21,7 +18,7 @@ const fridays = (function () {
       var friday = date.setDate(date.getDate() + 7)
     }
     first = false
-    fridaysArray.push(new Date(friday).toLocaleDateString('en-US', options))
+    fridaysArray.push(new Date(friday).toDateString())
   }
   return fridaysArray
 })()
@@ -29,50 +26,74 @@ const fridays = (function () {
 const campgrounds = [
   {
     url: 'https://www.reserveamerica.com/camping/angel-island-sp/r/campgroundDetails.do?contractCode=CA&parkId=120003',
-    sites: '001, 002, 003, 004, 005, 006, 007, 008, 009'
+    sites: '001, 002, 003, 004, 005, 006, 007, 008, 009',
+    parkId: 120003
   },
   {
-    url: 'https://www.reserveamerica.com/camping/big-basin-redwoods-sp/r/campgroundDetails.do?contractCode=CA&parkId=120009'
+    url: 'https://www.reserveamerica.com/camping/big-basin-redwoods-sp/r/campgroundDetails.do?contractCode=CA&parkId=120009',
+    parkId: 120003
   }
 ]
 
 const source = rx.Observable.create((observer) => {
-  const browser = new Browser()
-  return eachSeries(campgrounds, ({ url, sites }, cb) => {
-    return eachSeries(fridays, (friday, cb2) => {
-      browser
-        .visit(url, () => {
-          browser.fill('#lengthOfStay', null)
-          browser.fill('#lengthOfStay', 2)
-          browser.fill('#campingDate', null)
-          browser.fill('#campingDate', friday)
-          browser.fill('#siteCode', null)
-          browser.fill('#siteCode', sites)
-          browser.pressButton('#search_avail', () => {
-            const data = scrapeIt
-              .scrapeHTML(browser.html(), {
-                campsites: {
-                  listItem: '#shoppingitems tr',
-                  data: {
-                    availIcon: '.sitemarker',
-                    unavailIcon: '.sitemarker.unavail',
-                    adaIcon: {
-                      selector: 'img[alt="Accessible"]',
-                      attr: 'src'
-                    }
-                  }
+  return each(campgrounds, ({ url, sites, parkId }, cb) => {
+    return each(fridays, (fri, cb2) => {
+      let request = require('request-promise-native')
+      const jar = request.jar()
+      const headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+      }
+      request = request.defaults({ jar, headers, followRedirect: true, resolveWithFullResponse: true })
+
+      const postOptions = {
+        method: 'POST',
+        uri: url,
+        form: {
+          contractCode: 'CA',
+          parkId: parkId,
+          siteTypeFilter: 'ALL',
+          submitSiteForm: true,
+          search: 'site',
+          campingDate: fri,
+          lengthOfStay: 2,
+          currentMaximumWindow: 12,
+          contractDefaultMaxWindow: 'MS:24,LT:18,GA:24,SC:13,PA:24,LARC:24,CTLN:13',
+          stateDefaultMaxWindow: 'MS:24,GA:24,SC:13,PA:24,CO:24,CA:13',
+          defaultMaximumWindow: 12,
+          siteCode: sites
+        }
+      }
+
+      const getOptions = {
+        url,
+        method: 'GET'
+      }
+
+      request(getOptions).then(() => {
+        request(postOptions).then(response => {
+          const data = scrapeIt.scrapeHTML(response.body, {
+            campsites: {
+              listItem: '#shoppingitems tr',
+              data: {
+                availIcon: '.sitemarker',
+                unavailIcon: '.sitemarker.unavail',
+                adaIcon: {
+                  selector: 'img[alt="Accessible"]',
+                  attr: 'src'
                 }
-              })
-            const available = data
-              .campsites
-              .filter(site => site.availIcon && !site.unavailIcon && !site.adaIcon)
-            console.log(url)
-            console.log(friday)
-            console.log(available)
-            console.log('done')
-            cb2()
+              }
+            }
           })
+          const available = data
+            .campsites
+            .filter(site => site.availIcon && !site.unavailIcon && !site.adaIcon)
+          console.log(url)
+          console.log(fri)
+          console.log(available)
+          console.log('done')
+          cb2()
         })
+      })
     }, () => {
       return cb()
     })
