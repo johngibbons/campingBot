@@ -7,12 +7,14 @@
     "node": "7.10.0"
   },
   "scripts": {
-    "start": "DEBUG=zombie node index.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "async": "^2.4.0",
     "events": "^1.1.1",
+    "express": "^4.15.2",
     "osmosis": "^1.1.4",
+    "redis": "^2.7.1",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.4",
     "rx": "^4.1.0",
