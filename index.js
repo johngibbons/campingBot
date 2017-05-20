@@ -2,21 +2,15 @@ const rx = require('rx')
 const eachLimit = require('async/eachLimit')
 const parseSites = require('./parser')
 const generateDates = require('./datesGenerator')
+const db = require('./db')
 
-const campgrounds = [
-  {
-    url: 'https://www.reserveamerica.com/camping/angel-island-sp/r/campgroundDetails.do?contractCode=CA&parkId=120003',
-    sites: '001, 002, 003, 004, 005, 006, 007, 008, 009',
-    parkId: 120003
-  },
-  {
-    url: 'https://www.reserveamerica.com/camping/big-basin-redwoods-sp/r/campgroundDetails.do?contractCode=CA&parkId=120009',
-    parkId: 120003
-  }
-]
-
-const source = rx.Observable.create((observer) => {
+const source = rx.Observable.create(async (observer) => {
   const dates = generateDates()
+  const campgrounds = await db
+    .get()
+    .collection('campgrounds')
+    .find({ paused: false })
+    .toArray()
   return eachLimit(campgrounds, 3, ({ url, sites, parkId }, cb) => {
     return eachLimit(dates, 5, (date, cb2) => {
       let request = require('request-promise-native')
@@ -26,6 +20,7 @@ const source = rx.Observable.create((observer) => {
       }
       request = request.defaults({ jar, headers, followRedirect: true, resolveWithFullResponse: true })
 
+      console.log(url)
       const postOptions = {
         method: 'POST',
         uri: url,
@@ -64,6 +59,6 @@ const source = rx.Observable.create((observer) => {
 })
 const repeatSearch = source.repeat()
 
-repeatSearch.subscribe(() => {
+module.exports = () => repeatSearch.subscribe(() => {
   console.log('running')
 })
