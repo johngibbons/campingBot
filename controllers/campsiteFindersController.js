@@ -17,6 +17,9 @@ exports.createCampsiteFinder = (req, res) => {
 }
 
 exports.updateCampsiteFinder = (req, res) => {
+  if (req.body.emailAddresses) {
+    req.body.emailAddresses = JSON.parse(req.body.emailAddresses)
+  }
   CampsiteFinder.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true
   })
