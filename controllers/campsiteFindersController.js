@@ -3,6 +3,7 @@ const CampsiteFinder = mongoose.model('CampsiteFinders')
 
 exports.listAllCampsiteFinders = (req, res) => {
   CampsiteFinder.find({})
+    .populate('campgroundId')
     .then(campsiteFinders => res.json(campsiteFinders))
     .catch(err => res.send(err))
 }

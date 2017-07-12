@@ -8,7 +8,7 @@ const CampgroundSchema = new Schema({
   agencyName: {
     type: String
   },
-  facilityID: {
+  facilityId: {
     type: String
   },
   facilityName: {

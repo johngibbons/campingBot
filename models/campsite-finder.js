@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const CampsiteFinderSchema = new Schema({
   campgroundId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Campground'
+    ref: 'Campgrounds'
   },
   createdAt: {
     type: Date,
