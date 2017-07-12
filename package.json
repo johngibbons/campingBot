@@ -12,15 +12,23 @@
   "dependencies": {
     "async": "^2.4.0",
     "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
     "ejs": "^2.5.6",
     "events": "^1.1.1",
     "express": "^4.15.2",
+    "moment": "^2.18.1",
     "mongodb": "^2.2.26",
+    "mongoose": "^4.11.1",
     "osmosis": "^1.1.4",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.4",
     "rx": "^4.1.0",
     "scrape-it": "^3.3.2",
-    "standard": "^10.0.2"
+    "sendgrid": "^5.1.0",
+    "standard": "^10.0.2",
+    "xml2js": "^0.4.17"
+  },
+  "devDependencies": {
+    "prettier-standard": "^6.0.0"
   }
 }
