@@ -2523,9 +2523,9 @@ sendgrid-rest@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/sendgrid-rest/-/sendgrid-rest-2.3.0.tgz#662ef95a93c73c3e0a4e7a61e3880a10c78dd24a"
 
-sendgrid@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/sendgrid/-/sendgrid-5.1.0.tgz#642429adb992f5b0923c195c941cabf10c8639ec"
+sendgrid@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/sendgrid/-/sendgrid-5.1.2.tgz#21f1da0ce2e5eb11785e183a3860c6774ab0f829"
   dependencies:
     async.ensureasync "^0.5.2"
     async.queue "^0.5.2"

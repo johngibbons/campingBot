@@ -5,6 +5,7 @@ const setDates = require('./setDates')
 const postSearch = require('./external/postSearch')
 const parse = require('./parser')
 const { Observable } = require('rx')
+require('./mailers/mailer')
 
 module.exports = () => {
   const allCampsiteFinders$ = Observable.fromPromise(

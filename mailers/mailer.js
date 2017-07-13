@@ -1,6 +1,6 @@
 const helper = require('sendgrid').mail
 const fromEmail = new helper.Email('test@example.com')
-const toEmail = new helper.Email('test@example.com')
+const toEmail = new helper.Email('johngibbons10@gmail.com')
 const subject = 'Hello World from the SendGrid Node.js Library!'
 const content = new helper.Content('text/plain', 'Hello, Email!')
 const mail = new helper.Mail(fromEmail, subject, toEmail, content)
