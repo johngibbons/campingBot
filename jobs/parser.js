@@ -8,6 +8,7 @@ module.exports = response => {
         availIcon: '.sitemarker',
         unavailIcon: '.sitemarker.unavail',
         bookNowButton: '.book.now',
+        bookNext: '.next',
         adaIcon: {
           selector: 'img[alt="Accessible"]',
           attr: 'src'
@@ -17,8 +18,10 @@ module.exports = response => {
   })
 
   const avail = data.campsites.filter(
-    ({ availIcon, unavailIcon, bookNowButton, adaIcon }) => {
-      return bookNowButton && availIcon && !unavailIcon && !adaIcon
+    ({ availIcon, unavailIcon, bookNowButton, adaIcon, bookNext }) => {
+      return (
+        !!bookNowButton && !!availIcon && !unavailIcon && !adaIcon && !bookNext
+      )
     }
   )
 

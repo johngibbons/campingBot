@@ -17,10 +17,6 @@ module.exports = () => {
 
   const setDates$ = campsiteFinder => Observable.from(setDates(campsiteFinder))
 
-  const postSearch$ = campsiteFinderObj => {
-    return Observable.fromPromise(postSearch(campsiteFinderObj))
-  }
-
   const groupResult$ = group =>
     group.reduce(
       (
@@ -36,6 +32,7 @@ module.exports = () => {
           result
         ]
       ) => {
+        if (result.length === 0) return acc
         const resultObj = {
           siteCount: result,
           date: campingDate
@@ -46,7 +43,7 @@ module.exports = () => {
           isSendingEmails: isSendingEmails,
           lengthOfStay: lengthOfStay,
           url: url,
-          results: acc.results ? [...acc.results, resultObj] : []
+          results: acc.results ? [...acc.results, resultObj] : [resultObj]
         })
       },
       {}
@@ -84,24 +81,20 @@ module.exports = () => {
   const searchResults$ = campsiteFinderSearches$
     .map(value => Observable.just(value).delay(1000))
     .concatAll()
-    .concatMap(postSearch$)
-    .map(parse)
-    .do(console.log)
-
-  const searchWithResults$ = Observable.zip(
-    campsiteFinderSearches$,
-    searchResults$
-  )
-    .filter(([search, result]) => result > 0)
-    .do(x => console.log(sentence(x)))
-
-  const groupedResults$ = searchWithResults$
-    .groupBy(([search, result]) => search.campgroundId.facilityId)
+    .concatMap(campsiteFinderObj =>
+      Observable.fromPromise(postSearch(campsiteFinderObj))
+        .map(parse)
+        .filter(r => r > 0)
+        .map(result => [campsiteFinderObj, result])
+    )
+    .groupBy(
+      ([campsiteFinderObj, result]) => campsiteFinderObj.campgroundId.facilityId
+    )
     .mergeMap(groupResult$)
     .reduce((acc, curr) => [...acc, curr], [])
     .repeat()
 
-  groupedResults$.subscribe(
+  searchResults$.subscribe(
     result => {
       console.log('RESULT', groupByEmail(result))
       sendEmails(groupByEmail(result))

@@ -13,6 +13,7 @@ const template = new EmailTemplate(templateDir)
 
 module.exports = emailAddressesObj => {
   const emailAddresses = Object.keys(emailAddressesObj)
+  if (emailAddresses.length === 0) return
   async.mapLimit(
     emailAddresses,
     10,
