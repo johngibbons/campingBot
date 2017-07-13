@@ -28,14 +28,14 @@ module.exports = reset => {
   const insertMany = data => Observable.fromPromise(Campground.insertMany(data))
 
   const count = Observable.fromPromise(Campground.count())
-  if (reset) {
-    const parse = count
-      .filter(c => c === 0)
-      .flatMap(() => readFile(path.resolve('data/allCampgrounds.xml'), 'utf8'))
-      .flatMap(data => parseString(data))
-      .map(data => data.resultset.result.map(mapToDb))
-      .flatMap(data => insertMany(data))
+  const parse = count
+    .filter(c => c === 0)
+    .flatMap(() => readFile(path.resolve('data/allCampgrounds.xml'), 'utf8'))
+    .flatMap(data => parseString(data))
+    .map(data => data.resultset.result.map(mapToDb))
+    .flatMap(data => insertMany(data))
 
+  if (reset) {
     CampsiteFinder.remove({})
       .then(() => console.log('successfully deleted finders'))
       .catch(err => console.log('Error deleting finders:', err))
@@ -48,5 +48,11 @@ module.exports = reset => {
         )
       })
       .catch(err => console.log('Error deleting campgrounds:', err))
+  } else {
+    parse.subscribe(
+      () => console.log('success!'),
+      err => console.log('error', err),
+      () => console.log('completed')
+    )
   }
 }
