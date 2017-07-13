@@ -25,7 +25,7 @@ module.exports = emailAddressesObj => {
           const fromEmail = new helper.Email('john@campsitefinder.com')
           const toEmail = new helper.Email(emailAddress)
           const subject = `Daily Campsite Update ${moment().format(
-            'MMMM Do YYYY, h:mm a'
+            'MMMM Do YYYY'
           )}`
           const content = new helper.Content('text/html', results.html)
           const mail = new helper.Mail(fromEmail, subject, toEmail, content)

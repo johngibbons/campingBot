@@ -63,11 +63,10 @@ module.exports = () => {
       return acc
     }, {})
 
-  const sentence = ([search, result]) =>
-    `There are ${result} spots available at ${search.campgroundId
-      .facilityName} on ${search.campingDate}`
+  const oneDay = 24 * 60 * 60 * 1000
 
   const campsiteFinderSearches$ = allCampsiteFinders$
+    .delay(oneDay)
     .do(() => console.time('test'))
     .do(() =>
       console.log(
