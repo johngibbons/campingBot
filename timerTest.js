@@ -5,7 +5,7 @@ const setDates = require('./setDates')
 const postSearch = require('./external/postSearch')
 const parse = require('./parser')
 const { Observable } = require('rx')
-require('./mailers/mailer')
+const sendEmails = require('./mailers/mailer')
 
 module.exports = () => {
   const allCampsiteFinders$ = Observable.fromPromise(
@@ -52,12 +52,24 @@ module.exports = () => {
       {}
     )
 
+  const groupByEmail = result =>
+    result.reduce((acc, curr) => {
+      const emailAddresses = curr.emailAddresses
+      emailAddresses.forEach(e => {
+        if (acc[e]) {
+          acc[e].push(curr)
+        } else {
+          acc[e] = [curr]
+        }
+      })
+      return acc
+    }, {})
+
   const sentence = ([search, result]) =>
     `There are ${result} spots available at ${search.campgroundId
       .facilityName} on ${search.campingDate}`
 
   const campsiteFinderSearches$ = allCampsiteFinders$
-    .delay(5 * 60 * 1000)
     .do(() => console.time('test'))
     .do(() =>
       console.log(
@@ -85,11 +97,13 @@ module.exports = () => {
   const groupedResults$ = searchWithResults$
     .groupBy(([search, result]) => search.campgroundId.facilityId)
     .mergeMap(groupResult$)
+    .reduce((acc, curr) => [...acc, curr], [])
     .repeat()
 
   groupedResults$.subscribe(
     result => {
-      console.log('RESULT', result)
+      console.log('RESULT', groupByEmail(result))
+      sendEmails(groupByEmail(result))
       console.log(
         'Sequence ended at:',
         moment().format('MMMM Do YYYY, h:mm:ss a')
