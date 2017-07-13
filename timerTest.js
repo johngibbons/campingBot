@@ -56,7 +56,7 @@ module.exports = () => {
       .facilityName} on ${search.campingDate}`
 
   const campsiteFinderSearches$ = allCampsiteFinders$
-    .delay(10000)
+    .delay(5 * 60 * 1000)
     .do(() => console.time('test'))
     .do(() =>
       console.log(
