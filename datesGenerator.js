@@ -4,7 +4,7 @@ const daysUntilFriday = startDate => {
   return Math.ceil(moment().day('Friday').diff(moment(startDate), 'days', true))
 }
 
-const formatted = date => moment(date).format('ddd MMM D YYYY')
+const formatted = date => moment(date).toDate().toDateString()
 
 const allFridays = () => {
   let fridays = []

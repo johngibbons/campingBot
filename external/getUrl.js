@@ -31,7 +31,10 @@ module.exports = campsiteFinder => {
         { new: true }
       )
     )
-    .then(() => campsiteFinder)
+    .then(campground => {
+      campsiteFinder.campgroundId = campground
+      return campsiteFinder
+    })
     .catch(err => {
       console.log('GET URL ERROR:', err)
     })

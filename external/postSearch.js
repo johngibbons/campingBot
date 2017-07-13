@@ -1,7 +1,27 @@
 const request = require('request-promise-native')
 
-module.exports = (campground, date, lengthOfStay) => {
-  const { url, contractCode, facilityId } = campground
+module.exports = ({
+  campgroundId: { url, contractCode, facilityId },
+  campingDate,
+  lengthOfStay
+}) => {
+  const jar = request.jar()
+  const headers = {
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+  }
+  const currRequest = request.defaults({
+    jar,
+    headers,
+    followRedirect: true,
+    resolveWithFullResponse: true
+  })
+
+  const getOptions = {
+    url,
+    method: 'GET'
+  }
+
   const postOptions = {
     method: 'POST',
     uri: url,
@@ -11,12 +31,16 @@ module.exports = (campground, date, lengthOfStay) => {
       siteTypeFilter: 'ALL',
       submitSiteForm: true,
       search: 'site',
-      campingDate: date,
+      lookingFor: 2003,
+      campingDate,
       lengthOfStay,
+      camping_2003_3012: 4,
       contractDefaultMaxWindow: 'MS:24,LT:18,GA:24,SC:13,PA:24,LARC:24,CTLN:13',
       stateDefaultMaxWindow: 'MS:24,GA:24,SC:13,PA:24,CO:24,CA:13'
     }
   }
 
-  return request(postOptions)
+  return currRequest(getOptions)
+    .then(() => currRequest(postOptions))
+    .catch(console.log)
 }

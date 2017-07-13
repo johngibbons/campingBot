@@ -27,6 +27,7 @@ const CampsiteFinderSchema = new Schema({
     default: false
   },
   emailAddresses: [String],
+  datesAvailable: [{}],
   dateOption: {
     type: String,
     enum: ['NEXT_SIX_MONTHS', 'SPECIFIC_DATES'],
