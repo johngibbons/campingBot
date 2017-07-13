@@ -1,11 +1,11 @@
-const CampsiteFinder = require('./models/campsite-finder')
+const CampsiteFinder = require('../models/campsite-finder')
 const moment = require('moment')
-const getUrl = require('./external/getUrl')
+const getUrl = require('../external/getUrl')
 const setDates = require('./setDates')
-const postSearch = require('./external/postSearch')
+const postSearch = require('../external/postSearch')
 const parse = require('./parser')
 const { Observable } = require('rx')
-const sendEmails = require('./mailers/mailer')
+const sendEmails = require('../mailers/mailer')
 
 module.exports = () => {
   const allCampsiteFinders$ = Observable.fromPromise(

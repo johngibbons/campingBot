@@ -5,6 +5,7 @@ const fs = require('fs')
 const async = require('async')
 const helper = require('sendgrid').mail
 const sg = require('sendgrid')(process.env.SENDGRID_API_KEY)
+const moment = require('moment')
 
 const template = new EmailTemplate(templateDir)
 
@@ -22,7 +23,9 @@ module.exports = emailAddressesObj => {
           if (err) return next(err)
           const fromEmail = new helper.Email('john@campsitefinder.com')
           const toEmail = new helper.Email(emailAddress)
-          const subject = 'Daily Campsite Update'
+          const subject = `Daily Campsite Update ${moment().format(
+            'MMMM Do YYYY, h:mm a'
+          )}`
           const content = new helper.Content('text/html', results.html)
           const mail = new helper.Mail(fromEmail, subject, toEmail, content)
 

@@ -4,7 +4,7 @@ const express = require('express')
 const app = express()
 const url = process.env.MONGODB_URI
 const bodyParser = require('body-parser')
-const timerTest = require('./timerTest')
+const campsiteScraper = require('./jobs/campsiteScraper')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const seedCampgrounds = require('./data/seedCampgrounds')
@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 app.use(cors())
 mongoose.Promise = global.Promise
 mongoose.connect(url, { useMongoClient: true })
-timerTest()
+campsiteScraper()
 
 const campsiteFinderRoutes = require('./routes/campsiteFinderRoutes')
 const campgroundRoutes = require('./routes/campgroundRoutes')
