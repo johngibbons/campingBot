@@ -8,7 +8,6 @@ const timerTest = require('./timerTest')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const seedCampgrounds = require('./data/seedCampgrounds')
-require('./mailers/renderer')
 
 app.set('port', process.env.PORT || 8080)
 app.use(bodyParser.urlencoded({ extended: true }))
