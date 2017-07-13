@@ -14,9 +14,9 @@ module.exports = response => {
       }
     }
   })
-  const avail = data
-    .campsites
-    .filter(site => site.availIcon && !site.unavailIcon && !site.adaIcon)
+  const avail = data.campsites.filter(
+    site => site.availIcon && !site.unavailIcon && !site.adaIcon
+  )
   console.log(avail)
   return avail.length
 }

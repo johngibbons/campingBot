@@ -41,5 +41,19 @@ const CampsiteFinderSchema = new Schema({
     default: null
   }
 })
+CampsiteFinderSchema.pre('update', function () {
+  this.update({}, { $set: { updatedAt: new Date() } })
+})
+
+CampsiteFinderSchema.post('findOneAndUpdate', result => {
+  // update scraping settings here
+  console.log('updated:', this)
+  console.log('result:', result)
+})
+CampsiteFinderSchema.post('save', (doc, next) => {
+  // start scraping loop here
+  console.log('saved:', doc)
+  next()
+})
 
 module.exports = mongoose.model('CampsiteFinders', CampsiteFinderSchema)

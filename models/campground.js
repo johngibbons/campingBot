@@ -8,6 +8,12 @@ const CampgroundSchema = new Schema({
   agencyName: {
     type: String
   },
+  contractCode: {
+    type: String
+  },
+  contractType: {
+    type: String
+  },
   facilityId: {
     type: String
   },
@@ -32,6 +38,9 @@ const CampgroundSchema = new Schema({
   state: {
     type: String
   },
+  url: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -43,5 +52,8 @@ const CampgroundSchema = new Schema({
 })
 
 CampgroundSchema.index({ facilityName: 'text' })
+CampgroundSchema.pre('update', function () {
+  this.update({}, { $set: { updatedAt: new Date() } })
+})
 
 module.exports = mongoose.model('Campgrounds', CampgroundSchema)
