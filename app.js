@@ -1,4 +1,5 @@
 require('dotenv').config()
+require('newrelic')
 const express = require('express')
 const app = express()
 const url = process.env.MONGODB_URI
