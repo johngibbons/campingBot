@@ -1,35 +1,45 @@
 const moment = require('moment')
 
 const daysUntilFriday = startDate => {
-  return Math.ceil(moment().day('Friday').diff(moment(startDate), 'days', true))
+  return moment(startDate).day('Friday').diff(moment(startDate), 'days')
 }
+
+const isInFuture = date => moment(date).diff(moment()) > 0
+const isValidStart = date => moment(date).diff(moment(), 'days') > 1
+
+exports.daysUntilFriday = daysUntilFriday
+
+const nextFriday = startDate => {
+  if (!isInFuture(startDate)) {
+    startDate = moment()
+  }
+  return daysUntilFriday(startDate) > 1
+    ? moment(startDate).day('Friday')
+    : moment(startDate).day('Friday').add(7, 'days')
+}
+
+exports.nextFriday = nextFriday
 
 const formatted = date => moment(date).toDate().toDateString()
 
-const allFridays = () => {
-  let fridays = []
-  const date =
-    daysUntilFriday(moment()) > 1 ? moment().day('Friday') : moment().day(12)
-  while (date < moment().add(6, 'months').endOf('month')) {
-    fridays.push(formatted(moment(date)))
-    date.add(7, 'days')
-  }
-  return fridays
-}
+exports.formatted = formatted
 
-const fridaysInRange = (startDate, endDate) => {
+const fridaysInRange = (
+  startDate = moment(),
+  endDate = moment().add(6, 'months').endOf('month')
+) => {
   let fridays = []
-  const date =
-    daysUntilFriday(moment(startDate)) > 1
-      ? moment().day('Friday')
-      : moment().day(12)
-
+  let date = nextFriday(startDate)
   while (date < moment(endDate)) {
-    fridays.push(formatted(moment(date)))
+    fridays.push(moment(date))
     date.add(7, 'days')
   }
   return fridays
 }
+
+const formatDates = dates => dates.map(formatted)
+
+exports.fridaysInRange = fridaysInRange
 
 exports.generateDates = ({
   startDate,
@@ -37,18 +47,13 @@ exports.generateDates = ({
   isWeekendsOnly,
   dateOption
 }) => {
-  if (dateOption === 'NEXT_SIX_MONTHS') return allFridays()
+  if (dateOption === 'NEXT_SIX_MONTHS') return formatDates(fridaysInRange())
 
-  const datesAreValid =
-    startDate &&
-    endDate &&
-    Math.ceil(moment(endDate).diff(moment(startDate), 'days')) > 0
-
-  const meetsMinimumStartDate =
-    Math.ceil(moment(startDate).diff(moment(), 'days')) > 1
-
-  if (isWeekendsOnly && datesAreValid) return fridaysInRange(startDate, endDate)
-  if (meetsMinimumStartDate) return [formatted(moment(startDate))]
+  if (isWeekendsOnly) {
+    return formatDates(fridaysInRange(startDate, endDate))
+  } else if (isValidStart(startDate)) {
+    return [formatted(moment(startDate))]
+  }
   return []
 }
 
