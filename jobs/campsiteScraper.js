@@ -6,6 +6,7 @@ const postSearch = require('../external/postSearch')
 const parse = require('./parser')
 const { Observable } = require('rx')
 const sendEmails = require('../mailers/mailer')
+const updateFinderResults = require('./updateFinderResults')
 
 module.exports = () => {
   const allCampsiteFinders$ = Observable.fromPromise(
@@ -17,12 +18,13 @@ module.exports = () => {
 
   const setDates$ = campsiteFinder => Observable.from(setDates(campsiteFinder))
 
-  const groupResult$ = group =>
-    group.reduce(
+  const groupResult$ = group => {
+    return group.reduce(
       (
         acc,
         [
           {
+            _id,
             campingDate,
             emailAddresses,
             isSendingEmails,
@@ -32,22 +34,27 @@ module.exports = () => {
           result
         ]
       ) => {
-        if (result.length === 0) return acc
         const resultObj = {
           siteCount: result,
           date: campingDate
         }
+        const results =
+          result > 0
+            ? acc.results ? [...acc.results, resultObj] : [resultObj]
+            : acc.results ? acc.results : []
         return Object.assign({}, acc, {
+          _id,
           campground: facilityName,
-          emailAddresses: emailAddresses,
-          isSendingEmails: isSendingEmails,
-          lengthOfStay: lengthOfStay,
-          url: url,
-          results: acc.results ? [...acc.results, resultObj] : [resultObj]
+          emailAddresses,
+          isSendingEmails,
+          lengthOfStay,
+          url,
+          results
         })
       },
       {}
     )
+  }
 
   const groupByEmail = result =>
     result.reduce((acc, curr) => {
@@ -63,10 +70,10 @@ module.exports = () => {
       return acc
     }, {})
 
-  const oneDay = 24 * 60 * 60 * 1000
+  const fiveMin = 5 * 60 * 1000
 
   const campsiteFinderSearches$ = allCampsiteFinders$
-    .delay(oneDay)
+    .delay(fiveMin)
     .do(() => console.time('test'))
     .do(() =>
       console.log(
@@ -83,7 +90,6 @@ module.exports = () => {
     .concatMap(campsiteFinderObj =>
       Observable.fromPromise(postSearch(campsiteFinderObj))
         .map(parse)
-        .filter(r => r > 0)
         .map(result => [campsiteFinderObj, result])
     )
     .groupBy(
@@ -95,7 +101,7 @@ module.exports = () => {
 
   searchResults$.subscribe(
     result => {
-      console.log('RESULT', groupByEmail(result))
+      updateFinderResults(result)
       sendEmails(groupByEmail(result))
       console.log(
         'Sequence ended at:',

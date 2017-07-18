@@ -4,7 +4,7 @@ const daysUntilFriday = startDate => {
   return moment(startDate).day('Friday').diff(moment(startDate), 'days')
 }
 
-const isInFuture = date => moment(date).diff(moment()) > 0
+const isInFuture = date => moment(date).diff(moment(), 'days') >= 0
 const isValidStart = date => moment(date).diff(moment(), 'days') > 1
 
 exports.daysUntilFriday = daysUntilFriday
@@ -13,9 +13,9 @@ const nextFriday = startDate => {
   if (!isInFuture(startDate)) {
     startDate = moment()
   }
-  return daysUntilFriday(startDate) > 1
-    ? moment(startDate).day('Friday')
-    : moment(startDate).day('Friday').add(7, 'days')
+  return daysUntilFriday(startDate) < 0
+    ? moment(startDate).day('Friday').add(7, 'days')
+    : moment(startDate).day('Friday')
 }
 
 exports.nextFriday = nextFriday

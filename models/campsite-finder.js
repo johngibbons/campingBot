@@ -42,7 +42,8 @@ const CampsiteFinderSchema = new Schema({
     default: null
   }
 })
-CampsiteFinderSchema.pre('update', function () {
+
+CampsiteFinderSchema.pre('findOneAndUpdate', function () {
   this.update({}, { $set: { updatedAt: new Date() } })
 })
 
@@ -51,6 +52,7 @@ CampsiteFinderSchema.post('findOneAndUpdate', result => {
   console.log('updated:', this)
   console.log('result:', result)
 })
+
 CampsiteFinderSchema.post('save', (doc, next) => {
   // start scraping loop here
   console.log('saved:', doc)

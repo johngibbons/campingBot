@@ -30,11 +30,11 @@ describe('daysUntilFriday', () => {
 })
 
 describe('nextFriday', () => {
-  test('it shows next friday more than 1 day ahead', () => {
+  test('it shows the next friday', () => {
     expect(nextFriday(tues)).toEqual(moment(tues).add(3, 'days'))
-    expect(nextFriday(thurs)).toEqual(moment(thurs).add(8, 'days'))
+    expect(nextFriday(thurs)).toEqual(moment(thurs).add(1, 'days'))
     expect(nextFriday(sat)).toEqual(moment(sat).add(6, 'days'))
-    expect(nextFriday(fri)).toEqual(moment(fri).add(7, 'days'))
+    expect(nextFriday(fri)).toEqual(moment(fri))
   })
 })
 
@@ -129,6 +129,45 @@ describe('generateDates', () => {
         dateOption: 'SPECIFIC_DATES'
       })
     ).toEqual([])
+  })
+
+  test('specific', () => {
+    console.log('HERE')
+    const campsiteFinder = {
+      _id: '596d4b924a7739c8ae8d3657',
+      campgroundId: {
+        _id: '5966a6db80563d31ca994549',
+        __v: 0,
+        agencyIcon: '',
+        agencyName: '',
+        contractCode: 'CA',
+        contractType: 'STATE',
+        facilityId: '120003',
+        facilityName: 'ANGEL ISLAND SP',
+        facilityPhoto: '/webphotos/CA/pid120003/0/80x53.jpg',
+        latitude: '37.8641667',
+        longitude: '-122.4308333',
+        regionName: '',
+        shortName: 'ANGE',
+        state: 'CA',
+        url:
+          'https://www.reserveamerica.com/camping/angel-island-sp/r/campgroundDetails.do?contractCode=CA&parkId=120003',
+        updatedAt: '2017-07-12T22:46:51.019Z',
+        createdAt: '2017-07-12T22:46:51.019Z'
+      },
+      __v: 0,
+      endDate: '2017-07-24T19:00:00.000Z',
+      startDate: '2017-07-21T19:00:00.000Z',
+      dateOption: 'SPECIFIC_DATES',
+      datesAvailable: [],
+      emailAddresses: [],
+      isSendingEmails: true,
+      isWeekendsOnly: true,
+      isActive: true,
+      updatedAt: '2017-07-18T00:01:52.690Z',
+      createdAt: '2017-07-17T23:43:14.813Z'
+    }
+    expect(generateDates(campsiteFinder)).toEqual(['Fri Jul 21 2017'])
   })
 })
 
