@@ -7,7 +7,8 @@
     "node": "7.10.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jest --watch"
   },
   "dependencies": {
     "async": "^2.5.0",
@@ -33,6 +34,7 @@
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
+    "jest": "^20.0.4",
     "prettier-standard": "^6.0.0"
   }
 }
