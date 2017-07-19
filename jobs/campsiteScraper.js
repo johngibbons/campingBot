@@ -73,7 +73,6 @@ module.exports = () => {
   const fiveMin = 5 * 60 * 1000
 
   const campsiteFinderSearches$ = allCampsiteFinders$
-    .delay(fiveMin)
     .do(() => console.time('test'))
     .do(() =>
       console.log(
@@ -92,9 +91,7 @@ module.exports = () => {
         .map(parse)
         .map(result => [campsiteFinderObj, result])
     )
-    .groupBy(
-      ([campsiteFinderObj, result]) => campsiteFinderObj.campgroundId.facilityId
-    )
+    .groupBy(([campsiteFinderObj, result]) => campsiteFinderObj._id)
     .mergeMap(groupResult$)
     .reduce((acc, curr) => [...acc, curr], [])
     .repeat()
