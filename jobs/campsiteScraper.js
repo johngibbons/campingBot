@@ -59,7 +59,13 @@ module.exports = () => {
 
   const groupByEmail = result =>
     result.reduce((acc, curr) => {
-      if (!curr.isSendingEmails || curr.datesAvailable.length === 0) return acc
+      if (
+        !curr.isSendingEmails ||
+        !curr.datesAvailable ||
+        curr.datesAvailable.length === 0
+      ) {
+        return acc
+      }
       const emailAddresses = curr.emailAddresses
       emailAddresses.forEach(e => {
         if (acc[e]) {

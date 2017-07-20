@@ -33,6 +33,9 @@ const CampsiteFinderSchema = new Schema({
     enum: ['NEXT_SIX_MONTHS', 'SPECIFIC_DATES'],
     default: 'NEXT_SIX_MONTHS'
   },
+  siteCode: {
+    type: String
+  },
   startDate: {
     type: Date,
     default: null
