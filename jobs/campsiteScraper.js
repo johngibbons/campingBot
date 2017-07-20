@@ -36,7 +36,8 @@ module.exports = () => {
       ) => {
         const resultObj = {
           siteCount: result,
-          date: campingDate
+          date: campingDate,
+          lengthOfStay
         }
         const results =
           result > 0
