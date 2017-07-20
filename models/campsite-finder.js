@@ -40,6 +40,9 @@ const CampsiteFinderSchema = new Schema({
   endDate: {
     type: Date,
     default: null
+  },
+  lastCheckedAt: {
+    type: Date
   }
 })
 
