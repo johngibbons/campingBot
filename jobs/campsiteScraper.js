@@ -74,6 +74,7 @@ module.exports = () => {
   const fiveMin = 5 * 60 * 1000
 
   const campsiteFinderSearches$ = allCampsiteFinders$
+    .delay(fiveMin)
     .do(() => console.time('test'))
     .do(() =>
       console.log(
