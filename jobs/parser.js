@@ -1,6 +1,7 @@
 const scrapeIt = require('scrape-it')
 
 module.exports = response => {
+  if (!response) return 0
   const data = scrapeIt.scrapeHTML(response.body, {
     campsites: {
       listItem: '#shoppingitems tr',
