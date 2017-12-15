@@ -1,0 +1,444 @@
+{
+  "d": {
+    "__type": "FilterdGoogleAndPlaceData",
+    "ListJsonPlaceInfos": [
+      {
+        "__type": "JsonPlaceInfo",
+        "PlaceDistance": 0,
+        "PlaceSpotType": "Accessible",
+        "AllHightlights": "Bicycling , Birdwatching , Camping , Group Camping , Hiking , Horseback riding , Lodging , Museum , Picnic area , Swimming , Visitor Center ,",
+        "IsCustomerFavourite": false,
+        "IsPlaceAlert": false,
+        "SortName": "Bothe-Napa Valley SP",
+        "DisplayName": "Bothe-Napa Valley SP",
+        "PlaceinfoUrl": "http://www.parks.ca.gov/?page_id=477",
+        "Name": "Bothe-Napa Valley SP",
+        "Description": "\u003ca hreaf=\u0027javascript:void(0);\u0027\u003eIn the heart of Napa Valley, BotheNapa Valley State Park is a 1900 acre park offering yearround camping, picnicking, hiking...\u003c/a\u003e",
+        "Fulldescription": "In the heart of Napa Valley, Bothe-Napa Valley State Park is a 1900 acre park offering year-round camping, picnicking, hiking and swimming (weekends in the summer). Visitors can follow hiking trails along Ritchie Creek, walk among Redwood tree groves, or climb to a beautiful vantage point on Coyote Peak. A 30-minute hike along the History Trail leads to nearby Bale Grist Mill State Historic Park, open weekends for tours.",
+        "JsonFacilityInfos": [
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Cabin Colony",
+            "FacilityName": "Cabin Colony",
+            "JsonFacilitySpots": null,
+            "PlaceId": 620,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 882,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Cabins-Other Lodging",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/Lodging/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.55322265625,
+            "FacilityBoundryLongitude": -122.52571868896484,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": true,
+            "IsFacilityFilter": false
+          },
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Ritchey Creek Campground",
+            "FacilityName": "Ritchey Creek Campground",
+            "JsonFacilitySpots": null,
+            "PlaceId": 620,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 782,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Campgrounds",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/Camping/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.55322265625,
+            "FacilityBoundryLongitude": -122.52571868896484,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": false,
+            "IsFacilityFilter": false
+          },
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Valley Group Camp",
+            "FacilityName": "Valley Group Camp",
+            "JsonFacilitySpots": null,
+            "PlaceId": 620,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 419,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Group Camping",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/GroupCamping/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.549530029296875,
+            "FacilityBoundryLongitude": -122.52569580078125,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": false,
+            "IsFacilityFilter": false
+          },
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Valley Yurts",
+            "FacilityName": "Valley Yurts",
+            "JsonFacilitySpots": null,
+            "PlaceId": 620,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n Cabin Cancellation Policy: \u003cBR\u003e * Cancellations 15 days or more prior to arrival will incur a $7.99 cancellation fee \u003cBR\u003e * Cancellations within 7 days of arrival will incur a $7.99 cancellation fee plus the first night cabin rental fee. \u003cBR\u003e * If you are a NO SHOW, customer will incur a $7.99 cancellation fee plus 50% of the cost of the planned stay. \u003cBR\u003e * EARLY OUT: If you must leave the park one or more days early; check out before 11 a.m. A cancellation fee of $7.99 plus 50% of the remaining days of stay will be deducted from any refund you may be due.",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 752,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Cabins-Other Lodging",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/Lodging/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.545833587646484,
+            "FacilityBoundryLongitude": -122.53444671630859,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": false,
+            "IsFacilityFilter": false
+          }
+        ],
+        "PlaceId": 620,
+        "ImageUrl": "https://cali-content.usedirect.com/Images/California/ParkImages/Place/620.jpg",
+        "IsavailableSpots": false,
+        "isFilter": false,
+        "ThemeShortName": "California",
+        "Parksize": "Medium",
+        "Park_CategoryId": 1,
+        "Park_Activity": 3,
+        "Park_Popularity": 0,
+        "Latitude": 0,
+        "Longitude": 0,
+        "ParkInfoDescription": "",
+        "ParkBtnDisplay": 3,
+        "FacebookUrl": null,
+        "TwitterUrl": null,
+        "InstagramUrl": null,
+        "FlickrUrl": null,
+        "PinterestUrl": null,
+        "YoutubeUrl": null,
+        "BlogsUrl": null,
+        "MiscUrl": null,
+        "ParkAlert": false,
+        "SkipMap": false,
+        "Placeavailabilityvalue": true,
+        "PlaceIsPremiumValues": true
+      },
+      {
+        "__type": "JsonPlaceInfo",
+        "PlaceDistance": 8,
+        "PlaceSpotType": "Accessible ,",
+        "AllHightlights": "Bicycling , Birdwatching , Camping , Group Camping , Hiking , Horseback riding , Museum , Picnic area , Visitor Center ,",
+        "IsCustomerFavourite": false,
+        "IsPlaceAlert": false,
+        "SortName": "Sugarloaf Ridge SP",
+        "DisplayName": "Sugarloaf Ridge SP",
+        "PlaceinfoUrl": "http://www.parks.ca.gov/?page_id=481",
+        "Name": "Sugarloaf Ridge SP",
+        "Description": "\u003ca hreaf=\u0027javascript:void(0);\u0027\u003e\r\nSugarloaf Ridge State Park is where the headwaters of the Sonoma Creek run through gorge and canyon, across the meadow floor...\u003c/a\u003e",
+        "Fulldescription": "\r\nSugarloaf Ridge State Park is where the headwaters of the Sonoma Creek run through gorge and canyon, across the meadow floor beneath scenic rock outcroppings.  \r\nWith 2,700 acres, the park has 25 miles of trails for hiking, horseback riding and bicycle use.  \r\nThere is also a self-guided nature trail along Sonoma Creek that starts near the campground.  \r\nDeer, bobcats and gray foxes can be seen in the park. From the 2,729-foot summit of Bald Mountain on a clear day visitors can see views of the Sierra Nevada and the golden gate bridge.  \r\nThe park also houses the Robert Ferguson Observatory http://rfo.org that can be rented, along with the Group Campground, for private parties. \r\n A Group Picnic area and an Amphitheater are available for private use with a reservation.",
+        "JsonFacilityInfos": [
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Campground Loop (sites 1-14, 29-50)",
+            "FacilityName": "Campground Loop (sites 1-14, 29-50)",
+            "JsonFacilitySpots": null,
+            "PlaceId": 725,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 731,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Campgrounds",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/Camping/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.436470031738281,
+            "FacilityBoundryLongitude": -122.51529693603516,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": false,
+            "IsFacilityFilter": false
+          },
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Campground Spur (sites 15-28)",
+            "FacilityName": "Campground Spur (sites 15-28)",
+            "JsonFacilitySpots": null,
+            "PlaceId": 725,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 733,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Campgrounds",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/Camping/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.435367584228516,
+            "FacilityBoundryLongitude": -122.51171875,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": false,
+            "IsFacilityFilter": false
+          },
+          {
+            "FacilityImage": "",
+            "SortfacilityName": "Group Camping Area",
+            "FacilityName": "Group Camping Area",
+            "JsonFacilitySpots": null,
+            "PlaceId": 725,
+            "AddiotionalInfo": "Welcome to your beautiful California State Parks campgrounds! California State Parks offers diverse terrain and scenery for everyone to enjoy, whether you’re a rugged backcountry camper, a beach enthusiast, or one that enjoys the convenience and comfort of various amenities close by. We offer RV, Tent, Group, Boat-In and Hike \u0026 Bike campsites, to name a few. We have it all! At our Site-Specific campgrounds you can select a specific campsite when making your reservations. For our Non-Site-Specific campgrounds, staff will assign you a spot upon your arrival. \r\n\r\nFor additional information on the weather, suggested day hikes, daily activities, or to see park brochures, campground maps and park photos, please check the California State Parks website at www.parks.ca.gov. Available information will vary from park to park. We hope you enjoy your stay with us and we look forward to seeing you again soon!\r\n",
+            "SortAddiotionalInfo": null,
+            "FacilityId": 728,
+            "IsCustomerFavourite": false,
+            "FacilityCategory": "Group Camping",
+            "FacilityCategoryImagePath": "../themes/California/GoogleMapIcons/GroupCamping/AvailableNotCriteria.png",
+            "Searchlevel": 0,
+            "FacilityBoundryLatitude": 38.437973022460938,
+            "FacilityBoundryLongitude": -122.50876617431641,
+            "FacilityType": 1,
+            "Facilityavailabilityvalue": true,
+            "IsPremium": false,
+            "IsFacilityFilter": false
+          }
+        ],
+        "PlaceId": 725,
+        "ImageUrl": "https://cali-content.usedirect.com/Images/California/ParkImages/Place/725.jpg",
+        "IsavailableSpots": true,
+        "isFilter": false,
+        "ThemeShortName": "California",
+        "Parksize": "Medium",
+        "Park_CategoryId": 1,
+        "Park_Activity": 3,
+        "Park_Popularity": 0,
+        "Latitude": 0,
+        "Longitude": 0,
+        "ParkInfoDescription": "",
+        "ParkBtnDisplay": 3,
+        "FacebookUrl": null,
+        "TwitterUrl": null,
+        "InstagramUrl": null,
+        "FlickrUrl": null,
+        "PinterestUrl": null,
+        "YoutubeUrl": null,
+        "BlogsUrl": null,
+        "MiscUrl": null,
+        "ParkAlert": false,
+        "SkipMap": false,
+        "Placeavailabilityvalue": true,
+        "PlaceIsPremiumValues": false
+      }
+    ],
+    "GoogleObject": {
+      "Points": [
+        {
+          "Address": "",
+          "ID": "620",
+          "Latitude": 38.55322265625,
+          "Longitude": -122.52571868896484,
+          "InfoHTML": "",
+          "IconImage": "AvailableNotCriteria",
+          "ParkImage": "https://cali-content.usedirect.com/Images/California/ParkImages/Place/620.jpg",
+          "ParkFacilityCategory": "",
+          "IsAvailable": false,
+          "FacilityIds": [
+            882,
+            782,
+            419,
+            752
+          ],
+          "PlaceURL": null,
+          "PlaceName": "Bothe-Napa Valley SP",
+          "PlaceDescription": "In the heart of Napa Valley, Bothe-Napa Valley State Park is a 1900 acre park offering year-round camping, picnicking, hiking and swimming (weekends in the summer). Visitors can follow hiking trails along Ritchie Creek, walk among Redwood tree groves, or climb to a beautiful vantage point on Coyote Peak. A 30-minute hike along the History Trail leads to nearby Bale Grist Mill State Historic Park, open weekends for tours.",
+          "PlaceImagePath": "https://cali-content.usedirect.com/Images/California/ParkImages/Place/620.jpg",
+          "PlaceArrivalDate": "9/15/2017",
+          "Parksize": "Medium",
+          "park_categoryid": 1,
+          "park_activity": 3,
+          "Park_Popularity": 0,
+          "SkipMap": false,
+          "IsFilter": false
+        },
+        {
+          "Address": "",
+          "ID": "725",
+          "Latitude": 38.4378662109375,
+          "Longitude": -122.51432800292969,
+          "InfoHTML": "",
+          "IconImage": "AvailableWithCriteria",
+          "ParkImage": "https://cali-content.usedirect.com/Images/California/ParkImages/Place/725.jpg",
+          "ParkFacilityCategory": "",
+          "IsAvailable": false,
+          "FacilityIds": [
+            731,
+            733,
+            728,
+            729
+          ],
+          "PlaceURL": null,
+          "PlaceName": "Sugarloaf Ridge SP",
+          "PlaceDescription": "\r\nSugarloaf Ridge State Park is where the headwaters of the Sonoma Creek run through gorge and canyon, across the meadow floor beneath scenic rock outcroppings.  \r\nWith 2,700 acres, the park has 25 miles of trails for hiking, horseback riding and bicycle use.  \r\nThere is also a self-guided nature trail along Sonoma Creek that starts near the campground.  \r\nDeer, bobcats and gray foxes can be seen in the park. From the 2,729-foot summit of Bald Mountain on a clear day visitors can see views of the Sierra Nevada and the golden gate bridge.  \r\nThe park also houses the Robert Ferguson Observatory http://rfo.org that can be rented, along with the Group Campground, for private parties. \r\n A Group Picnic area and an Amphitheater are available for private use with a reservation.",
+          "PlaceImagePath": "https://cali-content.usedirect.com/Images/California/ParkImages/Place/725.jpg",
+          "PlaceArrivalDate": "9/15/2017",
+          "Parksize": "Medium",
+          "park_categoryid": 1,
+          "park_activity": 3,
+          "Park_Popularity": 0,
+          "SkipMap": false,
+          "IsFilter": false
+        }
+      ],
+      "CenterPoint": {
+        "Address": "",
+        "ID": "1",
+        "Latitude": 38.553222656247755,
+        "Longitude": -122.52571868896518,
+        "InfoHTML": "this is test",
+        "IconImage": null,
+        "ParkImage": null,
+        "ParkFacilityCategory": null,
+        "IsAvailable": false,
+        "FacilityIds": null,
+        "PlaceURL": null,
+        "PlaceName": null,
+        "PlaceDescription": null,
+        "PlaceImagePath": null,
+        "PlaceArrivalDate": null,
+        "Parksize": null,
+        "park_categoryid": 0,
+        "park_activity": 0,
+        "Park_Popularity": 0,
+        "SkipMap": false,
+        "IsFilter": false
+      },
+      "ZoomLevel": 0,
+      "RecenterMap": false,
+      "IsPostback": true,
+      "MaxZoomLevel": 0,
+      "MinZoomLevel": 0,
+      "South": 38.372841230213311,
+      "East": -122.25277709961154,
+      "North": 38.733152636658559,
+      "West": -122.79866027832252
+    },
+    "Highlights": [
+      {
+        "Id": "Bicycling",
+        "Name": "Bicycling"
+      },
+      {
+        "Id": "Birdwatching",
+        "Name": "Birdwatching"
+      },
+      {
+        "Id": "Boating",
+        "Name": "Boating"
+      },
+      {
+        "Id": "Boat_launch",
+        "Name": "Boat launch"
+      },
+      {
+        "Id": "Body_surfing",
+        "Name": "Body surfing"
+      },
+      {
+        "Id": "Camping",
+        "Name": "Camping"
+      },
+      {
+        "Id": "Fishing",
+        "Name": "Fishing"
+      },
+      {
+        "Id": "Golf_course",
+        "Name": "Golf course"
+      },
+      {
+        "Id": "Group_Camping",
+        "Name": "Group Camping"
+      },
+      {
+        "Id": "Hiking",
+        "Name": "Hiking"
+      },
+      {
+        "Id": "Horseback_riding",
+        "Name": "Horseback riding"
+      },
+      {
+        "Id": "Lodging",
+        "Name": "Lodging"
+      },
+      {
+        "Id": "Museum",
+        "Name": "Museum"
+      },
+      {
+        "Id": "Off_Road_Vehicles",
+        "Name": "Off Road Vehicles"
+      },
+      {
+        "Id": "Picnic_area",
+        "Name": "Picnic area"
+      },
+      {
+        "Id": "Scuba_diving",
+        "Name": "Scuba diving"
+      },
+      {
+        "Id": "Surfing",
+        "Name": "Surfing"
+      },
+      {
+        "Id": "Swimming",
+        "Name": "Swimming"
+      }
+    ],
+    "TotalPageIndex": 0,
+    "InnerException": null,
+    "ExceptionMessage": null
+  }
+}
+{
+  "googlePlaceSearchParameters": {
+    "Latitude": "38.553222656247755",
+    "Longitude": "-122.52571868896518",
+    "South": 38.37284123021331,
+    "North": 38.73315263665856,
+    "East": -122.25277709961154,
+    "West": -122.79866027832252,
+    "Filter": true,
+    "BackToHome": "",
+    "CenterLatitude": 38.553222656247755,
+    "CenterLongitude": -122.52571868896518,
+    "ChangeDragandZoom": true,
+    "BacktoFacility": true,
+    "ChooseActivity": null,
+    "IsFilterClick": false,
+    "AvailabilitySearchParams": {
+      "RegionId": 0,
+      "PlaceId": [
+        "0"
+      ],
+      "FacilityId": 0,
+      "StartDate": "9/15/2017",
+      "Nights": "2",
+      "CategoryId": "0",
+      "UnitTypeIds": [],
+      "ShowOnlyAdaUnits": false,
+      "ShowOnlyTentSiteUnits": "false",
+      "ShowOnlyRvSiteUnits": "false",
+      "MinimumVehicleLength": "0",
+      "PageIndex": 0,
+      "PageSize": 20,
+      "Page1": 20,
+      "NoOfRecords": 100,
+      "ShowSiteUnitsName": "0",
+      "Autocomplitename": "Bothe-Napa Valley SP",
+      "ParkFinder": [],
+      "ParkCategory": 8,
+      "ChooseActivity": "1",
+      "IsPremium": false
+    },
+    "IsFacilityLevel": false,
+    "PlaceIdFacilityLevel": 0,
+    "MapboxPlaceid": 0
+  }
+}

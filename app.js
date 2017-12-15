@@ -8,6 +8,7 @@ const campsiteScraper = require('./jobs/campsiteScraper')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const seedCampgrounds = require('./data/seedCampgrounds')
+const rCSearch = require('./external/rCSearch')
 
 app.set('port', process.env.PORT || 8080)
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -16,6 +17,7 @@ app.use(cors())
 mongoose.Promise = global.Promise
 mongoose.connect(url, { useMongoClient: true })
 campsiteScraper()
+rCSearch()
 
 const campsiteFinderRoutes = require('./routes/campsiteFinderRoutes')
 const campgroundRoutes = require('./routes/campgroundRoutes')
