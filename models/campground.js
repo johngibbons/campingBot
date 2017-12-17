@@ -14,6 +14,9 @@ const CampgroundSchema = new Schema({
   contractType: {
     type: String
   },
+  facilityCategory: {
+    type: String
+  },
   facilityId: {
     type: String
   },
@@ -27,6 +30,21 @@ const CampgroundSchema = new Schema({
     type: String
   },
   longitude: {
+    type: String
+  },
+  placeId: {
+    type: Number
+  },
+  placeName: {
+    type: String
+  },
+  placeUrl: {
+    type: String
+  },
+  placeDescription: {
+    type: String
+  },
+  placePhoto: {
     type: String
   },
   regionName: {
