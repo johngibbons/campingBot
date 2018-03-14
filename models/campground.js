@@ -50,6 +50,9 @@ const CampgroundSchema = new Schema({
   regionName: {
     type: String
   },
+  reservationAgency: {
+    type: String
+  },
   shortName: {
     type: String
   },
