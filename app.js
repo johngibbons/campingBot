@@ -29,6 +29,9 @@ const campsiteFinderRoutes = require("./routes/campsiteFinderRoutes");
 // API route for search campgrounds
 const campgroundRoutes = require("./routes/campgroundRoutes");
 
+campsiteFinderRoutes(app);
+campgroundRoutes(app);
+
 app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
 });
