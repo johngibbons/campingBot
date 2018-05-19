@@ -1,4 +1,6 @@
 const rp = require("request-promise-native");
+const { from } = require("rxjs/observable/from");
+const { delay, concatMap, map, reduce, tap } = require("rxjs/operators");
 
 const headers = {
   "user-agent":
@@ -99,21 +101,47 @@ var regexp = /UnitDetailPopup(.*?)#39/gi;
 var parseAvailable = response =>
   response
     .match(regexp)
-    .filter(match => match.includes("is_available=true"))
-    .map(match => {
-      var unit = match.match(/unit_id\=(.*?)\&/)[1];
-      var day = match.match(/arrival_date\=(.*?)\s/)[1];
-      return [unit, day];
-    });
+    .filter(
+      match => match.includes("is_available=true") && !match.includes("valign")
+    );
+
+const searchNextRange = async function() {
+  try {
+    const nextDateResponse = await request(nextDateOptions);
+    const gridResponse = await request(gridOptions);
+    return parseAvailable(gridResponse.body.d);
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 const run = async function() {
   try {
     await request(sessionOptions);
     const searchResponse = await request(searchOptions);
-    const nextDateResponse = await request(nextDateOptions);
-    const gridResponse = await request(gridOptions);
-    const availablilities = parseAvailable(gridResponse.body.d);
-    console.log(availablilities);
+    const allAvailabilities = from(new Array(9)).pipe(
+      concatMap(() => from(searchNextRange())),
+      reduce((all, curr) => [...all, ...curr], []),
+      tap(console.log),
+      map(availabilitiesArr => {
+        return availabilitiesArr.reduce((availabilities, availableSite) => {
+          const unit = availableSite.match(/unit_id\=(.*?)\&/)[1];
+          const date = availableSite.match(/arrival_date\=(.*?)\s/)[1];
+          const unitDates = availabilities[unit];
+          if (!unitDates) {
+            return { ...availabilities, [unit]: [date] };
+          } else if (unitDates.includes(date)) {
+            return availabilities;
+          } else {
+            return {
+              ...availabilities,
+              [unit]: [...availabilities[unit], date]
+            };
+          }
+        }, {});
+      })
+    );
+    allAvailabilities.subscribe(val => console.log(val));
   } catch (e) {
     console.log(e);
   }

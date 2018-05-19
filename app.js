@@ -7,12 +7,10 @@ const bodyParser = require("body-parser");
 const campsiteScraper = require("./jobs/campsiteScraper");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const connection = require("./external/caSearch");
-const seedAmericaCampgrounds$ = require("./data/seedCampgrounds");
-const seedCaCampgrounds$ = require("./data/seedCaCampgrounds");
-const resetCampgrounds$ = require("./data/resetCampgrounds");
-const resetCampsiteFinders$ = require("./data/resetCampsiteFinders");
+const resetCampsiteFinders = require("./data/resetCampsiteFinders");
+const seedAllCampgrounds = require("./data/seedAllCampgrounds");
 const Campground = require("./models/campground");
+const run = require("./connection_test");
 
 app.set("port", process.env.PORT || 8080);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,16 +35,7 @@ app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
 });
 
-resetCampsiteFinders$.subscribe();
-
-resetCampgrounds$
-  .concat(seedAmericaCampgrounds$)
-  .concat(seedCaCampgrounds$)
-  .finally("finished ALL seeding")
-  .subscribe(
-    () => {},
-    err => console.log(err),
-    () => {
-      console.log("total campgrounds:", Campground.count({}).then(console.log));
-    }
-  );
+run();
+// campsiteScraper();
+// resetCampsiteFinders();
+// seedAllCampgrounds();
