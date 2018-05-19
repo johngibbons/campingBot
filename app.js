@@ -37,10 +37,6 @@ app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
 });
 
-resetCampsiteFinders$.subscribe(() => {
-  console.log("reset campsite finder");
-});
-
 /*
 resetCampgrounds$
   .concat(seedAmericaCampgrounds$)
