@@ -11,6 +11,7 @@ const connection = require("./external/caSearch");
 const seedAmericaCampgrounds$ = require("./data/seedCampgrounds");
 const seedCaCampgrounds$ = require("./data/seedCaCampgrounds");
 const resetCampgrounds$ = require("./data/resetCampgrounds");
+const resetCampsiteFinders$ = require("./data/resetCampsiteFinders");
 const Campground = require("./models/campground");
 
 app.set("port", process.env.PORT || 8080);
@@ -34,6 +35,10 @@ campgroundRoutes(app);
 
 app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
+});
+
+resetCampsiteFinders$.subscribe(() => {
+  console.log("reset campsite finder");
 });
 
 /*
