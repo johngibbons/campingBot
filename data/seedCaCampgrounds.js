@@ -104,8 +104,8 @@ function parseFacilities(place) {
       placeUrl: PlaceinfoUrl,
       placeDescription: Fulldescription,
       placePhoto: ImageUrl,
-      facilityPhoto: FacilityImage,
-      facilityName: FacilityName,
+      facilityPhoto: ImageUrl,
+      facilityName: DisplayName,
       facilityId: FacilityId,
       facilityCategory: FacilityCategory,
       latitude: FacilityBoundryLatitude,
@@ -134,6 +134,7 @@ const saveFacility$ = placeId => {
 };
 
 const insertMany = arr => {
+  console.log("arr", arr);
   return from(Campground.insertMany(arr));
 };
 
@@ -141,7 +142,6 @@ const saveCaCampgrounds$ = timer(0, 10).pipe(
   take(1200),
   tap(val => console.log("Getting place id:", val)),
   flatMap(saveFacility$),
-  tap(() => console.log("getting here 1")),
   map(handleResponse),
   tap(result => console.log("getting here 2", result)),
   flatMap(insertMany),

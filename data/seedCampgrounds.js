@@ -8,7 +8,18 @@ const { curry, reduce, assoc, keys, pipe } = require("ramda");
 const { RESERVE_AMERICA } = require("../constants");
 
 const renameKeys = curry((keysMap, obj) =>
-  reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj))
+  reduce(
+    (acc, key) =>
+      assoc(
+        keysMap[key] || key,
+        keysMap[key] === "facilityPhoto"
+          ? `http://reserveamerica.com${obj[key]}`
+          : obj[key],
+        acc
+      ),
+    {},
+    keys(obj)
+  )
 );
 
 const keysMap = {

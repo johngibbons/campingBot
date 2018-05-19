@@ -37,7 +37,8 @@ app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
 });
 
-/*
+resetCampsiteFinders$.subscribe();
+
 resetCampgrounds$
   .concat(seedAmericaCampgrounds$)
   .concat(seedCaCampgrounds$)
@@ -49,4 +50,3 @@ resetCampgrounds$
       console.log("total campgrounds:", Campground.count({}).then(console.log));
     }
   );
-*/
