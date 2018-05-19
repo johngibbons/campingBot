@@ -134,7 +134,7 @@ const saveFacility$ = placeId => {
 };
 
 const insertMany = arr => {
-  console.log("arr", arr);
+  console.log("INSERT_MANY_ARR", arr);
   return from(Campground.insertMany(arr));
 };
 
