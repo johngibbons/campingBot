@@ -30,6 +30,7 @@
     "request-promise-native": "^1.0.4",
     "rx": "^4.1.0",
     "rxjs": "^6.1.0",
+    "rxjs-compat": "^6.1.0",
     "scrape-it": "^3.3.2",
     "sendgrid": "^5.1.2",
     "standard": "^10.0.2",
