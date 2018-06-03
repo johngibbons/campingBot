@@ -1,4 +1,8 @@
 const rp = require("request-promise-native");
+const { from } = require("rxjs/observable/from");
+const { delay, concatMap, map, reduce, tap } = require("rxjs/operators");
+const { formatted } = require("../jobs/datesGenerator");
+const updateFinderResults = require("../jobs/updateFinderResults");
 
 const headers = {
   "user-agent":
@@ -22,7 +26,7 @@ const sessionOptions = {
   url: "https://www.reservecalifornia.com/CaliforniaWebHome/Default.aspx"
 };
 
-const searchOptions = {
+const searchOptions = (placeId, facilityId) => ({
   url:
     "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx",
   method: "POST",
@@ -35,9 +39,9 @@ const searchOptions = {
     ctl01$mainContent$btngetFacilitiess: "Hure",
     ctl01$mainContent$hdnCheckListDatalistmode: 1,
     ctl01$mainContent$Hidscreenresolution: 1280,
-    ctl01$mainContent$hdnPlaceid: "3",
+    ctl01$mainContent$hdnPlaceid: placeId,
     ctl01$mainContent$hdnPlaceFacilirySize: "Medium",
-    ctl01$mainContent$hdnFacilityid: 336,
+    ctl01$mainContent$hdnFacilityid: facilityId,
     ctl01$mainContent$hdnFacilityType: 1,
     ctl01$mainContent$hdnNodeclick: 0,
     ctl01$mainContent$hiddenPlaceLevel: "Facility",
@@ -48,9 +52,9 @@ const searchOptions = {
     ctl01$mainContent$TopMenuMainSearch$ddlTopNights: 1,
     ctl01$mainContent$TopMenuMainSearch$ddlSortBy: 3
   }
-};
+});
 
-const gridOptions = {
+const gridOptions = (placeId, facilityId) => ({
   headers: {
     "content-type": "application/json"
   },
@@ -58,13 +62,13 @@ const gridOptions = {
     "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx/GetUnitGridDataHtmlString",
   method: "POST",
   body: {
-    FacilityId: "336",
-    PlaceId: "3",
+    FacilityId: facilityId,
+    PlaceId: placeId,
     MaximumDates: "20",
     IsTablet: true,
     MaximumStayforGrid: 30
   }
-};
+});
 
 const nextDateOptions = {
   headers: {
@@ -95,17 +99,92 @@ const nextDateOptions = {
 // \u0026#39;
 // );\"
 
-const search = async function() {
+var regexp = /UnitDetailPopup(.*?)#39/gi;
+var parseAvailable = response =>
+  response
+    .match(regexp)
+    .filter(
+      match => match.includes("is_available=true") && !match.includes("valign")
+    );
+
+const searchNextRange = async function(placeId, facilityId) {
   try {
-    await request(sessionOptions);
-    await request(searchOptions);
-    await request(nextDateOptions);
-    const gridResponse = await request(gridOptions);
-    return gridResponse.body.d || [];
+    const nextDateResponse = await request(nextDateOptions);
+    const gridResponse = await request(gridOptions(placeId, facilityId));
+    return parseAvailable(gridResponse.body.d);
   } catch (e) {
     console.log(e);
-    return [];
   }
 };
 
-module.exports = search;
+const hasAllRequestedDates = (requested, available) =>
+  requested.every(requestedDate => available.indexOf(requestedDate) > -1);
+
+const run = async function(campgroundFinder) {
+  const placeId = campgroundFinder.campgroundId.placeId;
+  const facilityId = campgroundFinder.campgroundId.facilityId;
+  const allDates = campgroundFinder.allDates;
+  try {
+    await request(sessionOptions);
+    const searchResponse = await request(searchOptions(placeId, facilityId));
+    const findAvailabilities$ = from(new Array(9)).pipe(
+      concatMap(() => from(searchNextRange(placeId, facilityId))),
+      reduce((all, curr) => [...all, ...curr], []),
+      map(availabilitiesArr => {
+        const availableDatesByUnit = availabilitiesArr.reduce(
+          (availabilities, availableSite) => {
+            const unit = availableSite.match(/unit_id\=(.*?)\&/)[1];
+            const date = availableSite.match(/arrival_date\=(.*?)\s/)[1];
+            const formattedDate = formatted(date);
+            const unitDates = availabilities[unit];
+            if (!unitDates) {
+              // no previous availabilites on this unit, so add to availabilities obj
+              return { ...availabilities, [unit]: [formattedDate] };
+            } else if (unitDates.includes(formattedDate)) {
+              // duplicate, just return obj
+              return availabilities;
+            } else {
+              // previous availabilities already on this unit, add date to unit availabilities array
+              return {
+                ...availabilities,
+                [unit]: [...availabilities[unit], formattedDate]
+              };
+            }
+          },
+          {}
+        );
+
+        const unitsMatchingDate = allDates
+          .map(requestedDatesArr => {
+            const matchingUnits = Object.keys(availableDatesByUnit).filter(
+              unitId =>
+                hasAllRequestedDates(
+                  requestedDatesArr,
+                  availableDatesByUnit[unitId]
+                )
+            );
+
+            return {
+              date: requestedDatesArr[0],
+              siteCount: matchingUnits.length,
+              lengthOfStay: requestedDatesArr.length
+            };
+          })
+          .filter(resultObj => resultObj.siteCount !== 0);
+
+        const updatedFinder = {
+          ...campgroundFinder,
+          results: unitsMatchingDate
+        };
+        updateFinderResults([updatedFinder]);
+
+        return updatedFinder;
+      })
+    );
+    findAvailabilities$.subscribe(val => console.log("results", val));
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+module.exports = run;

@@ -35,7 +35,7 @@ app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
 });
 
-run();
-// campsiteScraper();
+// run(3, 336);
+campsiteScraper();
 // resetCampsiteFinders();
 // seedAllCampgrounds();

@@ -1,47 +1,47 @@
-const request = require('request-promise-native')
+const request = require("request-promise-native");
 
 module.exports = ({
   campgroundId: { url, contractCode, facilityId },
   campingDate,
   lengthOfStay
 }) => {
-  const jar = request.jar()
+  const jar = request.jar();
   const headers = {
-    'User-Agent':
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-    Connection: 'keep-alive'
-  }
+    "User-Agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+    Connection: "keep-alive"
+  };
   const currRequest = request.defaults({
     jar,
     headers,
     followRedirect: true,
     resolveWithFullResponse: true
-  })
+  });
 
   const getOptions = {
     url,
-    method: 'GET'
-  }
+    method: "GET"
+  };
 
   const postOptions = {
-    method: 'POST',
+    method: "POST",
     uri: url,
     form: {
       contractCode,
       parkId: facilityId,
-      siteTypeFilter: 'ALL',
+      siteTypeFilter: "ALL",
       submitSiteForm: true,
-      search: 'site',
+      search: "site",
       lookingFor: 2003,
       campingDate,
       lengthOfStay,
       camping_2003_3012: 4,
-      contractDefaultMaxWindow: 'MS:24,LT:18,GA:24,SC:13,PA:24,LARC:24,CTLN:13',
-      stateDefaultMaxWindow: 'MS:24,GA:24,SC:13,PA:24,CO:24,CA:13'
+      contractDefaultMaxWindow: "MS:24,LT:18,GA:24,SC:13,PA:24,LARC:24,CTLN:13",
+      stateDefaultMaxWindow: "MS:24,GA:24,SC:13,PA:24,CO:24,CA:13"
     }
-  }
+  };
 
   return currRequest(getOptions)
     .then(() => currRequest(postOptions))
-    .catch(console.log)
-}
+    .catch(console.log);
+};

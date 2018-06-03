@@ -24,7 +24,7 @@ const sessionOptions = {
   url: "https://www.reservecalifornia.com/CaliforniaWebHome/Default.aspx"
 };
 
-const searchOptions = {
+const searchOptions = (placeId, facilityId) => ({
   url:
     "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx",
   method: "POST",
@@ -37,9 +37,9 @@ const searchOptions = {
     ctl01$mainContent$btngetFacilitiess: "Hure",
     ctl01$mainContent$hdnCheckListDatalistmode: 1,
     ctl01$mainContent$Hidscreenresolution: 1280,
-    ctl01$mainContent$hdnPlaceid: "3",
+    ctl01$mainContent$hdnPlaceid: placeId,
     ctl01$mainContent$hdnPlaceFacilirySize: "Medium",
-    ctl01$mainContent$hdnFacilityid: 336,
+    ctl01$mainContent$hdnFacilityid: facilityId,
     ctl01$mainContent$hdnFacilityType: 1,
     ctl01$mainContent$hdnNodeclick: 0,
     ctl01$mainContent$hiddenPlaceLevel: "Facility",
@@ -50,9 +50,9 @@ const searchOptions = {
     ctl01$mainContent$TopMenuMainSearch$ddlTopNights: 1,
     ctl01$mainContent$TopMenuMainSearch$ddlSortBy: 3
   }
-};
+});
 
-const gridOptions = {
+const gridOptions = (placeId, facilityId) => ({
   headers: {
     "content-type": "application/json"
   },
@@ -60,13 +60,13 @@ const gridOptions = {
     "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx/GetUnitGridDataHtmlString",
   method: "POST",
   body: {
-    FacilityId: "336",
-    PlaceId: "3",
+    FacilityId: facilityId,
+    PlaceId: placeId,
     MaximumDates: "20",
     IsTablet: true,
     MaximumStayforGrid: 30
   }
-};
+});
 
 const nextDateOptions = {
   headers: {
@@ -105,43 +105,45 @@ var parseAvailable = response =>
       match => match.includes("is_available=true") && !match.includes("valign")
     );
 
-const searchNextRange = async function() {
+const searchNextRange = async function(placeId, facilityId) {
   try {
     const nextDateResponse = await request(nextDateOptions);
-    const gridResponse = await request(gridOptions);
+    const gridResponse = await request(gridOptions(placeId, facilityId));
     return parseAvailable(gridResponse.body.d);
   } catch (e) {
     console.log(e);
   }
 };
 
-const run = async function() {
+const run = async function(placeId, facilityId) {
   try {
     await request(sessionOptions);
-    const searchResponse = await request(searchOptions);
+    const searchResponse = await request(searchOptions(placeId, facilityId));
     const allAvailabilities = from(new Array(9)).pipe(
-      concatMap(() => from(searchNextRange())),
+      concatMap(() => from(searchNextRange(placeId, facilityId))),
       reduce((all, curr) => [...all, ...curr], []),
-      tap(console.log),
       map(availabilitiesArr => {
         return availabilitiesArr.reduce((availabilities, availableSite) => {
           const unit = availableSite.match(/unit_id\=(.*?)\&/)[1];
           const date = availableSite.match(/arrival_date\=(.*?)\s/)[1];
-          const unitDates = availabilities[unit];
-          if (!unitDates) {
-            return { ...availabilities, [unit]: [date] };
-          } else if (unitDates.includes(date)) {
+          const dateUnits = availabilities[date];
+          if (!dateUnits) {
+            // no current availabilites on this date, so add to availabilities obj
+            return { ...availabilities, [date]: [unit] };
+          } else if (dateUnits.includes(unit)) {
+            // duplicate, just return obj
             return availabilities;
           } else {
+            // current availabilities already on this date, add unit to date availabilities array
             return {
               ...availabilities,
-              [unit]: [...availabilities[unit], date]
+              [date]: [...availabilities[date], unit]
             };
           }
         }, {});
       })
     );
-    allAvailabilities.subscribe(val => console.log(val));
+    allAvailabilities.subscribe(val => console.log("results", val));
   } catch (e) {
     console.log(e);
   }

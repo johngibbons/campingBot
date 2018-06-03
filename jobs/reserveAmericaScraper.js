@@ -1,6 +1,6 @@
 const moment = require("moment");
+const { Observable } = require("rx");
 const getUrl = require("../external/getUrl");
-const setDates = require("./setDates");
 const postSearch = require("../external/postSearch");
 const parse = require("./reserveAmericaParser");
 const sendEmails = require("../mailers/mailer");
@@ -9,8 +9,6 @@ const updateFinderResults = require("./updateFinderResults");
 module.exports = reserveAmericaCampsiteFinders$ => {
   const setUrl$ = campsiteFinder =>
     Observable.fromPromise(getUrl(campsiteFinder));
-
-  const setDates$ = campsiteFinder => Observable.from(setDates(campsiteFinder));
 
   const groupResult$ = group => {
     return group.reduce(
@@ -75,31 +73,19 @@ module.exports = reserveAmericaCampsiteFinders$ => {
       return acc;
     }, {});
 
-  const fiveMin = 5 * 60 * 1000;
-
-  const campsiteFinderSearches$ = reserveAmericaCampsiteFinders$
-    .delay(fiveMin)
-    .do(() => console.time("test"))
-    .do(() =>
-      console.log(
-        "Sequence starting at:",
-        moment().format("MMMM Do YYYY, h:mm:ss a")
-      )
-    )
+  const searchResults$ = reserveAmericaCampsiteFinders$
     .concatMap(setUrl$)
-    .concatMap(setDates$);
-
-  const searchResults$ = campsiteFinderSearches$
     .map(value => Observable.just(value).delay(1000))
     .concatAll()
-    .concatMap(campsiteFinderObj =>
-      Observable.fromPromise(postSearch(campsiteFinderObj))
+    .concatMap(campsiteFinderObj => {
+      return Observable.fromPromise(postSearch(campsiteFinderObj))
         .map(parse)
-        .map(result => [campsiteFinderObj, result])
-    )
+        .map(result => [campsiteFinderObj, result]);
+    })
     .groupBy(([campsiteFinderObj, result]) => campsiteFinderObj._id)
     .mergeMap(groupResult$)
     .reduce((acc, curr) => [...acc, curr], [])
+    .tap(val => console.log(val[0].results))
     .repeat();
 
   searchResults$.subscribe(
