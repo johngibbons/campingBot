@@ -17,10 +17,10 @@ module.exports = async reserveCaCampsiteFinders => {
       }
       console.log("RESERVE CA SCRAPE ENDED AT:", new Date());
       console.timeEnd("RESERVE CA");
-      const fiveMinutes = 5 * 60 * 1000;
-      await new Promise(resolve => setTimeout(resolve, fiveMinutes));
     } catch (err) {
       console.log("RESERVE CA SCRAPING ERROR:", err);
     }
+    const fiveMinutes = 5 * 60 * 1000;
+    await new Promise(resolve => setTimeout(resolve, fiveMinutes));
   }
 };

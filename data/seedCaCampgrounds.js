@@ -138,6 +138,8 @@ const insertMany = arr => {
   return from(Campground.insertMany(arr));
 };
 
+const saveCaCampgrounds = async () => {};
+
 const saveCaCampgrounds$ = timer(0, 10).pipe(
   take(1200),
   tap(val => console.log("Getting place id:", val)),

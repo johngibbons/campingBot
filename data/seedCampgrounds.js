@@ -1,6 +1,6 @@
 const Campground = require("../models/campground");
 const { Observable } = require("rx");
-const fs = require("fs");
+const fs = require("fs/promises");
 const xml2js = require("xml2js");
 const parser = new xml2js.Parser();
 const path = require("path");
@@ -31,22 +31,18 @@ const keysMap = {
 const mapToDb = r => pipe(renameKeys(keysMap), addAgency)(r.$);
 const addAgency = obj =>
   Object.assign({}, obj, { reservationAgency: RESERVE_AMERICA });
-const readFile = Observable.fromNodeCallback(fs.readFile);
-const parseString = Observable.fromNodeCallback(parser.parseString);
-const insertMany = data => Observable.fromPromise(Campground.insertMany(data));
-const count = Observable.fromPromise(Campground.count());
 
 // seed campgrounds from xml file
-const seedCampgrounds$ = count
-  .flatMap(() => readFile(path.resolve("data/allCampgrounds.xml"), "utf8"))
-  .flatMap(data => parseString(data))
-  .map(data => data.resultset.result.map(mapToDb))
-  .flatMap(data => insertMany(data))
-  .do(console.log)
-  .finally(() => {
-    Campground.count({ reservationAgency: RESERVE_AMERICA }).then(count =>
-      console.log(`done seeding ${count} American campgrounds`)
-    );
-  });
+const seedCampgrounds = async () => {
+  const data = await fs.readFile(
+    path.resolve("data/allCampgrounds.xml"),
+    "utf8"
+  );
+  const parseString = await parser.parseString(data);
+  const dataForDb = parseString.resultset.result.map(mapToDb);
+  await Campground.insertMany(dataForDb);
+  const count = await Campground.count({ reservationAgency: RESERVE_AMERICA });
+  console.log(`done seeding ${count} American campgrounds`);
+};
 
-module.exports = seedCampgrounds$;
+module.exports = seedCampgrounds;

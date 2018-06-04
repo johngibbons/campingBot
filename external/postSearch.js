@@ -41,7 +41,5 @@ module.exports = ({
     }
   };
 
-  return currRequest(getOptions)
-    .then(() => currRequest(postOptions))
-    .catch(console.log);
+  return currRequest(getOptions).then(() => currRequest(postOptions));
 };

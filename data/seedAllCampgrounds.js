@@ -1,8 +1,10 @@
-const seedAmericaCampgrounds$ = require("./seedCampgrounds");
-const seedCaCampgrounds$ = require("./seedCaCampgrounds");
-const resetCampgrounds$ = require("./resetCampgrounds");
+const seedAmericaCampgrounds = require("./seedCampgrounds");
+const seedCaCampgrounds = require("./seedCaCampgrounds");
+const resetCampgrounds = require("./resetCampgrounds");
 
-module.exports = resetCampgrounds$
-  .concat(seedAmericaCampgrounds$)
-  .concat(seedCaCampgrounds$)
-  .finally("finished ALL seeding").subscribe;
+module.exports = async () => {
+  await resetCampgrounds();
+  await seedAmericaCampgrounds();
+  await seedCaCampgrounds();
+  console.log("finished ALL seeding");
+};

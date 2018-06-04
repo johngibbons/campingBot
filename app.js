@@ -10,7 +10,6 @@ const mongoose = require("mongoose");
 const resetCampsiteFinders = require("./data/resetCampsiteFinders");
 const seedAllCampgrounds = require("./data/seedAllCampgrounds");
 const Campground = require("./models/campground");
-const run = require("./connection_test");
 
 app.set("port", process.env.PORT || 8080);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,7 +34,6 @@ app.listen(app.get("port"), function() {
   console.log("app listening on port", app.get("port"));
 });
 
-// run(3, 336);
+resetCampsiteFinders();
+seedAllCampgrounds();
 campsiteScraper();
-// resetCampsiteFinders();
-// seedAllCampgrounds();

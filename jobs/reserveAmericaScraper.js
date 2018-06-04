@@ -6,101 +6,45 @@ const parse = require("./reserveAmericaParser");
 const sendEmails = require("../mailers/mailer");
 const updateFinderResults = require("./updateFinderResults");
 
-module.exports = reserveAmericaCampsiteFinders$ => {
-  const setUrl$ = campsiteFinder =>
-    Observable.fromPromise(getUrl(campsiteFinder));
-
-  const groupResult$ = group => {
-    return group.reduce(
-      (
-        acc,
-        [
-          {
-            _id,
-            campingDate,
-            emailAddresses,
-            isSendingEmails,
-            lengthOfStay,
-            campgroundId: { facilityName, url }
-          },
-          result
-        ]
-      ) => {
+module.exports = async reserveAmericaCampsiteFinders => {
+  while (true) {
+    try {
+      console.log("STARTING RESERVE AMERICA SCRAPE AT:", new Date());
+      console.time("RESERVE AMERICA");
+      let campsiteFindersToUpdate = {};
+      for (const campsiteFinder of reserveAmericaCampsiteFinders) {
+        const withUrl = await getUrl(campsiteFinder);
+        const result = await postSearch(withUrl);
+        const siteCount = await parse(result);
         const resultObj = {
-          siteCount: result,
-          date: campingDate,
-          lengthOfStay
+          siteCount,
+          lengthOfStay: campsiteFinder.lengthOfStay,
+          date: campsiteFinder.campingDate
         };
-        const results =
-          result > 0
-            ? acc.results
-              ? [...acc.results, resultObj]
-              : [resultObj]
-            : acc.results
-              ? acc.results
-              : [];
-        return Object.assign({}, acc, {
-          _id,
-          campground: facilityName,
-          emailAddresses,
-          isSendingEmails,
-          lengthOfStay,
-          url,
-          results
-        });
-      },
-      {}
-    );
-  };
+        const existingFinderToUpdate =
+          campsiteFindersToUpdate[campsiteFinder._id];
 
-  const groupByEmail = result =>
-    result.reduce((acc, curr) => {
-      if (
-        !curr.isSendingEmails ||
-        !curr.datesAvailable ||
-        curr.datesAvailable.length === 0
-      ) {
-        return acc;
-      }
-      const emailAddresses = curr.emailAddresses;
-      emailAddresses.forEach(e => {
-        if (acc[e]) {
-          acc[e].push(curr);
+        if (existingFinderToUpdate) {
+          existingFinderToUpdate.results.push(resultObj);
         } else {
-          acc[e] = [curr];
+          campsiteFindersToUpdate[campsiteFinder._id] = {
+            ...campsiteFinder,
+            results: [resultObj]
+          };
         }
-      });
-      return acc;
-    }, {});
-
-  const searchResults$ = reserveAmericaCampsiteFinders$
-    .concatMap(setUrl$)
-    .map(value => Observable.just(value).delay(1000))
-    .concatAll()
-    .concatMap(campsiteFinderObj => {
-      return Observable.fromPromise(postSearch(campsiteFinderObj))
-        .map(parse)
-        .map(result => [campsiteFinderObj, result]);
-    })
-    .groupBy(([campsiteFinderObj, result]) => campsiteFinderObj._id)
-    .mergeMap(groupResult$)
-    .reduce((acc, curr) => [...acc, curr], [])
-    .tap(val => console.log(val[0].results))
-    .repeat();
-
-  searchResults$.subscribe(
-    result => {
-      updateFinderResults(result);
-      sendEmails(groupByEmail(result));
-      console.log(
-        "Sequence ended at:",
-        moment().format("MMMM Do YYYY, h:mm:ss a")
-      );
-      console.timeEnd("test");
-    },
-    console.log,
-    () => {
-      console.log("ended somehow");
+      }
+      console.log("TO UPDATE", campsiteFindersToUpdate);
+      for (const toUpdate of campsiteFindersToUpdate) {
+        await updateFinderResults(toUpdate);
+      }
+      console.log("RESERVE AMERICA SCRAPE ENDED AT:", new Date());
+      console.timeEnd("RESERVE AMERICA");
+      const fiveMinutes = 5 * 60 * 1000;
+      await new Promise(resolve => setTimeout(resolve, fiveMinutes));
+    } catch (err) {
+      console.log("RESERVE AMERICA SCRAPING ERROR:", err);
+      const thirtySeconds = 30 * 1000;
+      await new Promise(resolve => setTimeout(resolve, thirtySeconds));
     }
-  );
+  }
 };

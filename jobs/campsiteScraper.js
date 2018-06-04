@@ -19,34 +19,12 @@ module.exports = async () => {
     campsiteFinder =>
       campsiteFinder.campgroundId.reservationAgency === RESERVE_AMERICA
   );
+
   const reserveCaCampsiteFinders = withDates.filter(
     campsiteFinder =>
       campsiteFinder.campgroundId.reservationAgency === RESERVE_CA
   );
 
-  const setDates$ = campsiteFinder => Observable.from(setDates(campsiteFinder));
-
-  const fiveMin = 5 * 60 * 1000;
-
-  const allCampsiteFinders$ = Observable.fromPromise(allCampsiteFinders)
-    .mergeMap(Observable.from)
-    .concatMap(setDates$)
-    .do(() => console.time("test"))
-    .do(() =>
-      console.log(
-        "Sequence starting at:",
-        moment().format("MMMM Do YYYY, h:mm:ss a")
-      )
-    );
-
-  // const reserveAmericaCampsiteFinders$ = allCampsiteFinders$.filter(
-  //   cf => cf.campgroundId.reservationAgency === RESERVE_AMERICA
-  // );
-
-  // const reserveCaCampsiteFinders$ = allCampsiteFinders$.filter(
-  //  cf => cf.campgroundId.reservationAgency === RESERVE_CA
-  // );
-
-  // scrapeReserveAmerica(reserveAmericaCampsiteFinders$);
+  scrapeReserveAmerica(reserveAmericaCampsiteFinders);
   scrapeReserveCa(reserveCaCampsiteFinders);
 };

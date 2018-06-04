@@ -1,6 +1,6 @@
-const Campground = require('../models/campground')
-const { Observable } = require('rx')
+const Campground = require("../models/campground");
 
-module.exports = Observable.fromPromise(Campground.remove({})).finally(() =>
-  console.log('successfully deleted campgrounds')
-)
+module.exports = async () => {
+  await Campground.remove({});
+  console.log("successfully deleted campgrounds");
+};
