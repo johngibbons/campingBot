@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
-const Campground = mongoose.model("Campgrounds");
-const { RESERVE_AMERICA, RESERVE_CA } = require("../constants");
+const mongoose = require('mongoose');
+const Campground = mongoose.model('Campgrounds');
+const { RESERVE_AMERICA, RESERVE_CA } = require('../constants');
 
 exports.searchCampgrounds = async (req, res) => {
   try {
     const campgrounds = await Campground.find({
-      facilityName: { $regex: `${req.query.q}`, $options: "i" }
+      facilityName: { $regex: `${req.query.q}`, $options: 'i' }
     });
 
     return res.json(campgrounds);

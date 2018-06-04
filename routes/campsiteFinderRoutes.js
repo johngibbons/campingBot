@@ -4,15 +4,15 @@ module.exports = app => {
     createCampsiteFinder,
     updateCampsiteFinder,
     deleteCampsiteFinder
-  } = require('../controllers/campsiteFindersController')
+  } = require('../controllers/campsiteFindersController');
 
   app
     .route('/campsite-finders')
     .get(listAllCampsiteFinders)
-    .post(createCampsiteFinder)
+    .post(createCampsiteFinder);
 
   app
     .route('/campsite-finders/:id')
     .put(updateCampsiteFinder)
-    .delete(deleteCampsiteFinder)
-}
+    .delete(deleteCampsiteFinder);
+};

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const CampgroundSchema = new Schema({
   agencyIcon: {
@@ -70,11 +70,11 @@ const CampgroundSchema = new Schema({
     type: Date,
     default: Date.now
   }
-})
+});
 
-CampgroundSchema.index({ facilityName: 'text' })
-CampgroundSchema.pre('update', function () {
-  this.update({}, { $set: { updatedAt: new Date() } })
-})
+CampgroundSchema.index({ facilityName: 'text' });
+CampgroundSchema.pre('update', function() {
+  this.update({}, { $set: { updatedAt: new Date() } });
+});
 
-module.exports = mongoose.model('Campgrounds', CampgroundSchema)
+module.exports = mongoose.model('Campgrounds', CampgroundSchema);

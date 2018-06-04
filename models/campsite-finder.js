@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CampsiteFinderSchema = new Schema({
   campgroundId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Campgrounds"
+    ref: 'Campgrounds'
   },
   createdAt: {
     type: Date,
@@ -30,8 +30,8 @@ const CampsiteFinderSchema = new Schema({
   datesAvailable: [{}],
   dateOption: {
     type: String,
-    enum: ["NEXT_SIX_MONTHS", "SPECIFIC_DATES"],
-    default: "NEXT_SIX_MONTHS"
+    enum: ['NEXT_SIX_MONTHS', 'SPECIFIC_DATES'],
+    default: 'NEXT_SIX_MONTHS'
   },
   siteCode: {
     type: String
@@ -49,17 +49,17 @@ const CampsiteFinderSchema = new Schema({
   }
 });
 
-CampsiteFinderSchema.pre("findOneAndUpdate", function() {
+CampsiteFinderSchema.pre('findOneAndUpdate', function() {
   this.update({}, { $set: { updatedAt: new Date() } });
 });
 
-CampsiteFinderSchema.post("findOneAndUpdate", result => {
+CampsiteFinderSchema.post('findOneAndUpdate', result => {
   // update scraping settings here
 });
 
-CampsiteFinderSchema.post("save", (doc, next) => {
+CampsiteFinderSchema.post('save', (doc, next) => {
   // start scraping loop here
   next();
 });
 
-module.exports = mongoose.model("CampsiteFinders", CampsiteFinderSchema);
+module.exports = mongoose.model('CampsiteFinders', CampsiteFinderSchema);

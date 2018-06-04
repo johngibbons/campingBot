@@ -1,7 +1,7 @@
-const scrapeIt = require('scrape-it')
+const scrapeIt = require('scrape-it');
 
 module.exports = response => {
-  if (!response) return 0
+  if (!response) return 0;
   const data = scrapeIt.scrapeHTML(response.body, {
     campsites: {
       listItem: '#shoppingitems tr',
@@ -16,15 +16,15 @@ module.exports = response => {
         }
       }
     }
-  })
+  });
 
   const avail = data.campsites.filter(
     ({ availIcon, unavailIcon, bookNowButton, adaIcon, bookNext }) => {
       return (
         !!bookNowButton && !!availIcon && !unavailIcon && !adaIcon && !bookNext
-      )
+      );
     }
-  )
+  );
 
-  return avail.length
-}
+  return avail.length;
+};

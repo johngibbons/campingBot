@@ -1,23 +1,15 @@
-const Campground = require("../models/campground");
-const request = require("request-promise-native");
-const { Maybe } = require("monet");
-const { from } = require("rxjs/observable/from");
-const { timer } = require("rxjs/observable/timer");
-const { take, map, flatMap, tap, finalize } = require("rxjs/operators");
-const {
-  RESERVE_CA,
-  RESERVE_AMERICA,
-  URL_RESERVE_CA,
-  USER_AGENT
-} = require("../constants");
+const Campground = require('../models/campground');
+const request = require('request-promise-native');
+const { Maybe } = require('monet');
+const { RESERVE_CA, URL_RESERVE_CA, USER_AGENT } = require('../constants');
 
 const getSession = req => req({ url: URL_RESERVE_CA });
 
 const requester = placeId => {
   const jar = request.jar();
   const headers = {
-    "user-agent": USER_AGENT,
-    "content-type": "application/json"
+    'user-agent': USER_AGENT,
+    'content-type': 'application/json'
   };
   const req = request.defaults({
     jar,
@@ -32,34 +24,34 @@ const requester = placeId => {
 
   const body = {
     googlePlaceSearchParameters: {
-      Latitude: "39.6481399536133",
-      Longitude: "-123.617057800293",
+      Latitude: '39.6481399536133',
+      Longitude: '-123.617057800293',
       Filter: true,
-      BackToHome: "",
+      BackToHome: '',
       ChangeDragandZoom: false,
       BacktoFacility: true,
       ChooseActivity: null,
       IsFilterClick: false,
       AvailabilitySearchParams: {
         RegionId: 0,
-        PlaceId: ["0"],
+        PlaceId: ['0'],
         FacilityId: 0,
-        StartDate: "11/15/2017",
-        Nights: "1",
-        CategoryId: "0",
+        StartDate: '11/15/2017',
+        Nights: '1',
+        CategoryId: '0',
         UnitTypeIds: [],
         ShowOnlyAdaUnits: false,
-        ShowOnlyTentSiteUnits: "false",
-        ShowOnlyRvSiteUnits: "false",
-        MinimumVehicleLength: "0",
+        ShowOnlyTentSiteUnits: 'false',
+        ShowOnlyRvSiteUnits: 'false',
+        MinimumVehicleLength: '0',
         PageIndex: 0,
         PageSize: 20,
         Page1: 20,
         NoOfRecords: 100,
-        ShowSiteUnitsName: "0",
+        ShowSiteUnitsName: '0',
         ParkFinder: [],
         ParkCategory: 8,
-        ChooseActivity: "1",
+        ChooseActivity: '1',
         IsPremium: false
       },
       IsFacilityLevel: false,
@@ -76,7 +68,7 @@ const requester = placeId => {
 
   return getSession(req)
     .then(() => req.post(options))
-    .catch(reason => console.log("post failed for reason:", reason));
+    .catch(reason => console.log('post failed for reason:', reason));
 };
 
 function parseFacilities(place) {
@@ -90,8 +82,6 @@ function parseFacilities(place) {
 
   return JsonFacilityInfos.map(
     ({
-      FacilityImage,
-      FacilityName,
       PlaceId,
       FacilityId,
       FacilityCategory,
@@ -116,48 +106,41 @@ function parseFacilities(place) {
 
 const handleResponse = response => {
   return Maybe.fromNull(response)
-    .flatMap(response => Maybe.fromNull(response.body.d.ListJsonPlaceInfos))
+    .flatMap(maybeResponse =>
+      Maybe.fromNull(maybeResponse.body.d.ListJsonPlaceInfos)
+    )
     .flatMap(placeInfos => {
-      console.log("placeInfos", placeInfos);
+      console.log('placeInfos', placeInfos);
       return Maybe.fromNull(placeInfos[0]);
     })
     .map(parseFacilities)
     .map(x => {
-      console.log("val is", x);
+      console.log('val is', x);
       return x;
     })
     .orSome([]);
 };
 
-const saveFacility$ = placeId => {
-  return from(requester(placeId));
+const saveFacility = placeId => {
+  return requester(placeId);
 };
 
 const insertMany = arr => {
-  console.log("INSERT_MANY_ARR", arr);
-  return from(Campground.insertMany(arr));
+  console.log('INSERT_MANY_ARR', arr);
+  if (arr.length) {
+    Campground.insertMany(arr);
+  }
 };
 
-const saveCaCampgrounds = async () => {};
+const saveCaCampgrounds = async () => {
+  /* eslint-disable no-await-in-loop */
+  for (let i = 0; i < 20000; i += 1) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const response = await saveFacility(i);
+    const result = handleResponse(response);
+    await insertMany(result);
+  }
+  /* eslint-enable no-await-in-loop */
+};
 
-const saveCaCampgrounds$ = timer(0, 10).pipe(
-  take(1200),
-  tap(val => console.log("Getting place id:", val)),
-  flatMap(saveFacility$),
-  map(handleResponse),
-  tap(result => console.log("getting here 2", result)),
-  flatMap(insertMany),
-  tap(val => console.log("Inserted:", val)),
-  finalize(() => {
-    Campground.count({ reservationAgency: RESERVE_CA })
-      .then(count =>
-        console.log(`done seeding ${count} California campgrounds`)
-      )
-      .then(() => Campground.count({ reservationAgency: RESERVE_AMERICA }))
-      .then(count => console.log(`done seeding ${count} American campgrounds`))
-      .then(() => Campground.count({}))
-      .then(count => console.log(`done seeding ${count} total campgrounds`));
-  })
-);
-
-module.exports = saveCaCampgrounds$;
+module.exports = saveCaCampgrounds;

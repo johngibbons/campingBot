@@ -1,10 +1,10 @@
-const rp = require("request-promise-native");
-const { from } = require("rxjs/observable/from");
-const { delay, concatMap, map, reduce, tap } = require("rxjs/operators");
+const rp = require('request-promise-native');
+const { from } = require('rxjs/observable/from');
+const { delay, concatMap, map, reduce, tap } = require('rxjs/operators');
 
 const headers = {
-  "user-agent":
-    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.32 Safari/537.36"
+  'user-agent':
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.32 Safari/537.36'
 };
 
 const jar = rp.jar();
@@ -21,32 +21,32 @@ const request = rp.defaults({
 });
 
 const sessionOptions = {
-  url: "https://www.reservecalifornia.com/CaliforniaWebHome/Default.aspx"
+  url: 'https://www.reservecalifornia.com/CaliforniaWebHome/Default.aspx'
 };
 
 const searchOptions = (placeId, facilityId) => ({
   url:
-    "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx",
-  method: "POST",
+    'https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx',
+  method: 'POST',
   body: {
-    ctl01$AdvanceMainSearch$hdnArrivalDate: "03/14/2018",
-    ctl01$AdvanceMainSearch$txtArrivalDate: "03/14/2018",
+    ctl01$AdvanceMainSearch$hdnArrivalDate: '03/14/2018',
+    ctl01$AdvanceMainSearch$txtArrivalDate: '03/14/2018',
     ctl01$AdvanceMainSearch$hdnNights: 1,
     ctl01$AdvanceMainSearch$ddlNights: 1,
     ctl01$mainContent$hdnUnitTotalDay: 6,
-    ctl01$mainContent$btngetFacilitiess: "Hure",
+    ctl01$mainContent$btngetFacilitiess: 'Hure',
     ctl01$mainContent$hdnCheckListDatalistmode: 1,
     ctl01$mainContent$Hidscreenresolution: 1280,
     ctl01$mainContent$hdnPlaceid: placeId,
-    ctl01$mainContent$hdnPlaceFacilirySize: "Medium",
+    ctl01$mainContent$hdnPlaceFacilirySize: 'Medium',
     ctl01$mainContent$hdnFacilityid: facilityId,
     ctl01$mainContent$hdnFacilityType: 1,
     ctl01$mainContent$hdnNodeclick: 0,
-    ctl01$mainContent$hiddenPlaceLevel: "Facility",
-    ctl01$mainContent$txtDateRange: "11/28/2017",
+    ctl01$mainContent$hiddenPlaceLevel: 'Facility',
+    ctl01$mainContent$txtDateRange: '11/28/2017',
     ctl01$mainContent$Grid_ddlNights: 1,
     ctl01$mainContent$TopMenuMainSearch$ddlFacilityCategory: 1,
-    ctl01$mainContent$TopMenuMainSearch$txtTopArrivalDate: "03/14/2018",
+    ctl01$mainContent$TopMenuMainSearch$txtTopArrivalDate: '03/14/2018',
     ctl01$mainContent$TopMenuMainSearch$ddlTopNights: 1,
     ctl01$mainContent$TopMenuMainSearch$ddlSortBy: 3
   }
@@ -54,15 +54,15 @@ const searchOptions = (placeId, facilityId) => ({
 
 const gridOptions = (placeId, facilityId) => ({
   headers: {
-    "content-type": "application/json"
+    'content-type': 'application/json'
   },
   url:
-    "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx/GetUnitGridDataHtmlString",
-  method: "POST",
+    'https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx/GetUnitGridDataHtmlString',
+  method: 'POST',
   body: {
     FacilityId: facilityId,
     PlaceId: placeId,
-    MaximumDates: "20",
+    MaximumDates: '20',
     IsTablet: true,
     MaximumStayforGrid: 30
   }
@@ -70,11 +70,11 @@ const gridOptions = (placeId, facilityId) => ({
 
 const nextDateOptions = {
   headers: {
-    "content-type": "application/json"
+    'content-type': 'application/json'
   },
   url:
-    "https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx/GetNextDateUnitGrid",
-  method: "POST",
+    'https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx/GetNextDateUnitGrid',
+  method: 'POST',
   body: {
     unitsizebool: true,
     unitclicsizechangevalue: true
@@ -102,7 +102,7 @@ var parseAvailable = response =>
   response
     .match(regexp)
     .filter(
-      match => match.includes("is_available=true") && !match.includes("valign")
+      match => match.includes('is_available=true') && !match.includes('valign')
     );
 
 const searchNextRange = async function(placeId, facilityId) {
@@ -143,7 +143,7 @@ const run = async function(placeId, facilityId) {
         }, {});
       })
     );
-    allAvailabilities.subscribe(val => console.log("results", val));
+    allAvailabilities.subscribe(val => console.log('results', val));
   } catch (e) {
     console.log(e);
   }

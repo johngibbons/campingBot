@@ -1,5 +1,5 @@
 module.exports = app => {
-  const { searchCampgrounds } = require('../controllers/campgroundsController')
+  const { searchCampgrounds } = require('../controllers/campgroundsController');
 
-  app.route('/campgrounds').get(searchCampgrounds)
-}
+  app.route('/campgrounds').get(searchCampgrounds);
+};
