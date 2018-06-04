@@ -6,10 +6,23 @@ const scrapeReserveAmerica = require("./reserveAmericaScraper");
 const scrapeReserveCa = require("./reserveCaScraper");
 const setDates = require("./setDates");
 
-module.exports = () => {
-  const allCampsiteFinders = CampsiteFinder.find({
+module.exports = async () => {
+  const allCampsiteFinders = await CampsiteFinder.find({
     isActive: true
   }).populate("campgroundId");
+
+  const withDates = allCampsiteFinders
+    .map(campsiteFinder => setDates(campsiteFinder))
+    .reduce((acc, curr) => [...acc, ...curr], []);
+
+  const reserveAmericaCampsiteFinders = withDates.filter(
+    campsiteFinder =>
+      campsiteFinder.campgroundId.reservationAgency === RESERVE_AMERICA
+  );
+  const reserveCaCampsiteFinders = withDates.filter(
+    campsiteFinder =>
+      campsiteFinder.campgroundId.reservationAgency === RESERVE_CA
+  );
 
   const setDates$ = campsiteFinder => Observable.from(setDates(campsiteFinder));
 
@@ -26,14 +39,14 @@ module.exports = () => {
       )
     );
 
-  const reserveAmericaCampsiteFinders$ = allCampsiteFinders$.filter(
-    cf => cf.campgroundId.reservationAgency === RESERVE_AMERICA
-  );
+  // const reserveAmericaCampsiteFinders$ = allCampsiteFinders$.filter(
+  //   cf => cf.campgroundId.reservationAgency === RESERVE_AMERICA
+  // );
 
-  const reserveCaCampsiteFinders$ = allCampsiteFinders$.filter(
-    cf => cf.campgroundId.reservationAgency === RESERVE_CA
-  );
+  // const reserveCaCampsiteFinders$ = allCampsiteFinders$.filter(
+  //  cf => cf.campgroundId.reservationAgency === RESERVE_CA
+  // );
 
-  scrapeReserveAmerica(reserveAmericaCampsiteFinders$);
-  scrapeReserveCa(reserveCaCampsiteFinders$);
+  // scrapeReserveAmerica(reserveAmericaCampsiteFinders$);
+  scrapeReserveCa(reserveCaCampsiteFinders);
 };

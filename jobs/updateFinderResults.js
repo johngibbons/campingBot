@@ -3,7 +3,6 @@ const moment = require("moment");
 
 module.exports = results => {
   results.map(campsiteFinder => {
-    console.log("updating campsiteFinder", campsiteFinder);
     CampsiteFinder.findOneAndUpdate(
       { _id: campsiteFinder._id },
       {
@@ -11,8 +10,6 @@ module.exports = results => {
         lastCheckedAt: moment()
       },
       { new: true }
-    )
-      .then(c => console.log(c))
-      .catch(err => console.log(err));
+    ).catch(err => console.log(err));
   });
 };
