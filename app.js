@@ -3,12 +3,15 @@ require('newrelic');
 const express = require('express');
 
 const app = express();
-const url = process.env.MONGODB_URI;
+const mongoUrl = process.env.MONGODB_URI;
 const bodyParser = require('body-parser');
 const campsiteScraper = require('./jobs/campsiteScraper');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const seedAllCampgrounds = require('./data/seedAllCampgrounds');
+const resetCampsiteFinders = require('./data/resetCampsiteFinders');
+const { timer } = require('rxjs/observable/timer');
+const { take, map, flatMap, tap, finalize } = require('rxjs/operators');
 
 app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,7 +22,7 @@ app.use(cors());
 mongoose.Promise = global.Promise;
 
 mongoose.connect(
-  url,
+  mongoUrl,
   { useMongoClient: true }
 );
 
@@ -36,6 +39,10 @@ app.listen(app.get('port'), () => {
   console.log('app listening on port', app.get('port'));
 });
 
+timer(0, 10)
+  .pipe(take(1200))
+  .subscribe(x => console.log(x));
+
 // resetCampsiteFinders();
-seedAllCampgrounds();
+// seedAllCampgrounds();
 campsiteScraper();

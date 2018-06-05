@@ -96,25 +96,22 @@ const nextDateOptions = {
 // \u0026#39;
 // );\"
 
-var regexp = /UnitDetailPopup(.*?)#39/gi;
-var parseAvailable = response => {
-  const matches = response.match(regexp);
-  if (matches) {
-    return matches.filter(
-      match => match.includes('is_available=true') && !match.includes('valign')
-    );
-  } else {
-    return [];
-  }
+const regexp = /UnitDetailPopup(.*?)#39/gi;
+const parseAvailable = (response = '') => {
+  const matches = response.match(regexp) || [];
+  return matches.filter(
+    match => match.includes('is_available=true') && !match.includes('valign')
+  );
 };
 
-const searchNextRange = async function(placeId, facilityId) {
+const searchNextRange = async (placeId, facilityId) => {
   try {
-    const nextDateResponse = await request(nextDateOptions);
+    await request(nextDateOptions);
     const gridResponse = await request(gridOptions(placeId, facilityId));
     return parseAvailable(gridResponse.body.d);
   } catch (e) {
     console.log(e);
+    return [];
   }
 };
 
@@ -122,26 +119,24 @@ const hasAllRequestedDates = (requested, available) =>
   requested.every(requestedDate => available.indexOf(requestedDate) > -1);
 
 const buildAvailabilitiesArray = async (placeId, facilityId) => {
-  let availabilitiesArr = [];
-  const rangesToSearch = new Array(9).fill('');
+  const availabilitiesArr = [];
+  let rangesToSearch = 9;
 
-  for (range in rangesToSearch) {
+  while (rangesToSearch > 0) {
+    /* eslint-disable no-await-in-loop */
     const nextResult = await searchNextRange(placeId, facilityId);
-    if (nextResult) {
-      availabilitiesArr.push(...nextResult);
-    }
+    availabilitiesArr.push(...nextResult);
+    rangesToSearch -= 1;
+    /* eslint-enable no-await-in-loop */
   }
 
   return availabilitiesArr;
 };
 
-const run = async function(campgroundFinder) {
-  const placeId = campgroundFinder.campgroundId.placeId;
-  const facilityId = campgroundFinder.campgroundId.facilityId;
-  const allDates = campgroundFinder.allDates;
+const run = async ({ campgroundId: { placeId, facilityId }, allDates }) => {
   try {
     await request(sessionOptions);
-    const searchResponse = await request(searchOptions(placeId, facilityId));
+    await request(searchOptions(placeId, facilityId));
     const availabilitiesArr = await buildAvailabilitiesArray(
       placeId,
       facilityId
@@ -149,8 +144,8 @@ const run = async function(campgroundFinder) {
 
     const availableDatesByUnit = availabilitiesArr.reduce(
       (availabilities, availableSite) => {
-        const unit = availableSite.match(/unit_id\=(.*?)\&/)[1];
-        const date = availableSite.match(/arrival_date\=(.*?)\s/)[1];
+        const unit = availableSite.match(/unit_id=(.*?)&/)[1];
+        const date = availableSite.match(/arrival_date=(.*?)\s/)[1];
         const formattedDate = formatted(date);
         const unitDates = availabilities[unit];
         if (!unitDates) {
@@ -159,13 +154,12 @@ const run = async function(campgroundFinder) {
         } else if (unitDates.includes(formattedDate)) {
           // duplicate, just return obj
           return availabilities;
-        } else {
-          // previous availabilities already on this unit, add date to unit availabilities array
-          return {
-            ...availabilities,
-            [unit]: [...availabilities[unit], formattedDate]
-          };
         }
+        // previous availabilities already on this unit, add date to unit availabilities array
+        return {
+          ...availabilities,
+          [unit]: [...availabilities[unit], formattedDate]
+        };
       },
       {}
     );

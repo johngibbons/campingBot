@@ -134,7 +134,7 @@ const insertMany = arr => {
 
 const saveCaCampgrounds = async () => {
   /* eslint-disable no-await-in-loop */
-  for (let i = 0; i < 20000; i += 1) {
+  for (let i = 0; i < 1200; i += 1) {
     await new Promise(resolve => setTimeout(resolve, 100));
     const response = await saveFacility(i);
     const result = handleResponse(response);

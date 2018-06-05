@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
+
 const Campground = mongoose.model('Campgrounds');
-const { RESERVE_AMERICA, RESERVE_CA } = require('../constants');
 
 exports.searchCampgrounds = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ exports.searchCampgrounds = async (req, res) => {
       facilityName: { $regex: `${req.query.q}`, $options: 'i' }
     });
 
-    return res.json(campgrounds);
+    res.json(campgrounds);
 
     /*
     const uniqueCampgrounds = campgrounds.reduce((acc, campground) => {
