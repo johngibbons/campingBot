@@ -1,5 +1,3 @@
-const moment = require('moment');
-const { Observable } = require('rx');
 const getUrl = require('../external/getUrl');
 const postSearch = require('../external/postSearch');
 const parse = require('./reserveAmericaParser');
@@ -10,29 +8,32 @@ module.exports = async reserveAmericaCampsiteFinders => {
   try {
     console.log('STARTING RESERVE AMERICA SCRAPE AT:', new Date());
     console.time('RESERVE AMERICA');
-    let campsiteFindersToUpdate = {};
+    const campsiteFindersToUpdate = {};
+    /* eslint-disable-next-line no-restricted-syntax */
     for (const campsiteFinder of reserveAmericaCampsiteFinders) {
       const withUrl = await getUrl(campsiteFinder);
       const result = await postSearch(withUrl);
       const siteCount = await parse(result);
-      const resultObj = {
-        siteCount,
-        lengthOfStay: campsiteFinder.lengthOfStay,
-        date: campsiteFinder.campingDate
-      };
-      const existingFinderToUpdate =
-        campsiteFindersToUpdate[campsiteFinder._id];
-
-      if (existingFinderToUpdate) {
-        existingFinderToUpdate.results.push(resultObj);
-      } else {
-        campsiteFindersToUpdate[campsiteFinder._id] = {
-          ...campsiteFinder,
-          results: [resultObj]
+      if (siteCount > 0) {
+        const resultObj = {
+          siteCount,
+          lengthOfStay: campsiteFinder.lengthOfStay,
+          date: campsiteFinder.campingDate
         };
+        const existingFinderToUpdate =
+          campsiteFindersToUpdate[campsiteFinder._id];
+
+        if (existingFinderToUpdate) {
+          existingFinderToUpdate.results.push(resultObj);
+        } else {
+          campsiteFindersToUpdate[campsiteFinder._id] = {
+            ...campsiteFinder,
+            results: [resultObj]
+          };
+        }
       }
     }
-    console.log('TO UPDATE', campsiteFindersToUpdate);
+    /* eslint-disable-next-line no-restricted-syntax */
     for (const toUpdate of Object.values(campsiteFindersToUpdate)) {
       await updateFinderResults(toUpdate);
     }

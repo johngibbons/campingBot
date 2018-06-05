@@ -5,7 +5,6 @@ const scrapeReserveCa = require('./reserveCaScraper');
 const setDates = require('./setDates');
 
 module.exports = async () => {
-  /* eslint-disable no-await-in-loop */
   while (true) {
     const allCampsiteFinders = await CampsiteFinder.find({
       isActive: true
@@ -32,5 +31,4 @@ module.exports = async () => {
     const fiveMinutes = 5 * 60 * 100;
     await new Promise(resolve => setTimeout(resolve, fiveMinutes));
   }
-  /* eslint-enable no-await-in-loop */
 };

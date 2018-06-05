@@ -2,6 +2,7 @@ module.exports = {
   extends: ['airbnb-base', 'prettier'],
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': 'error'
+    'prettier/prettier': 'error',
+    'no-await-in-loop': 'off'
   }
 };

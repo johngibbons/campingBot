@@ -1,12 +1,13 @@
 const request = require('request-promise-native');
 const Campground = require('../models/campground');
 
-module.exports = campsiteFinder => {
+module.exports = async campsiteFinder => {
   const campground = campsiteFinder.campgroundId;
-  console.log('campground', campground);
+
   if (campground.url && campground.url.includes('camping')) {
-    return new Promise((resolve, reject) => resolve(campsiteFinder));
+    return new Promise(resolve => resolve(campsiteFinder));
   }
+
   const jar = request.jar();
   const headers = {
     'User-Agent':
@@ -27,16 +28,13 @@ module.exports = campsiteFinder => {
     }&parkId=${campground.facilityId}`
   };
 
-  return currRequest(getOptions)
-    .then(res => {
-      return Campground.findOneAndUpdate(
-        { _id: campground._id },
-        { url: res.request.headers.referer },
-        { new: true }
-      );
-    })
-    .then(campground => {
-      campsiteFinder.campgroundId = campground;
-      return campsiteFinder;
-    });
+  const res = await currRequest(getOptions);
+  const updatedCampground = await Campground.findOneAndUpdate(
+    // eslint-disable-next-line no-underscore-dangle
+    { _id: campground._id },
+    { url: res.request.uri.href },
+    { new: true }
+  );
+
+  return { ...campsiteFinder, campgroundId: updatedCampground };
 };

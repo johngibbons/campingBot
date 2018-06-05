@@ -108,6 +108,12 @@ const searchNextRange = async (placeId, facilityId) => {
   try {
     await request(nextDateOptions);
     const gridResponse = await request(gridOptions(placeId, facilityId));
+    if (!gridResponse.body.d) {
+      console.log(
+        'CA search did not return proper response, it was:',
+        gridResponse.body
+      );
+    }
     return parseAvailable(gridResponse.body.d);
   } catch (e) {
     console.log(e);
@@ -123,11 +129,9 @@ const buildAvailabilitiesArray = async (placeId, facilityId) => {
   let rangesToSearch = 9;
 
   while (rangesToSearch > 0) {
-    /* eslint-disable no-await-in-loop */
     const nextResult = await searchNextRange(placeId, facilityId);
     availabilitiesArr.push(...nextResult);
     rangesToSearch -= 1;
-    /* eslint-enable no-await-in-loop */
   }
 
   return availabilitiesArr;

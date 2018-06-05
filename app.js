@@ -10,8 +10,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const seedAllCampgrounds = require('./data/seedAllCampgrounds');
 const resetCampsiteFinders = require('./data/resetCampsiteFinders');
-const { timer } = require('rxjs/observable/timer');
-const { take, map, flatMap, tap, finalize } = require('rxjs/operators');
 
 app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,10 +36,6 @@ campgroundRoutes(app);
 app.listen(app.get('port'), () => {
   console.log('app listening on port', app.get('port'));
 });
-
-timer(0, 10)
-  .pipe(take(1200))
-  .subscribe(x => console.log(x));
 
 // resetCampsiteFinders();
 // seedAllCampgrounds();

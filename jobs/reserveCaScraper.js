@@ -1,4 +1,3 @@
-const { Observable } = require('rx');
 const postSearch = require('../external/caSearch');
 const updateFinderResults = require('./updateFinderResults');
 
@@ -6,13 +5,14 @@ module.exports = async reserveCaCampsiteFinders => {
   try {
     console.log('STARTING RESERVE CA SCRAPE AT:', new Date());
     console.time('RESERVE CA');
+    /* eslint-disable-next-line */
     for (const campsiteFinder of reserveCaCampsiteFinders) {
       const availabilities = await postSearch(campsiteFinder);
       const updatedFinder = {
         ...campsiteFinder,
         results: availabilities
       };
-      await updateFinderResults([updatedFinder]);
+      await updateFinderResults(updatedFinder);
     }
     console.log('RESERVE CA SCRAPE ENDED AT:', new Date());
     console.timeEnd('RESERVE CA');
