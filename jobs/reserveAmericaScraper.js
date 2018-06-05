@@ -14,23 +14,22 @@ module.exports = async reserveAmericaCampsiteFinders => {
       const withUrl = await getUrl(campsiteFinder);
       const result = await postSearch(withUrl);
       const siteCount = await parse(result);
+
+      if (!campsiteFindersToUpdate[campsiteFinder._id]) {
+        campsiteFindersToUpdate[campsiteFinder._id] = {
+          ...campsiteFinder,
+          results: []
+        };
+      }
+
       if (siteCount > 0) {
         const resultObj = {
           siteCount,
           lengthOfStay: campsiteFinder.lengthOfStay,
           date: campsiteFinder.campingDate
         };
-        const existingFinderToUpdate =
-          campsiteFindersToUpdate[campsiteFinder._id];
 
-        if (existingFinderToUpdate) {
-          existingFinderToUpdate.results.push(resultObj);
-        } else {
-          campsiteFindersToUpdate[campsiteFinder._id] = {
-            ...campsiteFinder,
-            results: [resultObj]
-          };
-        }
+        campsiteFindersToUpdate[campsiteFinder._id].results.push(resultObj);
       }
     }
     /* eslint-disable-next-line no-restricted-syntax */

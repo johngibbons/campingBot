@@ -28,7 +28,7 @@ module.exports = async () => {
       scrapeReserveAmerica(reserveAmericaCampsiteFinders),
       scrapeReserveCa(reserveCaCampsiteFinders)
     ]);
-    const fiveMinutes = 5 * 60 * 100;
+    const fiveMinutes = 5 * 60 * 1000;
     await new Promise(resolve => setTimeout(resolve, fiveMinutes));
   }
 };
