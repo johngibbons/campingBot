@@ -2,8 +2,15 @@ const Campground = require('../models/campground');
 const request = require('request-promise-native');
 const { Maybe } = require('monet');
 const { RESERVE_CA, URL_RESERVE_CA, USER_AGENT } = require('../constants');
+const fs = require('fs');
+const util = require('util');
+
+const writeFile = util.promisify(fs.writeFile);
+const readFile = util.promisify(fs.readFile);
 
 const getSession = req => req({ url: URL_RESERVE_CA });
+
+let allCampgrounds = [];
 
 const requester = placeId => {
   const jar = request.jar();
@@ -72,6 +79,7 @@ const requester = placeId => {
 };
 
 function parseFacilities(place) {
+  console.log('place is:', place);
   const {
     DisplayName,
     PlaceinfoUrl,
@@ -84,6 +92,7 @@ function parseFacilities(place) {
     ({
       PlaceId,
       FacilityId,
+      FacilityName,
       FacilityCategory,
       FacilityBoundryLatitude,
       FacilityBoundryLongitude
@@ -95,7 +104,7 @@ function parseFacilities(place) {
       placeDescription: Fulldescription,
       placePhoto: ImageUrl,
       facilityPhoto: ImageUrl,
-      facilityName: DisplayName,
+      facilityName: FacilityName,
       facilityId: FacilityId,
       facilityCategory: FacilityCategory,
       latitude: FacilityBoundryLatitude,
@@ -110,14 +119,9 @@ const handleResponse = response => {
       Maybe.fromNull(maybeResponse.body.d.ListJsonPlaceInfos)
     )
     .flatMap(placeInfos => {
-      console.log('placeInfos', placeInfos);
       return Maybe.fromNull(placeInfos[0]);
     })
     .map(parseFacilities)
-    .map(x => {
-      console.log('val is', x);
-      return x;
-    })
     .orSome([]);
 };
 
@@ -128,16 +132,35 @@ const saveFacility = placeId => {
 const insertMany = arr => {
   console.log('INSERT_MANY_ARR', arr);
   if (arr.length) {
+    allCampgrounds = [...allCampgrounds, ...arr];
     Campground.insertMany(arr);
   }
 };
 
 const saveCaCampgrounds = async () => {
-  for (let i = 0; i < 1200; i += 1) {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    const response = await saveFacility(i);
-    const result = handleResponse(response);
-    await insertMany(result);
+  let fileExists;
+  let data;
+
+  try {
+    data = await readFile('caCampgrounds.json', 'utf8');
+  } catch {
+    console.log('no caCampgrounds, need to scrape');
+  }
+
+  if (data) {
+    // json file exists, just write it to db
+    const parsed = JSON.parse(data);
+    await insertMany(parsed);
+  } else {
+    // need to scrape data
+    for (let i = 0; i < 1200; i += 1) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const response = await saveFacility(i);
+      const result = handleResponse(response);
+      await insertMany(result);
+    }
+    const allCampgroundsJson = JSON.stringify(allCampgrounds);
+    await writeFile('caCampgrounds.json', allCampgroundsJson, 'utf8');
   }
 };
 

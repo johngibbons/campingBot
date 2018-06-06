@@ -5,7 +5,7 @@ const Campground = mongoose.model('Campgrounds');
 exports.searchCampgrounds = async (req, res) => {
   try {
     const campgrounds = await Campground.find({
-      facilityName: { $regex: `${req.query.q}`, $options: 'i' }
+      placeName: { $regex: `${req.query.q}`, $options: 'i' }
     });
 
     res.json(campgrounds);

@@ -38,5 +38,5 @@ app.listen(app.get('port'), () => {
 });
 
 // resetCampsiteFinders();
-// seedAllCampgrounds();
+seedAllCampgrounds();
 campsiteScraper();

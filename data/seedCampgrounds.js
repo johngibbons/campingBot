@@ -25,6 +25,7 @@ const renameKeys = curry((keysMap, obj) =>
 );
 
 const keysMap = {
+  facilityName: 'placeName',
   facilityID: 'facilityId',
   faciltyPhoto: 'facilityPhoto',
   contractID: 'contractCode'
