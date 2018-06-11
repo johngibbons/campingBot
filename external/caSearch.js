@@ -1,5 +1,6 @@
 const rp = require('request-promise-native');
 const { formatted } = require('../jobs/datesGenerator');
+const cheerio = require('cheerio');
 
 const headers = {
   'user-agent':
@@ -98,10 +99,26 @@ const nextDateOptions = {
 
 const regexp = /UnitDetailPopup(.*?)#39/gi;
 const parseAvailable = (response = '') => {
-  const matches = response.match(regexp) || [];
-  return matches.filter(
-    match => match.includes('is_available=true') && !match.includes('valign')
-  );
+  // console.log(response);
+  const $ = cheerio.load(response);
+  const sites = $('.unitdata');
+  // filter out ADA sites
+  const nonAda = sites.not(':has(.hendi_icn)');
+  const nestedMatches = nonAda
+    .map((i, el) => {
+      const matches = $(el)
+        .children()
+        .map((j, child) => $(child).attr('onclick'))
+        .filter(
+          (j, str) =>
+            str.includes('is_available=true') && !str.includes('valign')
+        )
+        .toArray();
+      return matches;
+    })
+    .toArray();
+
+  return nestedMatches;
 };
 
 const searchNextRange = async (placeId, facilityId) => {
