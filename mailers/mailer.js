@@ -15,9 +15,9 @@ module.exports = async (emailAddress, newAvailabilities, campsiteFinder) => {
     (err, results) => {
       const fromEmail = new helper.Email('john@campsitefinder.com');
       const toEmail = new helper.Email(emailAddress);
-      const subject = `New Availabilities at ${campsiteFinder.placeName} ${
-        campsiteFinder.facilityName
-      }`;
+      const subject = `New Availabilities at ${
+        campsiteFinder.campsiteId.placeName
+      } ${campsiteFinder.campsiteId.facilityName}`;
       const content = new helper.Content('text/html', results.html);
       const mail = new helper.Mail(fromEmail, subject, toEmail, content);
 
