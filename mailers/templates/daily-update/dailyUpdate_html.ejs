@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Billing e.g. invoices and receipts</title>
+    <title>New Campsite Availabilities</title>
     <link href="styles.css" media="all" rel="stylesheet" type="text/css" />
   </head>
 
@@ -25,39 +25,35 @@
                     </tr>
                     <tr>
                       <td class="content-block">
-                        <p class="aligncenter">Here is your daily update</p>
+                        <p class="aligncenter">Here are the new availabilities</p>
                       </td>
                     </tr>
                     <tr>
                       <td class="content-block aligncenter">
-                        <% for(let i = 0; i < campgrounds.length; i++) { %>
-                          <% const campground = campgrounds[i] %>
-                          <table class="invoice">
-                            <tr>
-                              <td>
-                                <h2><a href='<%= campground.url %>' target='blank'><%= campground.campground %></a></h2>
-                                <p>for <%= campground.lengthOfStay %> nights</p>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <table class="invoice-items" cellpadding="0" cellspacing="0">
-                                  <tr>
-                                    <th>Date</th>
-                                    <th class='alignright'># of spots</th>
-                                  </tr>
-                                  <% for(let j = 0; j < campground.results.length; j++) { %>
-                                  <% const result = campground.results[j] %>
-                                  <tr>
-                                    <td><%= result.date %></td>
-                                    <td class="alignright"><%= result.siteCount %></td>
-                                  </tr>
-                                  <% } %>
-                                </table>
-                              </td>
-                            </tr>
-                          </table>
-                        <% } %>
+                        <table class="invoice">
+                          <tr>
+                            <td>
+                              <h2><a href='<%= campsiteFinder.campgroundId.url %>' target='blank'><%= campsiteFinder.campgroundId.placeName %> <%= campsiteFinder.campgroundId.facilityName %></a></h2>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                <tr>
+                                  <th>Date</th>
+                                  <th class='alignright'># of spots</th>
+                                </tr>
+                                <% for(let j = 0; j < newAvailabilities.length; j++) { %>
+                                <% const result = newAvailabilities[j] %>
+                                <tr>
+                                  <td><%= result.date %></td>
+                                  <td class="alignright"><%= result.siteCount %></td>
+                                </tr>
+                                <% } %>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
                       </td>
                     </tr>
                   </table>

@@ -3,6 +3,7 @@ const postSearch = require('../external/postSearch');
 const parse = require('./reserveAmericaParser');
 const sendEmails = require('../mailers/mailer');
 const updateFinderResults = require('./updateFinderResults');
+const { difference } = require('ramda');
 
 module.exports = async reserveAmericaCampsiteFinders => {
   try {
@@ -34,13 +35,26 @@ module.exports = async reserveAmericaCampsiteFinders => {
     }
     /* eslint-disable-next-line no-restricted-syntax */
     for (const toUpdate of Object.values(campsiteFindersToUpdate)) {
-      await updateFinderResults(toUpdate);
+      // returns old campsite finder
+      const previousFinder = await updateFinderResults(toUpdate);
+      const newAvailabilites = difference(
+        toUpdate.results || [],
+        (previousFinder && previousFinder.datesAvailable) || []
+      );
+      if (newAvailabilites.length) {
+        toUpdate.emailAddresses.forEach(emailAddress => {
+          console.log('sending an email');
+          sendEmail(emailAddress, newAvailabilites, toUpdate);
+        });
+      }
     }
+
     console.log('RESERVE AMERICA SCRAPE ENDED AT:', new Date());
     console.timeEnd('RESERVE AMERICA');
   } catch (err) {
     console.log('RESERVE AMERICA SCRAPING ERROR:', err);
     const thirtySeconds = 30 * 1000;
+    // wait 30 seconds before trying again
     await new Promise(resolve => setTimeout(resolve, thirtySeconds));
   }
 };
