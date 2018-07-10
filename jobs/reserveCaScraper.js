@@ -1,7 +1,7 @@
 const postSearch = require('../external/caSearch');
 const updateFinderResults = require('./updateFinderResults');
 const sendEmail = require('../mailers/mailer');
-const { difference } = require('ramda');
+const { differenceWith } = require('ramda');
 
 module.exports = async reserveCaCampsiteFinders => {
   try {
@@ -16,10 +16,17 @@ module.exports = async reserveCaCampsiteFinders => {
       };
       // returns old campsite finder
       const previousFinder = await updateFinderResults(updatedFinder);
-      const newAvailabilites = difference(
+
+      if (!previousFinder) {
+        return;
+      }
+
+      const newAvailabilites = differenceWith(
+        (newAvail, oldAvail) => newAvail.date === oldAvail.date,
         availabilities || [],
         (previousFinder && previousFinder.datesAvailable) || []
       );
+
       if (newAvailabilites.length) {
         updatedFinder.emailAddresses.forEach(emailAddress => {
           console.log('sending an email for:', campsiteFinder);
