@@ -3,6 +3,7 @@ module.exports = {
   plugins: ['prettier'],
   rules: {
     'prettier/prettier': 'error',
-    'no-await-in-loop': 'off'
+    'no-await-in-loop': 'off',
+    'no-underscore-dangle': 'off'
   }
 };

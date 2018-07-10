@@ -1,7 +1,7 @@
 const getUrl = require('../external/getUrl');
 const postSearch = require('../external/postSearch');
 const parse = require('./reserveAmericaParser');
-const sendEmails = require('../mailers/mailer');
+const sendEmail = require('../mailers/mailer');
 const updateFinderResults = require('./updateFinderResults');
 const { difference } = require('ramda');
 

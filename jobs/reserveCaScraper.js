@@ -22,7 +22,7 @@ module.exports = async reserveCaCampsiteFinders => {
       );
       if (newAvailabilites.length) {
         updatedFinder.emailAddresses.forEach(emailAddress => {
-          console.log('sending an email');
+          console.log('sending an email for:', campsiteFinder);
           sendEmail(emailAddress, newAvailabilites, campsiteFinder);
         });
       }
