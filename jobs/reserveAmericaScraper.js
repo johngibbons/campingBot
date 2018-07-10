@@ -3,7 +3,7 @@ const postSearch = require('../external/postSearch');
 const parse = require('./reserveAmericaParser');
 const sendEmail = require('../mailers/mailer');
 const updateFinderResults = require('./updateFinderResults');
-const { difference } = require('ramda');
+const { differenceWith } = require('ramda');
 
 module.exports = async reserveAmericaCampsiteFinders => {
   try {
@@ -37,10 +37,17 @@ module.exports = async reserveAmericaCampsiteFinders => {
     for (const toUpdate of Object.values(campsiteFindersToUpdate)) {
       // returns old campsite finder
       const previousFinder = await updateFinderResults(toUpdate);
-      const newAvailabilites = difference(
+
+      if (!previousFinder) {
+        return;
+      }
+
+      const newAvailabilites = differenceWith(
+        (newAvail, oldAvail) => newAvail.date === oldAvail.date,
         toUpdate.results || [],
         (previousFinder && previousFinder.datesAvailable) || []
       );
+
       if (newAvailabilites.length) {
         toUpdate.emailAddresses.forEach(emailAddress => {
           console.log('sending an email');
