@@ -10,12 +10,12 @@ module.exports = async reserveCaCampsiteFinders => {
     /* eslint-disable-next-line */
     for (const campsiteFinder of reserveCaCampsiteFinders) {
       const availabilities = await postSearch(campsiteFinder);
-      const updatedFinder = {
-        ...campsiteFinder,
-        results: availabilities
-      };
+
       // returns old campsite finder
-      const previousFinder = await updateFinderResults(updatedFinder);
+      const previousFinder = await updateFinderResults(
+        campsiteFinder._id,
+        availabilities
+      );
 
       if (!previousFinder) {
         return;
@@ -28,8 +28,12 @@ module.exports = async reserveCaCampsiteFinders => {
       );
 
       if (newAvailabilites.length) {
-        updatedFinder.emailAddresses.forEach(emailAddress => {
+        campsiteFinder.emailAddresses.forEach(emailAddress => {
           console.log('sending an email for:', campsiteFinder);
+          console.log(
+            'previous availabilites were:',
+            previousFinder.datesAvailable
+          );
           sendEmail(emailAddress, newAvailabilites, campsiteFinder);
         });
       }

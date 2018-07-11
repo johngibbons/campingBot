@@ -1,11 +1,11 @@
 const CampsiteFinder = require('../models/campsite-finder');
 const moment = require('moment');
 
-module.exports = campsiteFinder =>
+module.exports = (_id, datesAvailable = []) =>
   CampsiteFinder.findOneAndUpdate(
-    { _id: campsiteFinder._id },
+    { _id },
     {
-      datesAvailable: campsiteFinder.results,
+      datesAvailable,
       lastCheckedAt: moment()
     }
   ).catch(err => console.log(err));

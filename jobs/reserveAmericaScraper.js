@@ -36,7 +36,10 @@ module.exports = async reserveAmericaCampsiteFinders => {
     /* eslint-disable-next-line no-restricted-syntax */
     for (const toUpdate of Object.values(campsiteFindersToUpdate)) {
       // returns old campsite finder
-      const previousFinder = await updateFinderResults(toUpdate);
+      const previousFinder = await updateFinderResults(
+        toUpdate._id,
+        toUpdate.results
+      );
 
       if (!previousFinder) {
         return;
