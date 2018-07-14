@@ -37,8 +37,8 @@ const fridaysInRange = (
     .add(6, 'months')
     .endOf('month')
 ) => {
-  let fridays = [];
-  let date = nextFriday(startDate);
+  const fridays = [];
+  const date = nextFriday(startDate);
   while (date < moment(endDate)) {
     fridays.push(moment(date));
     date.add(7, 'days');
@@ -89,10 +89,10 @@ exports.generateAllDates = ({
 }) => {
   if (dateOption === 'NEXT_SIX_MONTHS') {
     return getWeekendsFromFridays(fridaysInRange());
-  } else if (isWeekendOnly) {
+  } else if (isWeekendsOnly) {
     return getWeekendsFromFridays(fridaysInRange(startDate, endDate));
   } else if (isValidStart(startDate)) {
-    let allDates = [];
+    const allDates = [];
     let currentDate = moment(startDate);
     const end = moment(endDate);
     while (currentDate !== end) {

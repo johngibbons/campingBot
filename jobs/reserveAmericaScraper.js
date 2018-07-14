@@ -53,7 +53,14 @@ module.exports = async reserveAmericaCampsiteFinders => {
 
       if (newAvailabilites.length) {
         toUpdate.emailAddresses.forEach(emailAddress => {
-          console.log('sending an email');
+          console.log('-------------RESERVE AMERICA-------------');
+          console.log('sending an email for:', toUpdate);
+          console.log(
+            'previous availabilites were:',
+            previousFinder.datesAvailable
+          );
+          console.log('new availabilities are:', newAvailabilites);
+          console.log('-------------END RESERVE AMERICA-------------');
           sendEmail(emailAddress, newAvailabilites, toUpdate);
         });
       }

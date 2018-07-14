@@ -9,33 +9,39 @@ module.exports = async reserveCaCampsiteFinders => {
     console.time('RESERVE CA');
     /* eslint-disable-next-line */
     for (const campsiteFinder of reserveCaCampsiteFinders) {
-      const availabilities = await postSearch(campsiteFinder);
+      try {
+        const availabilities = await postSearch(campsiteFinder);
+        // returns old campsite finder
+        const previousFinder = await updateFinderResults(
+          campsiteFinder._id,
+          availabilities
+        );
 
-      // returns old campsite finder
-      const previousFinder = await updateFinderResults(
-        campsiteFinder._id,
-        availabilities
-      );
+        if (!previousFinder) {
+          return;
+        }
 
-      if (!previousFinder) {
-        return;
-      }
+        const newAvailabilites = differenceWith(
+          (newAvail, oldAvail) => newAvail.date === oldAvail.date,
+          availabilities || [],
+          (previousFinder && previousFinder.datesAvailable) || []
+        );
 
-      const newAvailabilites = differenceWith(
-        (newAvail, oldAvail) => newAvail.date === oldAvail.date,
-        availabilities || [],
-        (previousFinder && previousFinder.datesAvailable) || []
-      );
-
-      if (newAvailabilites.length) {
-        campsiteFinder.emailAddresses.forEach(emailAddress => {
-          console.log('sending an email for:', campsiteFinder);
-          console.log(
-            'previous availabilites were:',
-            previousFinder.datesAvailable
-          );
-          sendEmail(emailAddress, newAvailabilites, campsiteFinder);
-        });
+        if (newAvailabilites.length) {
+          campsiteFinder.emailAddresses.forEach(emailAddress => {
+            console.log('-------------RESERVE CA-------------');
+            console.log('sending an email for:', campsiteFinder);
+            console.log(
+              'previous availabilites were:',
+              previousFinder.datesAvailable
+            );
+            console.log('new availabilities are:', newAvailabilites);
+            console.log('-------------END RESERVE AMERICA-------------');
+            sendEmail(emailAddress, newAvailabilites, campsiteFinder);
+          });
+        }
+      } catch (e) {
+        console.log('error fetching new availabilities, did not update:', e);
       }
     }
     console.log('RESERVE CA SCRAPE ENDED AT:', new Date());

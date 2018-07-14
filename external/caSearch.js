@@ -14,8 +14,7 @@ const request = rp.defaults({
   simple: false,
   followRedirect: false,
   resolveWithFullResponse: true,
-  time: true,
-  timeout: 3000,
+  timeout: 5000,
   forever: true,
   json: true
 });
@@ -97,7 +96,6 @@ const nextDateOptions = {
 // \u0026#39;
 // );\"
 
-const regexp = /UnitDetailPopup(.*?)#39/gi;
 const parseAvailable = (response = '') => {
   // console.log(response);
   const $ = cheerio.load(response);
@@ -122,20 +120,15 @@ const parseAvailable = (response = '') => {
 };
 
 const searchNextRange = async (placeId, facilityId) => {
-  try {
-    await request(nextDateOptions);
-    const gridResponse = await request(gridOptions(placeId, facilityId));
-    if (!gridResponse.body.d) {
-      console.log(
-        'CA search did not return proper response, it was:',
-        gridResponse.body
-      );
-    }
-    return parseAvailable(gridResponse.body.d);
-  } catch (e) {
-    console.log(e);
-    return [];
+  await request(nextDateOptions);
+  const gridResponse = await request(gridOptions(placeId, facilityId));
+  if (!gridResponse.body.d) {
+    console.log(
+      'CA search did not return proper response, it was:',
+      gridResponse.body
+    );
   }
+  return parseAvailable(gridResponse.body.d);
 };
 
 const hasAllRequestedDates = (requested, available) =>
@@ -155,54 +148,47 @@ const buildAvailabilitiesArray = async (placeId, facilityId) => {
 };
 
 const run = async ({ campgroundId: { placeId, facilityId }, allDates }) => {
-  try {
-    await request(sessionOptions);
-    await request(searchOptions(placeId, facilityId));
-    const availabilitiesArr = await buildAvailabilitiesArray(
-      placeId,
-      facilityId
-    );
+  await request(sessionOptions);
+  await request(searchOptions(placeId, facilityId));
+  const availabilitiesArr = await buildAvailabilitiesArray(placeId, facilityId);
 
-    const availableDatesByUnit = availabilitiesArr.reduce(
-      (availabilities, availableSite) => {
-        const unit = availableSite.match(/unit_id=(.*?)&/)[1];
-        const date = availableSite.match(/arrival_date=(.*?)\s/)[1];
-        const formattedDate = formatted(date);
-        const unitDates = availabilities[unit];
-        if (!unitDates) {
-          // no previous availabilites on this unit, so add to availabilities obj
-          return { ...availabilities, [unit]: [formattedDate] };
-        } else if (unitDates.includes(formattedDate)) {
-          // duplicate, just return obj
-          return availabilities;
-        }
-        // previous availabilities already on this unit, add date to unit availabilities array
-        return {
-          ...availabilities,
-          [unit]: [...availabilities[unit], formattedDate]
-        };
-      },
-      {}
-    );
+  const availableDatesByUnit = availabilitiesArr.reduce(
+    (availabilities, availableSite) => {
+      const unit = availableSite.match(/unit_id=(.*?)&/)[1];
+      const date = availableSite.match(/arrival_date=(.*?)\s/)[1];
+      const formattedDate = formatted(date);
+      const unitDates = availabilities[unit];
+      if (!unitDates) {
+        // no previous availabilites on this unit, so add to availabilities obj
+        return { ...availabilities, [unit]: [formattedDate] };
+      } else if (unitDates.includes(formattedDate)) {
+        // duplicate, just return obj
+        return availabilities;
+      }
+      // previous availabilities already on this unit, add date to unit availabilities array
+      return {
+        ...availabilities,
+        [unit]: [...availabilities[unit], formattedDate]
+      };
+    },
+    {}
+  );
 
-    const availabilities = allDates
-      .map(requestedDatesArr => {
-        const matchingUnits = Object.keys(availableDatesByUnit).filter(unitId =>
-          hasAllRequestedDates(requestedDatesArr, availableDatesByUnit[unitId])
-        );
+  const availabilities = allDates
+    .map(requestedDatesArr => {
+      const matchingUnits = Object.keys(availableDatesByUnit).filter(unitId =>
+        hasAllRequestedDates(requestedDatesArr, availableDatesByUnit[unitId])
+      );
 
-        return {
-          date: requestedDatesArr[0],
-          siteCount: matchingUnits.length,
-          lengthOfStay: requestedDatesArr.length
-        };
-      })
-      .filter(resultObj => resultObj.siteCount !== 0);
+      return {
+        date: requestedDatesArr[0],
+        siteCount: matchingUnits.length,
+        lengthOfStay: requestedDatesArr.length
+      };
+    })
+    .filter(resultObj => resultObj.siteCount !== 0);
 
-    return availabilities;
-  } catch (e) {
-    console.log(e);
-  }
+  return availabilities;
 };
 
 module.exports = run;

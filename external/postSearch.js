@@ -15,7 +15,8 @@ module.exports = async ({
     jar,
     headers,
     followRedirect: true,
-    resolveWithFullResponse: true
+    resolveWithFullResponse: true,
+    timeout: 5000
   });
 
   const getOptions = {
@@ -42,5 +43,5 @@ module.exports = async ({
   };
 
   await currRequest(getOptions);
-  return await currRequest(postOptions);
+  return currRequest(postOptions);
 };
