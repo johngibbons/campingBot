@@ -115,20 +115,34 @@ const parseAvailable = (response = '') => {
       return matches;
     })
     .toArray();
-
+  if (!nestedMatches.length) {
+    console.log('NO MATCHES', nestedMatches);
+    console.log('sites', sites);
+    console.log('response', response);
+  }
   return nestedMatches;
 };
 
 const searchNextRange = async (placeId, facilityId) => {
-  await request(nextDateOptions);
-  const gridResponse = await request(gridOptions(placeId, facilityId));
-  if (!gridResponse.body.d) {
-    console.log(
-      'CA search did not return proper response, it was:',
-      gridResponse.body
-    );
+  try {
+    await request(nextDateOptions);
+  } catch (e) {
+    console.log('error requesting next dates:', e);
+    throw e;
   }
-  return parseAvailable(gridResponse.body.d);
+  try {
+    const gridResponse = await request(gridOptions(placeId, facilityId));
+    if (!gridResponse.body.d) {
+      console.log(
+        'CA search did not return proper response, it was:',
+        gridResponse.body
+      );
+    }
+    return parseAvailable(gridResponse.body.d);
+  } catch (e) {
+    console.log('error requesting grid options:', e);
+    throw e;
+  }
 };
 
 const hasAllRequestedDates = (requested, available) =>
@@ -136,7 +150,7 @@ const hasAllRequestedDates = (requested, available) =>
 
 const buildAvailabilitiesArray = async (placeId, facilityId) => {
   const availabilitiesArr = [];
-  let rangesToSearch = 9;
+  let rangesToSearch = 15;
 
   while (rangesToSearch > 0) {
     const nextResult = await searchNextRange(placeId, facilityId);
@@ -148,8 +162,18 @@ const buildAvailabilitiesArray = async (placeId, facilityId) => {
 };
 
 const run = async ({ campgroundId: { placeId, facilityId }, allDates }) => {
-  await request(sessionOptions);
-  await request(searchOptions(placeId, facilityId));
+  try {
+    await request(sessionOptions);
+  } catch (e) {
+    console.log('error requesting session:', e);
+    throw e;
+  }
+  try {
+    await request(searchOptions(placeId, facilityId));
+  } catch (e) {
+    console.log('error requesting search:', e);
+    throw e;
+  }
   const availabilitiesArr = await buildAvailabilitiesArray(placeId, facilityId);
 
   const availableDatesByUnit = availabilitiesArr.reduce(

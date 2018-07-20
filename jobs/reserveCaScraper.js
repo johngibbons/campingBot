@@ -9,6 +9,10 @@ module.exports = async reserveCaCampsiteFinders => {
     console.time('RESERVE CA');
     /* eslint-disable-next-line */
     for (const campsiteFinder of reserveCaCampsiteFinders) {
+      console.log(
+        '----------------------START FOR CA FINDER---------------------'
+      );
+      // console.log('campsiteFinder:', campsiteFinder);
       try {
         const availabilities = await postSearch(campsiteFinder);
         // returns old campsite finder
@@ -36,10 +40,13 @@ module.exports = async reserveCaCampsiteFinders => {
               previousFinder.datesAvailable
             );
             console.log('new availabilities are:', newAvailabilites);
-            console.log('-------------END RESERVE AMERICA-------------');
+            console.log('-------------END RESERVE CA-------------');
             sendEmail(emailAddress, newAvailabilites, campsiteFinder);
           });
         }
+        console.log(
+          '----------------------END FOR CA FINDER---------------------'
+        );
       } catch (e) {
         console.log('error fetching new availabilities, did not update:', e);
       }
