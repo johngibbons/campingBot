@@ -24,11 +24,9 @@ module.exports = async () => {
         campsiteFinder.campgroundId.reservationAgency === RESERVE_CA
     );
 
-    await Promise.all([
-      scrapeReserveAmerica(reserveAmericaCampsiteFinders),
-      scrapeReserveCa(reserveCaCampsiteFinders)
-    ]);
+    await scrapeReserveAmerica(reserveAmericaCampsiteFinders);
+    await scrapeReserveCa(reserveCaCampsiteFinders);
     const fiveMinutes = 5 * 60 * 1000;
-    await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+    await new Promise(resolve => setTimeout(resolve, fiveMinutes));
   }
 };
