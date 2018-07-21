@@ -162,8 +162,9 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
   const lastDateToCheck = moment()
     .add(6, 'months')
     .day(-2);
+  let n = 15;
 
-  while (lastDateToCheck.isSameOrAfter(lastDateChecked)) {
+  while (n > 0) {
     const { endDate, result } = await searchNextRange(placeId, facilityId);
     availabilitiesArr.push(...result);
     if (endDate) {
@@ -171,6 +172,7 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
     }
     console.log('lastDateToCheck', lastDateToCheck);
     console.log('lastDateChecked', lastDateChecked);
+    n -= 1;
   }
 
   return availabilitiesArr;
