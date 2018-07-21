@@ -158,25 +158,35 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
   await request(sessionOptions);
   await request(searchOptions(placeId, facilityId));
   let lastDateChecked = moment();
+  let numDuplicates = 0;
   const availabilitiesArr = [];
   const lastDateToCheck = moment()
     .add(6, 'months')
     .day(-2);
-  let n = 15;
 
-  while (n > 0) {
+  while (moment(lastDateChecked).isSameOrBefore(lastDateToCheck)) {
     const { endDate, result } = await searchNextRange(placeId, facilityId);
     availabilitiesArr.push(...result);
+    if (endDate === lastDateChecked) {
+      // loop just checked the same dates as previous iteration
+      numDuplicates += 1;
+    } else {
+      // loop has moved onto the next dates, reset the duplicates counter
+      numDuplicates = 0;
+    }
+
+    if (numDuplicates > 3) {
+      throw new Error('Search got stuck in a loop');
+    }
+
     if (endDate) {
       lastDateChecked = endDate;
     } else {
       await request(sessionOptions);
       await request(searchOptions(placeId, facilityId));
-      n = 15;
     }
     console.log('lastDateToCheck', lastDateToCheck);
     console.log('lastDateChecked', lastDateChecked);
-    n -= 1;
   }
 
   return availabilitiesArr;
