@@ -167,7 +167,10 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
     const { endDate, result } = await searchNextRange(placeId, facilityId);
     availabilitiesArr.push(...result);
 
-    if (endDate === lastDateChecked) {
+    console.log('endDate is:', endDate);
+    console.log('lastDateChecked is:', lastDateChecked);
+
+    if (endDate === lastDateChecked || !endDate) {
       throw new Error('Search got stuck in a loop');
     }
 
