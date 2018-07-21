@@ -166,7 +166,9 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
   while (lastDateToCheck.isSameOrAfter(lastDateChecked)) {
     const { endDate, result } = await searchNextRange(placeId, facilityId);
     availabilitiesArr.push(...result);
-    lastDateChecked = endDate;
+    if (endDate) {
+      lastDateChecked = endDate;
+    }
     console.log('lastDateToCheck', lastDateToCheck);
     console.log('lastDateChecked', lastDateChecked);
   }
