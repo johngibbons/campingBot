@@ -169,6 +169,10 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
     availabilitiesArr.push(...result);
     if (endDate) {
       lastDateChecked = endDate;
+    } else {
+      await request(sessionOptions);
+      await request(searchOptions(placeId, facilityId));
+      n = 15;
     }
     console.log('lastDateToCheck', lastDateToCheck);
     console.log('lastDateChecked', lastDateChecked);
