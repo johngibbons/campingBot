@@ -12,14 +12,15 @@ const isValidStart = date => moment(date).diff(moment(), 'days') > 1;
 exports.daysUntilFriday = daysUntilFriday;
 
 const nextFriday = startDate => {
-  if (!isInFuture(startDate)) {
-    startDate = moment();
+  let start = startDate;
+  if (!isInFuture(start)) {
+    start = moment();
   }
-  return daysUntilFriday(startDate) < 0
-    ? moment(startDate)
+  return daysUntilFriday(start) < 0
+    ? moment(start)
         .day('Friday')
         .add(7, 'days')
-    : moment(startDate).day('Friday');
+    : moment(start).day('Friday');
 };
 
 exports.nextFriday = nextFriday;

@@ -1,6 +1,8 @@
 const rp = require('request-promise-native');
 const { formatted } = require('../jobs/datesGenerator');
 const cheerio = require('cheerio');
+const { uniq } = require('ramda');
+const moment = require('moment');
 
 const headers = {
   'user-agent':
@@ -96,10 +98,7 @@ const nextDateOptions = {
 // \u0026#39;
 // );\"
 
-const parseAvailable = (response = '') => {
-  // console.log(response);
-  const $ = cheerio.load(response);
-  const sites = $('.unitdata');
+const parseAvailable = ($, sites) => {
   // filter out ADA sites
   const nonAda = sites.not(':has(.hendi_icn)');
   const nestedMatches = nonAda
@@ -115,11 +114,6 @@ const parseAvailable = (response = '') => {
       return matches;
     })
     .toArray();
-  if (!nestedMatches.length) {
-    console.log('NO MATCHES', nestedMatches);
-    console.log('sites', sites);
-    console.log('response', response);
-  }
   return nestedMatches;
 };
 
@@ -138,7 +132,19 @@ const searchNextRange = async (placeId, facilityId) => {
         gridResponse.body
       );
     }
-    return parseAvailable(gridResponse.body.d);
+    const $ = cheerio.load(gridResponse.body.d);
+    const sites = $('.unitdata');
+    const datesChecked = uniq(
+      sites
+        .children()
+        .map((j, child) => $(child).attr('onclick'))
+        .map((i, str) => str.match(/arrival_date=(.*?)\s/)[1])
+        .toArray()
+    );
+    return {
+      endDate: datesChecked[datesChecked.length - 1],
+      result: parseAvailable($, sites)
+    };
   } catch (e) {
     console.log('error requesting grid options:', e);
     throw e;
@@ -148,14 +154,21 @@ const searchNextRange = async (placeId, facilityId) => {
 const hasAllRequestedDates = (requested, available) =>
   requested.every(requestedDate => available.indexOf(requestedDate) > -1);
 
-const buildAvailabilitiesArray = async (placeId, facilityId) => {
+const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
+  await request(sessionOptions);
+  await request(searchOptions(placeId, facilityId));
+  let lastDateChecked = moment();
   const availabilitiesArr = [];
-  let rangesToSearch = 15;
+  const lastDateToCheck = moment()
+    .add(6, 'months')
+    .day(-2);
 
-  while (rangesToSearch > 0) {
-    const nextResult = await searchNextRange(placeId, facilityId);
-    availabilitiesArr.push(...nextResult);
-    rangesToSearch -= 1;
+  while (lastDateToCheck.isSameOrAfter(lastDateChecked)) {
+    const { endDate, result } = await searchNextRange(placeId, facilityId);
+    availabilitiesArr.push(...result);
+    lastDateChecked = endDate;
+    console.log('lastDateToCheck', lastDateToCheck);
+    console.log('lastDateChecked', lastDateChecked);
   }
 
   return availabilitiesArr;
@@ -174,7 +187,11 @@ const run = async ({ campgroundId: { placeId, facilityId }, allDates }) => {
     console.log('error requesting search:', e);
     throw e;
   }
-  const availabilitiesArr = await buildAvailabilitiesArray(placeId, facilityId);
+  const availabilitiesArr = await buildAvailabilitiesArray(
+    placeId,
+    facilityId,
+    allDates
+  );
 
   const availableDatesByUnit = availabilitiesArr.reduce(
     (availabilities, availableSite) => {
