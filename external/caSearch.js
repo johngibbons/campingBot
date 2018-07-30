@@ -134,7 +134,10 @@ const getGridResults = async (placeId, facilityId) => {
       sites
         .children()
         .map((j, child) => $(child).attr('onclick'))
-        .map((i, str) => str.match(/arrival_date=(.*?)\s/)[1])
+        .map((i, str) => {
+          const matches = str.match(/arrival_date=(.*?)\s/);
+          return matches ? matches[1] : $('');
+        })
         .toArray()
     );
     return {
