@@ -201,6 +201,7 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
       await request(searchOptions(placeId, facilityId));
     }
     console.log('--------------END OF CYCLE------------------');
+    sleep(1000);
   }
   console.log('lastDateToCheck', lastDateToCheck);
 
