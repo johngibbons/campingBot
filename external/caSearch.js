@@ -130,12 +130,14 @@ const getGridResults = async (placeId, facilityId) => {
     }
     const $ = cheerio.load(gridResponse.body.d);
     const sites = $('.unitdata');
-    console.log('sites are:', sites);
     const datesChecked = uniq(
       sites
         .children()
         .map((j, child) => $(child).attr('onclick'))
         .map((i, str) => {
+          if (!str.match(/arrival_date=(.*?)\s/)) {
+            console.log('non matching string', str);
+          }
           const matches = str.match(/arrival_date=(.*?)\s/);
           return matches ? matches[1] : $('');
         })
