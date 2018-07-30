@@ -130,6 +130,7 @@ const getGridResults = async (placeId, facilityId) => {
     }
     const $ = cheerio.load(gridResponse.body.d);
     const sites = $('.unitdata');
+    console.log('sites are:', sites);
     const datesChecked = uniq(
       sites
         .children()
@@ -194,7 +195,7 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
     // sleep(1000);
 
     if (!endDate) {
-      throw new Error('Search got stuck in a loop');
+      throw new Error('No endDate');
     }
 
     if (endDate) {

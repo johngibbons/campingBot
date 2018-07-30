@@ -12,7 +12,12 @@ module.exports = async reserveCaCampsiteFinders => {
       console.log(
         '----------------------START FOR CA FINDER---------------------'
       );
-      console.log('campsiteFinder:', campsiteFinder.campgroundId.facilityName);
+      console.log(
+        'campsiteFinder:',
+        `${campsiteFinder.campgroundId.placeName} ${
+          campsiteFinder.campgroundId.facilityName
+        }`
+      );
       try {
         const availabilities = await postSearch(campsiteFinder);
         // returns old campsite finder
