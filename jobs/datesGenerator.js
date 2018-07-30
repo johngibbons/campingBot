@@ -26,7 +26,7 @@ const nextFriday = startDate => {
 exports.nextFriday = nextFriday;
 
 const formatted = date =>
-  moment(date)
+  moment(date, 'M/D/Y')
     .toDate()
     .toDateString();
 

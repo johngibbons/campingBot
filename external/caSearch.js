@@ -4,6 +4,8 @@ const cheerio = require('cheerio');
 const { uniq } = require('ramda');
 const moment = require('moment');
 
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+
 const headers = {
   'user-agent':
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.32 Safari/537.36'
@@ -117,13 +119,7 @@ const parseAvailable = ($, sites) => {
   return nestedMatches;
 };
 
-const searchNextRange = async (placeId, facilityId) => {
-  try {
-    await request(nextDateOptions);
-  } catch (e) {
-    console.log('error requesting next dates:', e);
-    throw e;
-  }
+const getGridResults = async (placeId, facilityId) => {
   try {
     const gridResponse = await request(gridOptions(placeId, facilityId));
     if (!gridResponse.body.d) {
@@ -142,6 +138,7 @@ const searchNextRange = async (placeId, facilityId) => {
         .toArray()
     );
     return {
+      startDate: datesChecked[0],
       endDate: datesChecked[datesChecked.length - 1],
       result: parseAvailable($, sites)
     };
@@ -151,38 +148,61 @@ const searchNextRange = async (placeId, facilityId) => {
   }
 };
 
+const searchNextRange = async (placeId, facilityId) => {
+  try {
+    await request(nextDateOptions);
+  } catch (e) {
+    console.log('error requesting next dates:', e);
+    throw e;
+  }
+
+  return getGridResults(placeId, facilityId);
+};
+
 const hasAllRequestedDates = (requested, available) =>
   requested.every(requestedDate => available.indexOf(requestedDate) > -1);
 
 const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
-  await request(sessionOptions);
-  await request(searchOptions(placeId, facilityId));
+  const {
+    startDate: initialStartDate,
+    endDate: initialEndDate,
+    result: initialResult
+  } = await getGridResults(placeId, facilityId);
+  console.log('initialStartDate', initialStartDate);
+  console.log('initialEndDate', initialEndDate);
   let lastDateChecked = moment();
   const availabilitiesArr = [];
   const lastDateToCheck = moment()
     .add(6, 'months')
     .day(-2);
+  availabilitiesArr.push(...initialResult);
 
-  while (moment(lastDateChecked).isSameOrBefore(lastDateToCheck)) {
-    const { endDate, result } = await searchNextRange(placeId, facilityId);
+  while (lastDateChecked.isSameOrBefore(lastDateToCheck)) {
+    const { startDate, endDate, result } = await searchNextRange(
+      placeId,
+      facilityId
+    );
     availabilitiesArr.push(...result);
 
+    console.log('--------------CYCLE------------------');
+    console.log('startDate is:', startDate);
     console.log('endDate is:', endDate);
     console.log('lastDateChecked is:', lastDateChecked);
+    // sleep(1000);
 
-    if (endDate === lastDateChecked || !endDate) {
+    if (!endDate) {
       throw new Error('Search got stuck in a loop');
     }
 
     if (endDate) {
-      lastDateChecked = endDate;
+      lastDateChecked = moment(endDate, 'M/D/Y');
     } else {
       await request(sessionOptions);
       await request(searchOptions(placeId, facilityId));
     }
-    console.log('lastDateToCheck', lastDateToCheck);
-    console.log('lastDateChecked', lastDateChecked);
+    console.log('--------------END OF CYCLE------------------');
   }
+  console.log('lastDateToCheck', lastDateToCheck);
 
   return availabilitiesArr;
 };
