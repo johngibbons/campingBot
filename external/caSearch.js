@@ -101,17 +101,19 @@ const nextDateOptions = {
 // );\"
 
 const parseAvailable = ($, sites) => {
-  // filter out ADA sites
-  const nonAda = sites.not(':has(.hendi_icn)');
-  const nestedMatches = nonAda
+  // filter out ADA sites and walk ins
+  const nonAdaOrWalkIn = sites
+    .not(':has(.hendi_icn)')
+    .not(':has(.green_brd_box)');
+
+  const nestedMatches = nonAdaOrWalkIn
     .map((i, el) => {
       const matches = $(el)
         .children()
         .map((j, child) => $(child).attr('onclick'))
-        .filter(
-          (j, str) =>
-            str.includes('is_available=true') && !str.includes('valign')
-        )
+        .filter((j, str) => {
+          return str.includes('is_available=true') && !str.includes('valign');
+        })
         .toArray();
       return matches;
     })
