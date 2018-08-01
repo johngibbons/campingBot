@@ -119,7 +119,7 @@ const parseAvailable = ($, sites) => {
   return nestedMatches;
 };
 
-const getGridResults = async (placeId, facilityId) => {
+const getGridResults = async (placeId, facilityId, startDate, endDate) => {
   try {
     const gridResponse = await request(gridOptions(placeId, facilityId));
     if (!gridResponse.body.d) {
@@ -130,22 +130,10 @@ const getGridResults = async (placeId, facilityId) => {
     }
     const $ = cheerio.load(gridResponse.body.d);
     const sites = $('.unitdata');
-    const datesChecked = uniq(
-      sites
-        .children()
-        .map((j, child) => $(child).attr('onclick'))
-        .map((i, str) => {
-          if (!str.match(/arrival_date=(.*?)\s/)) {
-            console.log('non matching string', str);
-          }
-          const matches = str.match(/arrival_date=(.*?)\s/);
-          return matches ? matches[1] : $('');
-        })
-        .toArray()
-    );
+
     return {
-      startDate: datesChecked[0],
-      endDate: datesChecked[datesChecked.length - 1],
+      startDate,
+      endDate,
       result: parseAvailable($, sites)
     };
   } catch (e) {
@@ -156,26 +144,20 @@ const getGridResults = async (placeId, facilityId) => {
 
 const searchNextRange = async (placeId, facilityId) => {
   try {
-    await request(nextDateOptions);
+    const response = await request(nextDateOptions);
+    const [startDate, endDate] = response.body.d.split(' - ');
+    return getGridResults(placeId, facilityId, startDate, endDate);
   } catch (e) {
     console.log('error requesting next dates:', e);
     throw e;
   }
-
-  return getGridResults(placeId, facilityId);
 };
 
 const hasAllRequestedDates = (requested, available) =>
   requested.every(requestedDate => available.indexOf(requestedDate) > -1);
 
 const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
-  const {
-    startDate: initialStartDate,
-    endDate: initialEndDate,
-    result: initialResult
-  } = await getGridResults(placeId, facilityId);
-  console.log('initialStartDate', initialStartDate);
-  console.log('initialEndDate', initialEndDate);
+  const { result: initialResult } = await getGridResults(placeId, facilityId);
   let lastDateChecked = moment();
   const availabilitiesArr = [];
   const lastDateToCheck = moment()
@@ -194,7 +176,6 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
     console.log('startDate is:', startDate);
     console.log('endDate is:', endDate);
     console.log('lastDateChecked is:', lastDateChecked);
-    // sleep(1000);
 
     if (!endDate) {
       throw new Error('No endDate');
