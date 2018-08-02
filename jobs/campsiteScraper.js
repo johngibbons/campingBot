@@ -5,7 +5,7 @@ const scrapeReserveCa = require('./reserveCaScraper');
 const setDates = require('./setDates');
 
 module.exports = async () => {
-  while (true) {
+  while (true && !process.env.PAUSE_SCRAPING) {
     const allCampsiteFinders = await CampsiteFinder.find({
       isActive: true
     }).populate('campgroundId');
@@ -27,6 +27,6 @@ module.exports = async () => {
     await scrapeReserveAmerica(reserveAmericaCampsiteFinders);
     await scrapeReserveCa(reserveCaCampsiteFinders);
     const fiveMinutes = 5 * 60 * 1000;
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, fiveMinutes));
   }
 };
