@@ -10,8 +10,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const seedAllCampgrounds = require('./data/seedAllCampgrounds');
 const resetCampsiteFinders = require('./data/resetCampsiteFinders');
+const jwt = require('jsonwebtoken');
 
 app.set('port', process.env.PORT || 8080);
+app.set('secretKey', 'campingReserver');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
