@@ -1,7 +1,7 @@
-const CampsiteFinder = require('../models/campsite-finder');
-const moment = require('moment');
+import moment from 'moment';
+import CampsiteFinder from '../models/campsite-finder';
 
-module.exports = (_id, datesAvailable = []) =>
+export default (_id, datesAvailable = []) =>
   CampsiteFinder.findOneAndUpdate(
     { _id },
     {

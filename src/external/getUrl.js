@@ -1,7 +1,7 @@
-const request = require('request-promise-native');
-const Campground = require('../models/campground');
+import request from 'request-promise-native';
+import Campground from '../models/campground';
 
-module.exports = async campsiteFinder => {
+export default async campsiteFinder => {
   const campground = campsiteFinder.campgroundId;
 
   if (campground.url && campground.url.includes('camping')) {

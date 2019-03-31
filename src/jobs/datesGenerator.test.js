@@ -1,13 +1,13 @@
 /* eslint-env jest */
-const moment = require('moment');
-const {
+import moment from 'moment';
+import {
   daysUntilFriday,
   nextFriday,
   fridaysInRange,
   generateDates,
   generateLengthOfStay,
   formatted
-} = require('./datesGenerator');
+} from './datesGenerator';
 
 Date.now = jest.fn(() => 1500344808897); // 07.17.2017 (monday)
 const tues = moment('2017-07-18T12:20:38.936');

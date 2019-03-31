@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const CampsiteFinder = mongoose.model('CampsiteFinders');
 
-exports.listAllCampsiteFinders = (req, res) => {
+export const listAllCampsiteFinders = (req, res) => {
   CampsiteFinder.find({})
     .populate('campgroundId')
     .then(campsiteFinders => res.json(campsiteFinders))
     .catch(err => res.send(err));
 };
 
-exports.createCampsiteFinder = async (req, res) => {
+export const createCampsiteFinder = async (req, res) => {
   try {
     const campsiteFinder = await new CampsiteFinder(req.body).save();
     res.json(campsiteFinder);
@@ -18,7 +18,7 @@ exports.createCampsiteFinder = async (req, res) => {
   }
 };
 
-exports.updateCampsiteFinder = async (req, res) => {
+export const updateCampsiteFinder = async (req, res) => {
   if (req.body.emailAddresses) {
     req.body.emailAddresses = JSON.parse(req.body.emailAddresses);
   }
@@ -38,7 +38,7 @@ exports.updateCampsiteFinder = async (req, res) => {
   }
 };
 
-exports.deleteCampsiteFinder = async (req, res) => {
+export const deleteCampsiteFinder = async (req, res) => {
   try {
     await CampsiteFinder.remove({ _id: req.params.id });
 

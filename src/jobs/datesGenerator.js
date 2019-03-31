@@ -1,17 +1,14 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const daysUntilFriday = startDate => {
-  return moment(startDate)
+export const daysUntilFriday = startDate =>
+  moment(startDate)
     .day('Friday')
     .diff(moment(startDate), 'days');
-};
 
 const isInFuture = date => moment(date).diff(moment(), 'days') >= 0;
 const isValidStart = date => moment(date).diff(moment(), 'days') > 1;
 
-exports.daysUntilFriday = daysUntilFriday;
-
-const nextFriday = startDate => {
+export const nextFriday = startDate => {
   let start = startDate;
   if (!isInFuture(start)) {
     start = moment();
@@ -23,16 +20,12 @@ const nextFriday = startDate => {
     : moment(start).day('Friday');
 };
 
-exports.nextFriday = nextFriday;
-
-const formatted = date =>
+export const formatted = date =>
   moment(date, 'M/D/Y')
     .toDate()
     .toDateString();
 
-exports.formatted = formatted;
-
-const fridaysInRange = (
+export const fridaysInRange = (
   startDate = moment(),
   endDate = moment()
     .add(6, 'months')
@@ -49,9 +42,7 @@ const fridaysInRange = (
 
 const formatDates = dates => dates.map(formatted);
 
-exports.fridaysInRange = fridaysInRange;
-
-exports.generateDates = ({
+export const generateDates = ({
   startDate,
   endDate,
   isWeekendsOnly,
@@ -67,7 +58,7 @@ exports.generateDates = ({
   return [];
 };
 
-exports.generateLengthOfStay = ({
+export const generateLengthOfStay = ({
   startDate,
   endDate,
   isWeekendsOnly,
@@ -82,7 +73,7 @@ const getWeekendsFromFridays = fridays =>
     return [...all, formatDates([curr, moment(curr).day('Saturday')])];
   }, []);
 
-exports.generateAllDates = ({
+export const generateAllDates = ({
   startDate,
   endDate,
   isWeekendsOnly,

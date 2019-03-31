@@ -1,10 +1,10 @@
-const CampsiteFinder = require('../models/campsite-finder');
-const { RESERVE_CA, RESERVE_AMERICA } = require('../constants');
-const scrapeReserveAmerica = require('./reserveAmericaScraper');
-const scrapeReserveCa = require('./reserveCaScraper');
-const setDates = require('./setDates');
+import CampsiteFinder from '../models/campsite-finder';
+import { RESERVE_CA, RESERVE_AMERICA } from '../constants';
+import scrapeReserveAmerica from './reserveAmericaScraper';
+import scrapeReserveCa from './reserveCaScraper';
+import setDates from './setDates';
 
-module.exports = async () => {
+export default async () => {
   while (true && !process.env.PAUSE_SCRAPING) {
     const allCampsiteFinders = await CampsiteFinder.find({
       isActive: true

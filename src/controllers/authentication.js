@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const User = mongoose.model('Users');
 
-exports.register = async ({ body: { email, password } }, res) => {
+export const register = async ({ body: { email, password } }, res) => {
   try {
     const BCRYPT_SALT_ROUNDS = 12;
 
@@ -17,7 +17,11 @@ exports.register = async ({ body: { email, password } }, res) => {
   }
 };
 
-exports.login = async ({ body: { email, password } }, res) => {
+export const login = async (req, res) => {
+  const {
+    body: { email, password }
+  } = req;
+
   try {
     const user = await User.findOne({ email });
     const correctPassword = await bcrypt.compare(password, user.password);

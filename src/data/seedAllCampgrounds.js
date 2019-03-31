@@ -1,10 +1,10 @@
-const seedAmericaCampgrounds = require('./seedCampgrounds');
-const seedCaCampgrounds = require('./seedCaCampgrounds');
-const resetCampgrounds = require('./resetCampgrounds');
-const { RESERVE_CA, RESERVE_AMERICA } = require('../constants');
-const Campground = require('../models/campground');
+import seedAmericaCampgrounds from './seedCampgrounds';
+import seedCaCampgrounds from './seedCaCampgrounds';
+import resetCampgrounds from './resetCampgrounds';
+import { RESERVE_CA, RESERVE_AMERICA } from '../constants';
+import Campground from '../models/campground';
 
-module.exports = async () => {
+export default async () => {
   try {
     await resetCampgrounds();
     await seedAmericaCampgrounds();

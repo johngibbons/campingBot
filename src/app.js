@@ -1,16 +1,22 @@
-require('dotenv').config();
-require('newrelic');
-const express = require('express');
+import { config } from 'dotenv';
+import 'newrelic';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import campsiteScraper from './jobs/campsiteScraper';
+import seedAllCampgrounds from './data/seedAllCampgrounds';
+import resetCampsiteFinders from './data/resetCampsiteFinders';
+// API routes for CRUD campsite finders
+import campsiteFinderRoutes from './routes/campsiteFinderRoutes';
+// API route for search campgrounds
+import campgroundRoutes from './routes/campgroundRoutes';
+
+config();
 
 const app = express();
 const mongoUrl = process.env.MONGODB_URI;
-const bodyParser = require('body-parser');
-const campsiteScraper = require('./jobs/campsiteScraper');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const seedAllCampgrounds = require('./data/seedAllCampgrounds');
-const resetCampsiteFinders = require('./data/resetCampsiteFinders');
-const jwt = require('jsonwebtoken');
 
 app.set('port', process.env.PORT || 8080);
 app.set('secretKey', 'campingReserver');
@@ -21,16 +27,7 @@ app.use(cors());
 // use native promises with MongoDB
 mongoose.Promise = global.Promise;
 
-mongoose.connect(
-  mongoUrl,
-  { useMongoClient: true }
-);
-
-// API routes for CRUD campsite finders
-const campsiteFinderRoutes = require('./routes/campsiteFinderRoutes');
-
-// API route for search campgrounds
-const campgroundRoutes = require('./routes/campgroundRoutes');
+mongoose.connect(mongoUrl, { useMongoClient: true });
 
 campsiteFinderRoutes(app);
 campgroundRoutes(app);

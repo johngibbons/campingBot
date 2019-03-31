@@ -1,6 +1,6 @@
-const Campground = require('../models/campground');
+import Campground from '../models/campground';
 
-module.exports = async () => {
+export default async () => {
   await Campground.remove({});
   console.log('successfully deleted campgrounds');
 };

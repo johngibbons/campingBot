@@ -1,11 +1,11 @@
-const {
+import {
   generateDates,
   generateLengthOfStay,
   generateAllDates
-} = require('./datesGenerator');
-const { RESERVE_AMERICA } = require('../constants');
+} from './datesGenerator';
+import { RESERVE_AMERICA } from '../constants';
 
-module.exports = campsiteFinder => {
+export default campsiteFinder => {
   if (campsiteFinder.campgroundId.reservationAgency === RESERVE_AMERICA) {
     const campsiteFinderObj = campsiteFinder.toObject();
     const dates = generateDates(campsiteFinder);

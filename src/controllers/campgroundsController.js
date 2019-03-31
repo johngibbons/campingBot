@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const Campground = mongoose.model('Campgrounds');
 
-exports.searchCampgrounds = async (req, res) => {
+// eslint-disable-next-line import/prefer-default-export
+export const searchCampgrounds = async (req, res) => {
   try {
     const campgrounds = await Campground.find({
       placeName: { $regex: `${req.query.q}`, $options: 'i' }

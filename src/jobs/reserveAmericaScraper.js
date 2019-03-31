@@ -1,11 +1,11 @@
-const getUrl = require('../external/getUrl');
-const postSearch = require('../external/postSearch');
-const parse = require('./reserveAmericaParser');
-const sendEmail = require('../mailers/mailer');
-const updateFinderResults = require('./updateFinderResults');
-const { differenceWith } = require('ramda');
+import { differenceWith } from 'ramda';
+import getUrl from '../external/getUrl';
+import postSearch from '../external/postSearch';
+import parse from './reserveAmericaParser';
+import sendEmail from '../mailers/mailer';
+import updateFinderResults from './updateFinderResults';
 
-module.exports = async reserveAmericaCampsiteFinders => {
+export default async reserveAmericaCampsiteFinders => {
   try {
     console.log('STARTING RESERVE AMERICA SCRAPE AT:', new Date());
     console.time('RESERVE AMERICA');

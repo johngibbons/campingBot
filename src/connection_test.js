@@ -1,6 +1,6 @@
-const rp = require('request-promise-native');
-const { from } = require('rxjs/observable/from');
-const { delay, concatMap, map, reduce, tap } = require('rxjs/operators');
+import rp from 'request-promise-native';
+import { from } from 'rxjs/observable/from';
+import { concatMap, map, reduce } from 'rxjs/operators';
 
 const headers = {
   'user-agent':
@@ -97,35 +97,36 @@ const nextDateOptions = {
 // \u0026#39;
 // );\"
 
-var regexp = /UnitDetailPopup(.*?)#39/gi;
-var parseAvailable = response =>
+const regexp = /UnitDetailPopup(.*?)#39/gi;
+const parseAvailable = response =>
   response
     .match(regexp)
     .filter(
       match => match.includes('is_available=true') && !match.includes('valign')
     );
 
-const searchNextRange = async function(placeId, facilityId) {
+async function searchNextRange(placeId, facilityId) {
   try {
-    const nextDateResponse = await request(nextDateOptions);
+    await request(nextDateOptions);
     const gridResponse = await request(gridOptions(placeId, facilityId));
     return parseAvailable(gridResponse.body.d);
   } catch (e) {
     console.log(e);
+    return [];
   }
-};
+}
 
-const run = async function(placeId, facilityId) {
+async function run(placeId, facilityId) {
   try {
     await request(sessionOptions);
-    const searchResponse = await request(searchOptions(placeId, facilityId));
+    await request(searchOptions(placeId, facilityId));
     const allAvailabilities = from(new Array(9)).pipe(
       concatMap(() => from(searchNextRange(placeId, facilityId))),
       reduce((all, curr) => [...all, ...curr], []),
-      map(availabilitiesArr => {
-        return availabilitiesArr.reduce((availabilities, availableSite) => {
-          const unit = availableSite.match(/unit_id\=(.*?)\&/)[1];
-          const date = availableSite.match(/arrival_date\=(.*?)\s/)[1];
+      map(availabilitiesArr =>
+        availabilitiesArr.reduce((availabilities, availableSite) => {
+          const unit = availableSite.match(/unit_id=(.*?)&/)[1];
+          const date = availableSite.match(/arrival_date=(.*?)\s/)[1];
           const dateUnits = availabilities[date];
           if (!dateUnits) {
             // no current availabilites on this date, so add to availabilities obj
@@ -133,20 +134,19 @@ const run = async function(placeId, facilityId) {
           } else if (dateUnits.includes(unit)) {
             // duplicate, just return obj
             return availabilities;
-          } else {
-            // current availabilities already on this date, add unit to date availabilities array
-            return {
-              ...availabilities,
-              [date]: [...availabilities[date], unit]
-            };
           }
-        }, {});
-      })
+          // current availabilities already on this date, add unit to date availabilities array
+          return {
+            ...availabilities,
+            [date]: [...availabilities[date], unit]
+          };
+        }, {})
+      )
     );
     allAvailabilities.subscribe(val => console.log('results', val));
   } catch (e) {
     console.log(e);
   }
-};
+}
 
 module.exports = run;

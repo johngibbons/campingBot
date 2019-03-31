@@ -1,6 +1,6 @@
-const scrapeIt = require('scrape-it');
+import scrapeIt from 'scrape-it';
 
-module.exports = response => {
+export default response => {
   if (!response) return 0;
   const data = scrapeIt.scrapeHTML(response.body, {
     campsites: {

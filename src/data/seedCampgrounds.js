@@ -1,10 +1,10 @@
-const Campground = require('../models/campground');
-const fs = require('fs');
-const util = require('util');
-const xml2js = require('xml2js');
-const path = require('path');
-const { curry, reduce, assoc, keys, pipe } = require('ramda');
-const { RESERVE_AMERICA } = require('../constants');
+import fs from 'fs';
+import util from 'util';
+import xml2js from 'xml2js';
+import path from 'path';
+import { curry, reduce, assoc, keys, pipe } from 'ramda';
+import Campground from '../models/campground';
+import { RESERVE_AMERICA } from '../constants';
 
 const readFile = util.promisify(fs.readFile);
 const parser = util.promisify(new xml2js.Parser().parseString);
@@ -47,4 +47,4 @@ const seedCampgrounds = async () => {
   await Campground.insertMany(dataForDb);
 };
 
-module.exports = seedCampgrounds;
+export default seedCampgrounds;

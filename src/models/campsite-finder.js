@@ -1,13 +1,13 @@
-const { Schema, model } = require('mongoose');
+import mongoose from 'mongoose';
 
-const CampsiteFinderSchema = new Schema(
+const CampsiteFinderSchema = new mongoose.Schema(
   {
     campgroundId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Campgrounds'
     },
     userId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Users'
     },
     isActive: {
@@ -47,4 +47,4 @@ const CampsiteFinderSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model('CampsiteFinders', CampsiteFinderSchema);
+export default mongoose.model('CampsiteFinders', CampsiteFinderSchema);

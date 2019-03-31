@@ -1,6 +1,6 @@
-const request = require('request-promise-native');
+import request from 'request-promise-native';
 
-module.exports = async ({
+export default async ({
   campgroundId: { url, contractCode, facilityId },
   campingDate,
   lengthOfStay

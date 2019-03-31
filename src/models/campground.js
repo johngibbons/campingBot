@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+import mongoose from 'mongoose';
 
-const CampgroundSchema = new Schema(
+const CampgroundSchema = new mongoose.Schema(
   {
     agencyIcon: {
       type: String
@@ -68,4 +68,4 @@ const CampgroundSchema = new Schema(
 
 CampgroundSchema.index({ facilityName: 'text' });
 
-module.exports = model('Campgrounds', CampgroundSchema);
+export default mongoose.model('Campgrounds', CampgroundSchema);

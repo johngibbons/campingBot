@@ -1,7 +1,7 @@
-const postSearch = require('../external/caSearch');
-const updateFinderResults = require('./updateFinderResults');
-const sendEmail = require('../mailers/mailer');
-const { differenceWith } = require('ramda');
+import { differenceWith } from 'ramda';
+import postSearch from '../external/caSearch';
+import updateFinderResults from './updateFinderResults';
+import sendEmail from '../mailers/mailer';
 
 module.exports = async reserveCaCampsiteFinders => {
   try {

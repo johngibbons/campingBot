@@ -1,8 +1,7 @@
-const rp = require('request-promise-native');
-const { formatted } = require('../jobs/datesGenerator');
-const cheerio = require('cheerio');
-const { uniq } = require('ramda');
-const moment = require('moment');
+import rp from 'request-promise-native';
+import cheerio from 'cheerio';
+import moment from 'moment';
+import { formatted } from '../jobs/datesGenerator';
 
 const sleep = ms => new Promise(res => setTimeout(res, ms));
 
@@ -197,7 +196,7 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
   return availabilitiesArr;
 };
 
-const run = async ({ campgroundId: { placeId, facilityId }, allDates }) => {
+export default async ({ campgroundId: { placeId, facilityId }, allDates }) => {
   try {
     await request(sessionOptions);
   } catch (e) {
@@ -254,5 +253,3 @@ const run = async ({ campgroundId: { placeId, facilityId }, allDates }) => {
 
   return availabilities;
 };
-
-module.exports = run;

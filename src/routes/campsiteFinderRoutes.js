@@ -1,11 +1,11 @@
-module.exports = app => {
-  const {
-    listAllCampsiteFinders,
-    createCampsiteFinder,
-    updateCampsiteFinder,
-    deleteCampsiteFinder
-  } = require('../controllers/campsiteFindersController');
+import {
+  listAllCampsiteFinders,
+  createCampsiteFinder,
+  updateCampsiteFinder,
+  deleteCampsiteFinder
+} from '../controllers/campsiteFindersController';
 
+export default app => {
   app
     .route('/campsite-finders')
     .get(listAllCampsiteFinders)

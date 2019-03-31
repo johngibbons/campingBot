@@ -1,6 +1,6 @@
-const CampsiteFinder = require('../models/campsite-finder');
+import CampsiteFinder from '../models/campsite-finder';
 
-module.exports = async () => {
+export default async () => {
   await CampsiteFinder.remove({});
   console.log('successfully deleted finders');
 };

@@ -1,9 +1,9 @@
-const Campground = require('../models/campground');
-const request = require('request-promise-native');
-const { Maybe } = require('monet');
-const { RESERVE_CA, URL_RESERVE_CA, USER_AGENT } = require('../constants');
-const fs = require('fs');
-const util = require('util');
+import Campground from '../models/campground';
+import request from 'request-promise-native';
+import { Maybe } from 'monet';
+import { RESERVE_CA, URL_RESERVE_CA, USER_AGENT } from '../constants';
+import fs from 'fs';
+import util from 'util';
 
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
@@ -164,4 +164,4 @@ const saveCaCampgrounds = async () => {
   }
 };
 
-module.exports = saveCaCampgrounds;
+export default saveCaCampgrounds;
