@@ -39,6 +39,10 @@ export const login = async (req, res) => {
   try {
     // we need the password for authentication
     const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      res.status(401).send({ error: 'Username or password incorrect.' });
+      return;
+    }
     const correctPassword = await bcrypt.compare(password, user.password);
     if (correctPassword) {
       const token = jwt.sign({ id: user._id }, req.app.get('secretKey'), {
