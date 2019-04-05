@@ -4,7 +4,8 @@ const CampsiteFinderSchema = new mongoose.Schema(
   {
     campgroundId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Campgrounds'
+      ref: 'Campgrounds',
+      required: true
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
