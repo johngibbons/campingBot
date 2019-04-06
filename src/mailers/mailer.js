@@ -8,7 +8,7 @@ const sg = sendgrid(process.env.SENDGRID_API_KEY);
 const templateDir = path.join(__dirname, 'templates', 'daily-update');
 const template = new EmailTemplate(templateDir);
 
-module.exports = async (emailAddress, newAvailabilities, campsiteFinder) => {
+export default async (emailAddress, newAvailabilities, campsiteFinder) => {
   try {
     const email = await template.render(
       { campsiteFinder, newAvailabilities },

@@ -157,7 +157,7 @@ const searchNextRange = async (placeId, facilityId) => {
 const hasAllRequestedDates = (requested, available) =>
   requested.every(requestedDate => available.indexOf(requestedDate) > -1);
 
-const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
+const buildAvailabilitiesArray = async (placeId, facilityId) => {
   const { result: initialResult } = await getGridResults(placeId, facilityId);
   let lastDateChecked = moment();
   const availabilitiesArr = [];
@@ -196,7 +196,7 @@ const buildAvailabilitiesArray = async (placeId, facilityId, allDates) => {
   return availabilitiesArr;
 };
 
-export default async ({ campgroundId: { placeId, facilityId }, allDates }) => {
+export default async ({ placeId, facilityId }) => {
   try {
     await request(sessionOptions);
   } catch (e) {
@@ -209,11 +209,7 @@ export default async ({ campgroundId: { placeId, facilityId }, allDates }) => {
     console.log('error requesting search:', e);
     throw e;
   }
-  const availabilitiesArr = await buildAvailabilitiesArray(
-    placeId,
-    facilityId,
-    allDates
-  );
+  const availabilitiesArr = await buildAvailabilitiesArray(placeId, facilityId);
 
   const availableDatesByUnit = availabilitiesArr.reduce(
     (availabilities, availableSite) => {
@@ -222,13 +218,13 @@ export default async ({ campgroundId: { placeId, facilityId }, allDates }) => {
       const formattedDate = formatted(date);
       const unitDates = availabilities[unit];
       if (!unitDates) {
-        // no previous availabilites on this unit, so add to availabilities obj
+        // no existing availabilites on this unit, so add to availabilities obj
         return { ...availabilities, [unit]: [formattedDate] };
       } else if (unitDates.includes(formattedDate)) {
         // duplicate, just return obj
         return availabilities;
       }
-      // previous availabilities already on this unit, add date to unit availabilities array
+      // existing availabilities already on this unit, add date to unit availabilities array
       return {
         ...availabilities,
         [unit]: [...availabilities[unit], formattedDate]
@@ -237,19 +233,5 @@ export default async ({ campgroundId: { placeId, facilityId }, allDates }) => {
     {}
   );
 
-  const availabilities = allDates
-    .map(requestedDatesArr => {
-      const matchingUnits = Object.keys(availableDatesByUnit).filter(unitId =>
-        hasAllRequestedDates(requestedDatesArr, availableDatesByUnit[unitId])
-      );
-
-      return {
-        date: requestedDatesArr[0],
-        siteCount: matchingUnits.length,
-        lengthOfStay: requestedDatesArr.length
-      };
-    })
-    .filter(resultObj => resultObj.siteCount !== 0);
-
-  return availabilities;
+  return availableDatesByUnit;
 };

@@ -61,6 +61,10 @@ const CampgroundSchema = new mongoose.Schema(
     },
     url: {
       type: String
+    },
+    availabilities: [{}],
+    lastCheckedAt: {
+      type: Date
     }
   },
   { timestamps: true }

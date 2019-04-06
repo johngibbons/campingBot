@@ -3,26 +3,24 @@ import postSearch from '../external/caSearch';
 import updateFinderResults from './updateFinderResults';
 import sendEmail from '../mailers/mailer';
 
-module.exports = async reserveCaCampsiteFinders => {
+module.exports = async reserveCaCampgrounds => {
   try {
     console.log('STARTING RESERVE CA SCRAPE AT:', new Date());
     console.time('RESERVE CA');
     /* eslint-disable-next-line */
-    for (const campsiteFinder of reserveCaCampsiteFinders) {
+    for (const campground of reserveCaCampgrounds) {
       console.log(
-        '----------------------START FOR CA FINDER---------------------'
+        '----------------------START FOR CA CAMPGROUND---------------------'
       );
       console.log(
-        'campsiteFinder:',
-        `${campsiteFinder.campgroundId.placeName} ${
-          campsiteFinder.campgroundId.facilityName
-        }`
+        'campground:',
+        `${campground.placeName} ${campground.facilityName}`
       );
       try {
-        const availabilities = await postSearch(campsiteFinder);
+        const availabilities = await postSearch(campground);
         // returns old campsite finder
         const previousFinder = await updateFinderResults(
-          campsiteFinder._id,
+          campground._id,
           availabilities
         );
 
