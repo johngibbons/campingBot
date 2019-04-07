@@ -420,7 +420,7 @@ describe('generateDateArrayForDateRange', () => {
   });
 });
 
-describe('generateAllDates', () => {
+describe('generateDateArrayToCheckAvailabilitiesForAlert', () => {
   test('it generates the correct array of dates for a specific trip alert', () => {
     const startDate = tues.toDate(); // 7/18/2017
     const endDate = moment(tues)
