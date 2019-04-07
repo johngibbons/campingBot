@@ -14,7 +14,7 @@ const AlertSchema = new mongoose.Schema(
   {
     alertType: {
       type: String,
-      enum: ['SPECIFIC_DATES', 'GENERAL_AVAILABILITY']
+      enum: ['SPECIFIC_TRIP', 'GENERAL_AVAILABILITY']
     },
     campgrounds: {
       type: [mongoose.Schema.Types.ObjectId],

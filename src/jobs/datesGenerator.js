@@ -139,10 +139,13 @@ export const generateAllDates = ({
  *
  */
 export const generateDateArraysForDateRange = (
-  startDate,
-  endDate,
   daysOfTheWeekThatCanBeAddedToArray,
-  minNumNights
+  minNumNights,
+  startDate = moment().toDate(),
+  endDate = moment()
+    .add(6, 'months')
+    .endOf('month')
+    .toDate()
 ) => {
   // map DAYS_OF_THE_WEEK to moment day integers, e.g. ['SUNDAY', 'TUESDAY'] -> [0, 2]
   const daysOfTheWeekThatCanBeAddedToArrayInMomentNumbers = daysOfTheWeekThatCanBeAddedToArray.map(
@@ -177,4 +180,16 @@ export const generateDateArraysForDateRange = (
   }
 
   return allIterationsOfDaySequences;
+};
+
+export const generateDateArrayForSpecificTrip = (startDate, endDate) => {
+  const currDate = moment(startDate);
+  const dateArray = [];
+
+  while (currDate.isBefore(moment(endDate))) {
+    dateArray.push(formatted(currDate));
+    currDate.add(1, 'day');
+  }
+
+  return dateArray;
 };

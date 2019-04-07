@@ -7,7 +7,8 @@ import {
   generateDates,
   generateLengthOfStay,
   formatted,
-  generateDateArraysForDateRange
+  generateDateArraysForDateRange,
+  generateDateArrayForSpecificTrip
 } from './datesGenerator';
 import { DAYS_OF_THE_WEEK } from '../models/alert';
 
@@ -218,10 +219,10 @@ describe('generateDateArraysForDateRange', () => {
 
     expect(
       generateDateArraysForDateRange(
-        startDate,
-        endDate,
         daysOfTheWeek,
-        minNumNights
+        minNumNights,
+        startDate,
+        endDate
       )
     ).toEqual([['Tue Jul 18 2017'], ['Mon Jul 24 2017']]);
   });
@@ -241,10 +242,10 @@ describe('generateDateArraysForDateRange', () => {
 
     expect(
       generateDateArraysForDateRange(
-        startDate,
-        endDate,
         daysOfTheWeek,
-        minNumNights
+        minNumNights,
+        startDate,
+        endDate
       )
     ).toEqual([
       ['Tue Jul 18 2017', 'Wed Jul 19 2017'],
@@ -267,10 +268,10 @@ describe('generateDateArraysForDateRange', () => {
 
     expect(
       generateDateArraysForDateRange(
-        startDate,
-        endDate,
         daysOfTheWeek,
-        minNumNights
+        minNumNights,
+        startDate,
+        endDate
       )
     ).toEqual([
       ['Sun Jul 23 2017', 'Mon Jul 24 2017', 'Tue Jul 25 2017'],
@@ -292,10 +293,10 @@ describe('generateDateArraysForDateRange', () => {
 
     expect(
       generateDateArraysForDateRange(
-        startDate,
-        endDate,
         daysOfTheWeek,
-        minNumNights
+        minNumNights,
+        startDate,
+        endDate
       )
     ).toEqual([]);
   });
@@ -314,11 +315,37 @@ describe('generateDateArraysForDateRange', () => {
 
     expect(
       generateDateArraysForDateRange(
-        startDate,
-        endDate,
         daysOfTheWeek,
-        minNumNights
+        minNumNights,
+        startDate,
+        endDate
       )
     ).toEqual([]);
+  });
+});
+
+describe('generateDateArrayForSpecificTrip', () => {
+  test('it generates the correct date array for a date range', () => {
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues)
+      .add(1, 'week')
+      .toDate();
+
+    expect(generateDateArrayForSpecificTrip(startDate, endDate)).toEqual([
+      'Tue Jul 18 2017',
+      'Wed Jul 19 2017',
+      'Thu Jul 20 2017',
+      'Fri Jul 21 2017',
+      'Sat Jul 22 2017',
+      'Sun Jul 23 2017',
+      'Mon Jul 24 2017'
+    ]);
+  });
+
+  test('it returns an empty array for startDate that is equal to endDate', () => {
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues);
+
+    expect(generateDateArrayForSpecificTrip(startDate, endDate)).toEqual([]);
   });
 });
