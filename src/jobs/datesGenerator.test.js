@@ -277,4 +277,48 @@ describe('generateDateArraysForDateRange', () => {
       ['Mon Jul 24 2017', 'Tue Jul 25 2017', 'Wed Jul 26 2017']
     ]);
   });
+
+  test('it returns an empty array if no values would be valid', () => {
+    const minNumNights = 3;
+    const daysOfTheWeek = [
+      DAYS_OF_THE_WEEK.MONDAY,
+      DAYS_OF_THE_WEEK.WEDNESDAY,
+      DAYS_OF_THE_WEEK.SUNDAY
+    ];
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues) // 8/1/2017
+      .add(2, 'weeks')
+      .toDate();
+
+    expect(
+      generateDateArraysForDateRange(
+        startDate,
+        endDate,
+        daysOfTheWeek,
+        minNumNights
+      )
+    ).toEqual([]);
+  });
+
+  test('it returns an empty array if startDate is after endDate', () => {
+    const minNumNights = 3;
+    const daysOfTheWeek = [
+      DAYS_OF_THE_WEEK.MONDAY,
+      DAYS_OF_THE_WEEK.WEDNESDAY,
+      DAYS_OF_THE_WEEK.SUNDAY
+    ];
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues) // 7/17/2017
+      .subtract(1, 'day')
+      .toDate();
+
+    expect(
+      generateDateArraysForDateRange(
+        startDate,
+        endDate,
+        daysOfTheWeek,
+        minNumNights
+      )
+    ).toEqual([]);
+  });
 });
