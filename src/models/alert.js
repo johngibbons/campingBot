@@ -10,11 +10,17 @@ export const DAYS_OF_THE_WEEK = {
   SATURDAY: 'SATURDAY'
 };
 
+export const ALERT_TYPES = {
+  GENERAL_AVAILABILITY: 'GENERAL_AVAILABILITY',
+  SPECIFIC_TRIP: 'SPECIFIC_TRIP'
+};
+
 const AlertSchema = new mongoose.Schema(
   {
     alertType: {
       type: String,
-      enum: ['SPECIFIC_TRIP', 'GENERAL_AVAILABILITY']
+      enum: Object.values(ALERT_TYPES),
+      required: true
     },
     campgrounds: {
       type: [mongoose.Schema.Types.ObjectId],
@@ -27,14 +33,12 @@ const AlertSchema = new mongoose.Schema(
       required: true
     },
     startDate: {
-      type: Date,
-      default: null
+      type: Date
     },
     endDate: {
-      type: Date,
-      default: null
+      type: Date
     },
-    daysOfTheWeek: {
+    nightsOfTheWeekToIncludeInAlert: {
       type: [String],
       enum: Object.values(DAYS_OF_THE_WEEK)
     },

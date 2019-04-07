@@ -1,15 +1,5 @@
 import moment from 'moment';
-import { DAYS_OF_THE_WEEK } from '../models/alert';
-
-const daysOfTheWeekToMomentDaysStringMap = {
-  [DAYS_OF_THE_WEEK.SUNDAY]: 'Sunday',
-  [DAYS_OF_THE_WEEK.MONDAY]: 'Monday',
-  [DAYS_OF_THE_WEEK.TUESDAY]: 'Tuesday',
-  [DAYS_OF_THE_WEEK.WEDNESDAY]: 'Wednesday',
-  [DAYS_OF_THE_WEEK.THURSDAY]: 'Thursday',
-  [DAYS_OF_THE_WEEK.FRIDAY]: 'Friday',
-  [DAYS_OF_THE_WEEK.SATURDAY]: 'Saturday'
-};
+import { DAYS_OF_THE_WEEK, ALERT_TYPES } from '../models/alert';
 
 const daysOfTheWeekToMomentDaysNumberMap = {
   [DAYS_OF_THE_WEEK.SUNDAY]: 0,
@@ -89,35 +79,6 @@ export const generateLengthOfStay = ({
   return Math.ceil(moment(endDate).diff(moment(startDate), 'days'));
 };
 
-const getWeekendsFromFridays = fridays =>
-  fridays.reduce((all, curr) => {
-    return [...all, formatDates([curr, moment(curr).day('Saturday')])];
-  }, []);
-
-export const generateAllDates = ({
-  startDate,
-  endDate,
-  isWeekendsOnly,
-  dateOption
-}) => {
-  if (dateOption === 'NEXT_SIX_MONTHS') {
-    return getWeekendsFromFridays(fridaysInRange());
-  } else if (isWeekendsOnly) {
-    return getWeekendsFromFridays(fridaysInRange(startDate, endDate));
-  } else if (isValidStart(startDate)) {
-    const allDates = [];
-    let currentDate = moment(startDate);
-    const end = moment(endDate);
-    while (currentDate !== end) {
-      console.log('currentDate', currentDate);
-      console.log('end', end);
-      allDates.push(currentDate);
-      currentDate = currentDate.add(1, 'day');
-    }
-    return formatDates(allDates);
-  }
-};
-
 /**
  * Generates all possible iterations of arrays of days that satisfy
  * the input parameters
@@ -138,22 +99,27 @@ export const generateAllDates = ({
  * ]
  *
  */
-export const generateDateArraysForDateRange = (
+export const generateDateArraysForDayOfTheWeekAvailabilityWithinDateRange = (
   daysOfTheWeekThatCanBeAddedToArray,
   minNumNights,
-  startDate = moment().toDate(),
-  endDate = moment()
-    .add(6, 'months')
-    .endOf('month')
-    .toDate()
+  startDate,
+  endDate
 ) => {
+  const startDateOrDefault = startDate || moment().toDate();
+  const endDateOrDefault =
+    endDate ||
+    moment()
+      .add(6, 'months')
+      .endOf('month')
+      .toDate();
+
   // map DAYS_OF_THE_WEEK to moment day integers, e.g. ['SUNDAY', 'TUESDAY'] -> [0, 2]
   const daysOfTheWeekThatCanBeAddedToArrayInMomentNumbers = daysOfTheWeekThatCanBeAddedToArray.map(
     dayEnumValue => daysOfTheWeekToMomentDaysNumberMap[dayEnumValue]
   );
-  const currentFirstDayForArrayOfDays = moment(startDate);
+  const currentFirstDayForArrayOfDays = moment(startDateOrDefault);
   const allIterationsOfDaySequences = [];
-  const endDateAsMomentObj = moment(endDate);
+  const endDateAsMomentObj = moment(endDateOrDefault);
   // subtract stay length since we don't want to stay past endDate
   endDateAsMomentObj.subtract(minNumNights, 'days');
 
@@ -182,7 +148,20 @@ export const generateDateArraysForDateRange = (
   return allIterationsOfDaySequences;
 };
 
-export const generateDateArrayForSpecificTrip = (startDate, endDate) => {
+/**
+ * Generates array of days for specific date range.
+ * Days in the array do not include the final day, similar to a hotel stay
+ * Example:
+ *
+ * input:
+ * startDate: 1/1/2019 (Sunday)
+ * endDate: 1/5/2019 (Thursday)
+ *
+ * output:
+ *   ['Sun Jan 1 2019', 'Mon Jan 2 2019', 'Tue Jan 3 2019', 'Wed Jan 4 2019']
+ *
+ */
+export const generateDateArrayForDateRange = (startDate, endDate) => {
   const currDate = moment(startDate);
   const dateArray = [];
 
@@ -192,4 +171,33 @@ export const generateDateArrayForSpecificTrip = (startDate, endDate) => {
   }
 
   return dateArray;
+};
+
+/**
+ * Generates an array of date arrays to check availabilities against for a given Alert
+ * Example output:
+ *
+ *  [
+ *    ['Sun Jan 1 2019', 'Mon Jan 2 2019', 'Tue Jan 3 2019', 'Wed Jan 4 2019'],
+ *    ['Mon Jan 2 2019', 'Tue Jan 3 2019', 'Wed Jan 4 2019', 'Thu Jan 5 2019']
+ *    ...
+ *  ]
+ *
+ */
+export const generateDateArrayToCheckAvailabilitiesForAlert = ({
+  alertType,
+  minNumNights,
+  nightsOfTheWeekToIncludeInAlert,
+  startDate,
+  endDate
+}) => {
+  if (alertType === ALERT_TYPES.SPECIFIC_TRIP) {
+    return [generateDateArrayForDateRange(startDate, endDate)];
+  }
+  return generateDateArraysForDayOfTheWeekAvailabilityWithinDateRange(
+    nightsOfTheWeekToIncludeInAlert,
+    minNumNights,
+    startDate,
+    endDate
+  );
 };
