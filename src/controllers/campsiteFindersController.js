@@ -1,6 +1,4 @@
-import mongoose from 'mongoose';
-
-const CampsiteFinder = mongoose.model('CampsiteFinders');
+import CampsiteFinder from '../models/campsite-finder';
 
 export const listAllCampsiteFinders = (req, res) => {
   CampsiteFinder.find({})
