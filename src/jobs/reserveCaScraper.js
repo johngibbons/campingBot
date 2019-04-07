@@ -2,8 +2,10 @@ import { differenceWith } from 'ramda';
 import postSearch from '../external/caSearch';
 import updateFinderResults from './updateFinderResults';
 import sendEmail from '../mailers/mailer';
+import Campground from '../models/campground';
+import Alert from '../models/alert';
 
-module.exports = async reserveCaCampgrounds => {
+export default async reserveCaCampgrounds => {
   try {
     console.log('STARTING RESERVE CA SCRAPE AT:', new Date());
     console.time('RESERVE CA');
@@ -18,6 +20,14 @@ module.exports = async reserveCaCampgrounds => {
       );
       try {
         const availabilities = await postSearch(campground);
+        await Campground.findByIdAndUpdate(campground._id, { availabilities });
+        const campgroundAlerts = await Alert.find({
+          campground: campground._id
+        }).populate('campground');
+
+        /* eslint-disable-next-line */
+        for (const alert of campgroundAlerts) {
+        }
         // returns old campsite finder
         const previousFinder = await updateFinderResults(
           campground._id,

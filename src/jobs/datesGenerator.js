@@ -1,4 +1,25 @@
 import moment from 'moment';
+import { DAYS_OF_THE_WEEK } from '../models/alert';
+
+const daysOfTheWeekToMomentDaysStringMap = {
+  [DAYS_OF_THE_WEEK.SUNDAY]: 'Sunday',
+  [DAYS_OF_THE_WEEK.MONDAY]: 'Monday',
+  [DAYS_OF_THE_WEEK.TUESDAY]: 'Tuesday',
+  [DAYS_OF_THE_WEEK.WEDNESDAY]: 'Wednesday',
+  [DAYS_OF_THE_WEEK.THURSDAY]: 'Thursday',
+  [DAYS_OF_THE_WEEK.FRIDAY]: 'Friday',
+  [DAYS_OF_THE_WEEK.SATURDAY]: 'Saturday'
+};
+
+const daysOfTheWeekToMomentDaysNumberMap = {
+  [DAYS_OF_THE_WEEK.SUNDAY]: 0,
+  [DAYS_OF_THE_WEEK.MONDAY]: 1,
+  [DAYS_OF_THE_WEEK.TUESDAY]: 2,
+  [DAYS_OF_THE_WEEK.WEDNESDAY]: 3,
+  [DAYS_OF_THE_WEEK.THURSDAY]: 4,
+  [DAYS_OF_THE_WEEK.FRIDAY]: 5,
+  [DAYS_OF_THE_WEEK.SATURDAY]: 6
+};
 
 export const daysUntilFriday = startDate =>
   moment(startDate)
@@ -95,4 +116,65 @@ export const generateAllDates = ({
     }
     return formatDates(allDates);
   }
+};
+
+/**
+ * Generates all possible iterations of arrays of days that satisfy
+ * the input parameters
+ *
+ * Example:
+ *
+ * input:
+ * startDate: 1/1/2019 (Sunday)
+ * endDate: 1/7/2019
+ * daysOfTheWeek: M,T,W.TH,F
+ * minNumNights: 2
+ *
+ * output: [
+ *   ['Mon Jan 2 2019', 'Tues Jan 3 2019'],
+ *   ['Tues Jan 3 2019', 'Weds Jan 4 2019'],
+ *   ['Weds Jan 4 2019', 'Thurs Jan 5 2019'],
+ *   ['Thurs Jan 5 2019', 'Fri Jan 6 2019'],
+ * ]
+ *
+ */
+export const generateDateArraysForDateRange = (
+  startDate,
+  endDate,
+  daysOfTheWeekThatCanBeAddedToArray,
+  minNumNights
+) => {
+  // map DAYS_OF_THE_WEEK to moment day integers, e.g. ['SUNDAY', 'TUESDAY'] -> [0, 2]
+  const daysOfTheWeekThatCanBeAddedToArrayInMomentNumbers = daysOfTheWeekThatCanBeAddedToArray.map(
+    dayEnumValue => daysOfTheWeekToMomentDaysNumberMap[dayEnumValue]
+  );
+  const currentFirstDayForArrayOfDays = moment(startDate);
+  const allIterationsOfDaySequences = [];
+  const endDateAsMomentObj = moment(endDate);
+  // subtract stay length since we don't want to stay past endDate
+  endDateAsMomentObj.subtract(minNumNights, 'days');
+
+  while (currentFirstDayForArrayOfDays.isSameOrBefore(endDateAsMomentObj)) {
+    const currentArrayOfDays = [];
+    let nightsLeftToFillWithADay = minNumNights;
+    const currrentDayToAddToArray = moment(currentFirstDayForArrayOfDays);
+
+    while (
+      daysOfTheWeekThatCanBeAddedToArrayInMomentNumbers.includes(
+        currrentDayToAddToArray.day()
+      ) &&
+      nightsLeftToFillWithADay > 0
+    ) {
+      currentArrayOfDays.push(formatted(currrentDayToAddToArray));
+      nightsLeftToFillWithADay -= 1;
+      currrentDayToAddToArray.add(1, 'day');
+    }
+
+    if (currentArrayOfDays.length === minNumNights) {
+      allIterationsOfDaySequences.push(currentArrayOfDays);
+    }
+    currentFirstDayForArrayOfDays.add(1, 'day');
+  }
+
+  return allIterationsOfDaySequences;
 };

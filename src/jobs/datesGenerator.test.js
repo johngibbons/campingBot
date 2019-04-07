@@ -6,8 +6,10 @@ import {
   fridaysInRange,
   generateDates,
   generateLengthOfStay,
-  formatted
+  formatted,
+  generateDateArraysForDateRange
 } from './datesGenerator';
+import { DAYS_OF_THE_WEEK } from '../models/alert';
 
 Date.now = jest.fn(() => 1500344808897); // 07.17.2017 (monday)
 const tues = moment('2017-07-18T12:20:38.936');
@@ -202,5 +204,77 @@ describe('generateLengthOfStay', () => {
         dateOption: 'SPECIFIC_DATES'
       })
     ).toBe(5);
+  });
+});
+
+describe('generateDateArraysForDateRange', () => {
+  test('it generates the correct date arrays for a minNumNights of 1', () => {
+    const minNumNights = 1;
+    const daysOfTheWeek = [DAYS_OF_THE_WEEK.MONDAY, DAYS_OF_THE_WEEK.TUESDAY];
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues)
+      .add(1, 'week')
+      .toDate();
+
+    expect(
+      generateDateArraysForDateRange(
+        startDate,
+        endDate,
+        daysOfTheWeek,
+        minNumNights
+      )
+    ).toEqual([['Tue Jul 18 2017'], ['Mon Jul 24 2017']]);
+  });
+
+  test('it generates the correct date arrays for a minNumNights of 2', () => {
+    const minNumNights = 2;
+    const daysOfTheWeek = [
+      DAYS_OF_THE_WEEK.MONDAY,
+      DAYS_OF_THE_WEEK.TUESDAY,
+      DAYS_OF_THE_WEEK.WEDNESDAY,
+      DAYS_OF_THE_WEEK.SUNDAY
+    ];
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues)
+      .add(1, 'week')
+      .toDate();
+
+    expect(
+      generateDateArraysForDateRange(
+        startDate,
+        endDate,
+        daysOfTheWeek,
+        minNumNights
+      )
+    ).toEqual([
+      ['Tue Jul 18 2017', 'Wed Jul 19 2017'],
+      ['Sun Jul 23 2017', 'Mon Jul 24 2017']
+    ]);
+  });
+
+  test('it generates the correct date arrays for a minNumNights of 3', () => {
+    const minNumNights = 3;
+    const daysOfTheWeek = [
+      DAYS_OF_THE_WEEK.MONDAY,
+      DAYS_OF_THE_WEEK.TUESDAY,
+      DAYS_OF_THE_WEEK.WEDNESDAY,
+      DAYS_OF_THE_WEEK.SUNDAY
+    ];
+    const startDate = tues.toDate(); // 7/18/2017
+    const endDate = moment(tues) // 8/1/2017
+      .add(2, 'weeks')
+      .toDate();
+
+    expect(
+      generateDateArraysForDateRange(
+        startDate,
+        endDate,
+        daysOfTheWeek,
+        minNumNights
+      )
+    ).toEqual([
+      ['Sun Jul 23 2017', 'Mon Jul 24 2017', 'Tue Jul 25 2017'],
+      ['Mon Jul 24 2017', 'Tue Jul 25 2017', 'Wed Jul 26 2017']
+    ]);
   });
 });
