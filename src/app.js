@@ -24,7 +24,7 @@ app.use(cors());
 // use native promises with MongoDB
 mongoose.Promise = global.Promise;
 
-mongoose.connect(mongoUrl, { useMongoClient: true });
+mongoose.connect(mongoUrl);
 
 authenticationRoutes(app);
 campsiteFinderRoutes(app);
