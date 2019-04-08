@@ -3,7 +3,7 @@ import postSearch from '../external/caSearch';
 import updateFinderResults from './updateFinderResults';
 import sendEmail from '../mailers/mailer';
 import Campground from '../models/campground';
-import Alert from '../models/alert';
+import CampsiteFinder from '../models/campsite-finder';
 
 export default async reserveCaCampgrounds => {
   try {
@@ -21,12 +21,12 @@ export default async reserveCaCampgrounds => {
       try {
         const availabilities = await postSearch(campground);
         await Campground.findByIdAndUpdate(campground._id, { availabilities });
-        const campgroundAlerts = await Alert.find({
+        const campgroundCampsiteFinders = await CampsiteFinder.find({
           campground: campground._id
-        }).populate('campground');
+        }).populate('campgrounds');
 
         /* eslint-disable-next-line */
-        for (const alert of campgroundAlerts) {
+        for (const campsiteFinder of campgroundCampsiteFinders) {
         }
         // returns old campsite finder
         const previousFinder = await updateFinderResults(

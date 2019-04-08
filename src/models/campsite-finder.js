@@ -1,21 +1,52 @@
 import mongoose from 'mongoose';
 
+export const DAYS_OF_THE_WEEK = {
+  SUNDAY: 'SUNDAY',
+  MONDAY: 'MONDAY',
+  TUESDAY: 'TUESDAY',
+  WEDNESDAY: 'WEDNESDAY',
+  THURSDAY: 'THURSDAY',
+  FRIDAY: 'FRIDAY',
+  SATURDAY: 'SATURDAY'
+};
+
+export const CAMPSITE_FINDER_TYPES = {
+  GENERAL_AVAILABILITY: 'GENERAL_AVAILABILITY',
+  SPECIFIC_TRIP: 'SPECIFIC_TRIP'
+};
+
 const CampsiteFinderSchema = new mongoose.Schema(
   {
-    campgroundId: {
-      type: mongoose.Schema.Types.ObjectId,
+    finderType: {
+      type: String,
+      enum: Object.values(CAMPSITE_FINDER_TYPES),
+      required: true
+    },
+    campgrounds: {
+      type: [mongoose.Schema.Types.ObjectId],
       ref: 'Campgrounds',
       required: true
     },
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Users'
+      ref: 'Users',
+      required: true
+    },
+    startDate: {
+      type: Date
+    },
+    endDate: {
+      type: Date
+    },
+    nightsOfTheWeekToIncludeInCampsiteFinder: {
+      type: [String],
+      enum: Object.values(DAYS_OF_THE_WEEK)
+    },
+    minNumNights: {
+      type: Number,
+      min: 1
     },
     isActive: {
-      type: Boolean,
-      default: true
-    },
-    isWeekendsOnly: {
       type: Boolean,
       default: true
     },
@@ -24,23 +55,6 @@ const CampsiteFinderSchema = new mongoose.Schema(
       default: false
     },
     emailAddresses: [String],
-    datesAvailable: [{}],
-    dateOption: {
-      type: String,
-      enum: ['NEXT_SIX_MONTHS', 'SPECIFIC_DATES'],
-      default: 'NEXT_SIX_MONTHS'
-    },
-    siteCode: {
-      type: String
-    },
-    startDate: {
-      type: Date,
-      default: null
-    },
-    endDate: {
-      type: Date,
-      default: null
-    },
     lastCheckedAt: {
       type: Date
     }

@@ -1,5 +1,8 @@
 import moment from 'moment';
-import { DAYS_OF_THE_WEEK, ALERT_TYPES } from '../models/alert';
+import {
+  DAYS_OF_THE_WEEK,
+  CAMPSITE_FINDER_TYPES
+} from '../models/campsite-finder';
 
 const daysOfTheWeekToMomentDaysNumberMap = {
   [DAYS_OF_THE_WEEK.SUNDAY]: 0,
@@ -174,7 +177,7 @@ export const generateDateArrayForDateRange = (startDate, endDate) => {
 };
 
 /**
- * Generates an array of date arrays to check availabilities against for a given Alert
+ * Generates an array of date arrays to check availabilities against for a given campsite finder
  * Example output:
  *
  *  [
@@ -184,18 +187,18 @@ export const generateDateArrayForDateRange = (startDate, endDate) => {
  *  ]
  *
  */
-export const generateDateArrayToCheckAvailabilitiesForAlert = ({
-  alertType,
+export const generateDateArrayToCheckAvailabilitiesForCampsiteFinder = ({
+  finderType,
   minNumNights,
-  nightsOfTheWeekToIncludeInAlert,
+  nightsOfTheWeekToIncludeInCampsiteFinder,
   startDate,
   endDate
 }) => {
-  if (alertType === ALERT_TYPES.SPECIFIC_TRIP) {
+  if (finderType === CAMPSITE_FINDER_TYPES.SPECIFIC_TRIP) {
     return [generateDateArrayForDateRange(startDate, endDate)];
   }
   return generateDateArraysForDayOfTheWeekAvailabilityWithinDateRange(
-    nightsOfTheWeekToIncludeInAlert,
+    nightsOfTheWeekToIncludeInCampsiteFinder,
     minNumNights,
     startDate,
     endDate

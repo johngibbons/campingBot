@@ -1,7 +1,7 @@
 import {
   generateDates,
   generateLengthOfStay,
-  generateDateArrayToCheckAvailabilitiesForAlert
+  generateDateArrayToCheckAvailabilitiesForCampsiteFinder
 } from './datesGenerator';
 import { RESERVE_AMERICA } from '../constants';
 
@@ -17,7 +17,7 @@ export default campsiteFinder => {
   }
 
   const campsiteFinderObj = campsiteFinder.toObject();
-  const allDates = generateDateArrayToCheckAvailabilitiesForAlert(
+  const allDates = generateDateArrayToCheckAvailabilitiesForCampsiteFinder(
     campsiteFinder
   );
   return [Object.assign({}, campsiteFinderObj, { allDates })];

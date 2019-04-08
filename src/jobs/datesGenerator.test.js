@@ -9,9 +9,12 @@ import {
   formatted,
   generateDateArraysForDayOfTheWeekAvailabilityWithinDateRange,
   generateDateArrayForDateRange,
-  generateDateArrayToCheckAvailabilitiesForAlert
+  generateDateArrayToCheckAvailabilitiesForCampsiteFinder
 } from './datesGenerator';
-import { DAYS_OF_THE_WEEK, ALERT_TYPES } from '../models/alert';
+import {
+  DAYS_OF_THE_WEEK,
+  CAMPSITE_FINDER_TYPES
+} from '../models/campsite-finder';
 
 process.env.TEST_SUITE = 'dates-generator';
 
@@ -422,16 +425,16 @@ describe('generateDateArrayForDateRange', () => {
   });
 });
 
-describe('generateDateArrayToCheckAvailabilitiesForAlert', () => {
-  test('it generates the correct array of dates for a specific trip alert', () => {
+describe('generateDateArrayToCheckAvailabilitiesForCampsiteFinder', () => {
+  test('it generates the correct array of dates for a specific trip campsite finder', () => {
     const startDate = tues.toDate(); // 7/18/2017
     const endDate = moment(tues)
       .add(1, 'week')
       .toDate();
 
     expect(
-      generateDateArrayToCheckAvailabilitiesForAlert({
-        alertType: ALERT_TYPES.SPECIFIC_TRIP,
+      generateDateArrayToCheckAvailabilitiesForCampsiteFinder({
+        finderType: CAMPSITE_FINDER_TYPES.SPECIFIC_TRIP,
         startDate,
         endDate
       })
@@ -448,17 +451,17 @@ describe('generateDateArrayToCheckAvailabilitiesForAlert', () => {
     ]);
   });
 
-  test('it generates the correct array of dates for a general availability alert', () => {
+  test('it generates the correct array of dates for a general availability campsite finder', () => {
     const startDate = tues.toDate(); // 7/18/2017
     const endDate = moment(tues)
       .add(1, 'week')
       .toDate();
 
     expect(
-      generateDateArrayToCheckAvailabilitiesForAlert({
-        alertType: ALERT_TYPES.GENERAL_AVAILABILITY,
+      generateDateArrayToCheckAvailabilitiesForCampsiteFinder({
+        finderType: CAMPSITE_FINDER_TYPES.GENERAL_AVAILABILITY,
         minNumNights: 2,
-        nightsOfTheWeekToIncludeInAlert: [
+        nightsOfTheWeekToIncludeInCampsiteFinder: [
           DAYS_OF_THE_WEEK.FRIDAY,
           DAYS_OF_THE_WEEK.SATURDAY
         ],

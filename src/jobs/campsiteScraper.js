@@ -1,5 +1,4 @@
 import CampsiteFinder from '../models/campsite-finder';
-import Alert from '../models/alert';
 import { RESERVE_CA, RESERVE_AMERICA } from '../constants';
 import scrapeReserveAmerica from './reserveAmericaScraper';
 import scrapeReserveCa from './reserveCaScraper';
@@ -9,23 +8,24 @@ export default async () => {
   while (true && !process.env.PAUSE_SCRAPING) {
     const allCampsiteFinders = await CampsiteFinder.find({
       isActive: true
-    }).populate('campgroundId');
-    const allAlerts = await Alert.find({ isActive: true }).populate(
-      'campgrounds'
-    );
-    const allAlertCampgrounds = allAlerts.reduce((campgrounds, alert) => {
-      alert.campgrounds.forEach(campground => {
-        // eslint-disable-next-line no-param-reassign
-        campgrounds[campground._id] = campground;
-      });
-      return campgrounds;
-    }, {});
+    }).populate('campgrounds');
 
-    const reserveAmericaCampgrounds = allAlertCampgrounds.filter(
+    const allCampsiteFinderCampgrounds = allCampsiteFinders.reduce(
+      (uniqueCampgrounds, campsiteFinder) => {
+        campsiteFinder.campgrounds.forEach(campground => {
+          // eslint-disable-next-line no-param-reassign
+          uniqueCampgrounds[campground._id] = campground;
+        });
+        return uniqueCampgrounds;
+      },
+      {}
+    );
+
+    const reserveAmericaCampgrounds = allCampsiteFinderCampgrounds.filter(
       campground => campground.reservationAgency === RESERVE_AMERICA
     );
 
-    const reserveCaCampgrounds = allAlertCampgrounds.filter(
+    const reserveCaCampgrounds = allCampsiteFinderCampgrounds.filter(
       campground => campground.reservationAgency === RESERVE_CA
     );
 
