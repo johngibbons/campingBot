@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import CampsiteFinder from '../models/campsite-finder';
 
 export const listAllCampsiteFinders = (req, res) => {
@@ -9,10 +10,28 @@ export const listAllCampsiteFinders = (req, res) => {
 
 export const createCampsiteFinder = async (req, res) => {
   try {
-    const campsiteFinder = await new CampsiteFinder(req.body).save();
-    res.json(campsiteFinder);
+    const token = req.headers['x-access-token'];
+    if (!token) {
+      return res
+        .status(401)
+        .send({ auth: false, message: 'No token provided.' });
+    }
+
+    let body;
+    try {
+      const decodedToken = await jwt.verify(token, req.app.get('secretKey'));
+      console.log('token is', decodedToken);
+      body = { ...req.body, user: decodedToken.id };
+    } catch (err) {
+      console.log('err is', err);
+      return res
+        .status(500)
+        .send({ auth: false, message: 'Failed to authenticate token.' });
+    }
+    const campsiteFinder = await new CampsiteFinder(body).save();
+    return res.json(campsiteFinder);
   } catch (err) {
-    res.send(err);
+    return res.send(err);
   }
 };
 
