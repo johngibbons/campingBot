@@ -1,6 +1,4 @@
-import mongoose from 'mongoose';
-
-const Campground = mongoose.model('Campgrounds');
+import Campground from '../models/campground';
 
 // eslint-disable-next-line import/prefer-default-export
 export const searchCampgrounds = async (req, res) => {

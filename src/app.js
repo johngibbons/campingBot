@@ -4,10 +4,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-import campsiteScraper from './jobs/campsiteScraper';
-import seedAllCampgrounds from './data/seedAllCampgrounds';
-import resetCampsiteFinders from './data/resetCampsiteFinders';
 import authenticationRoutes from './routes/authentication';
 // API routes for CRUD campsite finders
 import campsiteFinderRoutes from './routes/campsiteFinderRoutes';
@@ -17,7 +13,12 @@ import campgroundRoutes from './routes/campgroundRoutes';
 config();
 
 const app = express();
-const mongoUrl = process.env.MONGODB_URI;
+const mongoUrl =
+  process.env.NODE_ENV === 'test'
+    ? `mongodb://localhost:27017/${process.env.TEST_SUITE}`
+    : process.env.MONGODB_URI;
+
+console.log('MONGO_URL', mongoUrl);
 
 app.set('port', process.env.PORT || 8080);
 app.set('secretKey', 'campingReserver');
@@ -28,16 +29,13 @@ app.use(cors());
 // use native promises with MongoDB
 mongoose.Promise = global.Promise;
 
-mongoose.connect(mongoUrl, { useMongoClient: true });
+mongoose.connect(mongoUrl, {
+  useCreateIndex: true,
+  useNewUrlParser: true
+});
 
 authenticationRoutes(app);
 campsiteFinderRoutes(app);
 campgroundRoutes(app);
 
-app.listen(app.get('port'), () => {
-  console.log('app listening on port', app.get('port'));
-});
-
-resetCampsiteFinders();
-// seedAllCampgrounds();
-campsiteScraper();
+export default app;

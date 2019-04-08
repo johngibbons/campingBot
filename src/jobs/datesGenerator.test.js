@@ -13,6 +13,8 @@ import {
 } from './datesGenerator';
 import { DAYS_OF_THE_WEEK, ALERT_TYPES } from '../models/alert';
 
+process.env.TEST_SUITE = 'dates-generator';
+
 Date.now = jest.fn(() => 1500344808897); // 07.17.2017 (monday)
 const tues = moment('2017-07-18T12:20:38.936');
 const thurs = moment('2017-07-20T18:20:38.936');
