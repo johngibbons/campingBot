@@ -20,16 +20,14 @@ export const createCampsiteFinder = async (req, res) => {
     let body;
     try {
       const decodedToken = await jwt.verify(token, req.app.get('secretKey'));
-      console.log('token is', decodedToken);
       body = { ...req.body, user: decodedToken.id };
     } catch (err) {
-      console.log('err is', err);
       return res
         .status(500)
         .send({ auth: false, message: 'Failed to authenticate token.' });
     }
     const campsiteFinder = await new CampsiteFinder(body).save();
-    return res.json(campsiteFinder);
+    return res.status(201).json(campsiteFinder);
   } catch (err) {
     return res.send(err);
   }

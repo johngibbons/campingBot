@@ -1,10 +1,12 @@
+/* eslint-env mocha */
 import request from 'supertest';
-import app from '../app';
+import expect from 'expect';
+import app from '../src/app';
 
 process.env.TEST_SUITE = 'authentication-tests';
 
 describe('POST /register', () => {
-  test('it should create a user if a valid user is sent', async () => {
+  it('it should create a user if a valid user is sent', async () => {
     expect.assertions(3);
     const validUser = {
       email: 'test@test.com',
@@ -19,7 +21,7 @@ describe('POST /register', () => {
     expect(response.body).not.toHaveProperty('user.password');
   });
 
-  test('it should fail if user already exists', async () => {
+  it('it should fail if user already exists', async () => {
     expect.assertions(3);
     const validUser = {
       email: 'test@test.com',
@@ -42,7 +44,7 @@ describe('POST /register', () => {
 });
 
 describe('POST /authenticate', () => {
-  test('it should return authenticated user if exists', async () => {
+  it('it should return authenticated user if exists', async () => {
     expect.assertions(3);
     const validUser = {
       email: 'test@test.com',
@@ -63,7 +65,7 @@ describe('POST /authenticate', () => {
     expect(response.body).not.toHaveProperty('user.password');
   });
 
-  test('it should return unauthorized with correct error message if password incorrect', async () => {
+  it('it should return unauthorized with correct error message if password incorrect', async () => {
     expect.assertions(2);
     const validUser = {
       email: 'test@test.com',

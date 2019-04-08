@@ -1,14 +1,16 @@
+/* eslint-env mocha */
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import app from '../app';
-import User from '../models/user';
-import Campground from '../models/campground';
-import { CAMPSITE_FINDER_TYPES } from '../models/campsite-finder';
+import expect from 'expect';
+import app from '../src/app';
+import User from '../src/models/user';
+import Campground from '../src/models/campground';
+import { CAMPSITE_FINDER_TYPES } from '../src/models/campsite-finder';
 
 process.env.TEST_SUITE = 'campsite-finders-controller';
 
 describe('POST /campsite-finders', () => {
-  test('it should create a campsite finder belonging to the authenticated user', async () => {
+  it('it should create a campsite finder belonging to the authenticated user', async () => {
     expect.assertions(3);
     const validUser = {
       email: 'test@test.com',
@@ -16,7 +18,6 @@ describe('POST /campsite-finders', () => {
       passwordConfirm: 'password'
     };
     const user = await User.create(validUser);
-    console.log('USER', user);
     const token = jwt.sign({ id: user._id }, app.get('secretKey'), {
       expiresIn: '1h'
     });
@@ -34,7 +35,7 @@ describe('POST /campsite-finders', () => {
       .send(campsiteFinderObj);
 
     expect(response.body).toMatchObject({
-      user: user._id,
+      user: user._id.toString(),
       finderType: campsiteFinderObj.finderType
     });
     expect(response.status).toEqual(201);
