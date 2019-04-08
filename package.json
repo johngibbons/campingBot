@@ -15,9 +15,8 @@
   },
   "jest": {
     "verbose": true,
-    "globalSetup": "./jestGlobalSetup.js",
-    "globalTeardown": "./jestTeardown.js",
-    "testEnvironment": "./jestMongoEnvironment.js"
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["./src/tests/setup"]
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",

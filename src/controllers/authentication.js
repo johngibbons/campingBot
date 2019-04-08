@@ -8,6 +8,7 @@ export const register = async (req, res) => {
     body: { email, password }
   } = req;
   try {
+    await User.init();
     const BCRYPT_SALT_ROUNDS = 12;
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
@@ -17,15 +18,16 @@ export const register = async (req, res) => {
     });
 
     // remove the password from the response object
-    const userObj = user.toObject();
-    delete userObj.password;
+    const userObj = await user.toObject();
 
     res.status(201).send({ user: userObj, token });
   } catch (err) {
     if (err.errmsg && err.errmsg.includes('duplicate key error')) {
       res.status(422).send({ error: 'Email is already registered' });
     } else {
-      res.status(500).send({ error: 'Internal server error.' });
+      res
+        .status(500)
+        .send({ error: 'Internal server error. Please try again.' });
     }
   }
 };
@@ -37,12 +39,15 @@ export const login = async (req, res) => {
 
   try {
     // we need the password for authentication
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email })
+      .select('+password')
+      .exec();
+    const userWithPw = user.toObject({ transform: false });
     if (!user) {
       res.status(401).send({ error: 'Username or password incorrect.' });
       return;
     }
-    const correctPassword = await bcrypt.compare(password, user.password);
+    const correctPassword = await bcrypt.compare(password, userWithPw.password);
     if (correctPassword) {
       const token = jwt.sign({ id: user._id }, req.app.get('secretKey'), {
         expiresIn: '1h'
@@ -50,13 +55,12 @@ export const login = async (req, res) => {
 
       // remove the password from the response object
       const userObj = user.toObject();
-      delete userObj.password;
 
       res.send({ user: userObj, token });
     } else {
       res.status(401).send({ error: 'Username or password incorrect.' });
     }
   } catch (err) {
-    res.status(500).send({ error: 'Internal server error.' });
+    res.status(500).send({ error: 'Internal server error. Please try again.' });
   }
 };
