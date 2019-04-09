@@ -9,6 +9,7 @@ beforeEach(async () => {
   */
   async function clearDB() {
     await mongoose.connection.dropDatabase();
+    mongoose.models = {};
   }
 
   /*

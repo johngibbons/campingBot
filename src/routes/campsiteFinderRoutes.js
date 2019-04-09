@@ -4,15 +4,16 @@ import {
   updateCampsiteFinder,
   deleteCampsiteFinder
 } from '../controllers/campsiteFindersController';
+import verifyToken from '../auth/verify-token';
 
 export default app => {
   app
     .route('/campsite-finders')
-    .get(listAllCampsiteFinders)
-    .post(createCampsiteFinder);
+    .get(verifyToken, listAllCampsiteFinders)
+    .post(verifyToken, createCampsiteFinder);
 
   app
     .route('/campsite-finders/:id')
-    .put(updateCampsiteFinder)
-    .delete(deleteCampsiteFinder);
+    .put(verifyToken, updateCampsiteFinder)
+    .delete(verifyToken, deleteCampsiteFinder);
 };

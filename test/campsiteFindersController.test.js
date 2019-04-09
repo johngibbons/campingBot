@@ -5,13 +5,12 @@ import expect from 'expect';
 import app from '../src/app';
 import User from '../src/models/user';
 import Campground from '../src/models/campground';
-import { CAMPSITE_FINDER_TYPES } from '../src/models/campsite-finder';
-
-process.env.TEST_SUITE = 'campsite-finders-controller';
+import CampsiteFinder, {
+  CAMPSITE_FINDER_TYPES
+} from '../src/models/campsite-finder';
 
 describe('POST /campsite-finders', () => {
-  it('it should create a campsite finder belonging to the authenticated user', async () => {
-    expect.assertions(3);
+  async function createUserWithToken() {
     const validUser = {
       email: 'test@test.com',
       password: 'password',
@@ -21,6 +20,16 @@ describe('POST /campsite-finders', () => {
     const token = jwt.sign({ id: user._id }, app.get('secretKey'), {
       expiresIn: '1h'
     });
+
+    return { user, token };
+  }
+
+  before(() => {
+    process.env.TEST_SUITE = 'campsite-finders-controller';
+  });
+
+  it('it should create a campsite finder belonging to the authenticated user', async () => {
+    const { user, token } = await createUserWithToken();
     const campground = await Campground.create({});
     const campsiteFinderObj = {
       finderType: CAMPSITE_FINDER_TYPES.SPECIFIC_TRIP,
@@ -39,5 +48,47 @@ describe('POST /campsite-finders', () => {
       finderType: campsiteFinderObj.finderType
     });
     expect(response.status).toEqual(201);
+  });
+
+  it('it should not create a campsite finder and return error if no auth token provided', async () => {
+    const campground = await Campground.create({});
+    const campsiteFinderObj = {
+      finderType: CAMPSITE_FINDER_TYPES.SPECIFIC_TRIP,
+      campgrounds: [campground._id],
+      startDate: Date.now(),
+      endDate: Date.now()
+    };
+
+    const response = await request(app)
+      .post('/campsite-finders')
+      .send(campsiteFinderObj);
+
+    expect(response.body).toEqual({
+      auth: false,
+      message: 'No token provided.'
+    });
+    expect(response.status).toEqual(401);
+    expect(await CampsiteFinder.findOne({})).toBeNull();
+  });
+
+  it('it should not create a campsite finder and return error if user not authenticated', async () => {
+    const campground = await Campground.create({});
+    const campsiteFinderObj = {
+      finderType: CAMPSITE_FINDER_TYPES.SPECIFIC_TRIP,
+      campgrounds: [campground._id],
+      startDate: Date.now(),
+      endDate: Date.now()
+    };
+
+    const response = await request(app)
+      .post('/campsite-finders')
+      .set('x-access-token', 'wrongtoken')
+      .send(campsiteFinderObj);
+
+    expect(response.body).toEqual({
+      auth: false,
+      message: 'Failed to authenticate token.'
+    });
+    expect(response.status).toEqual(403);
   });
 });

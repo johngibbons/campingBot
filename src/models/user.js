@@ -26,14 +26,16 @@ const UserSchema = new mongoose.Schema(
       type: String
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toObject: {
+      transform: (doc, ret, options) => {
+        // remove the password of every document before returning the result
+        delete ret.password;
+        return ret;
+      }
+    }
+  }
 );
-
-if (!UserSchema.options.toObject) UserSchema.options.toObject = {};
-UserSchema.options.toObject.transform = (doc, ret, options) => {
-  // remove the password of every document before returning the result
-  delete ret.password;
-  return ret;
-};
 
 export default mongoose.model('Users', UserSchema);

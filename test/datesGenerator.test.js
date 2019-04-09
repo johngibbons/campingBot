@@ -18,8 +18,6 @@ import {
   CAMPSITE_FINDER_TYPES
 } from '../src/models/campsite-finder';
 
-process.env.TEST_SUITE = 'dates-generator';
-
 describe('datesGenerator', () => {
   let tues;
   let thurs;
@@ -27,6 +25,9 @@ describe('datesGenerator', () => {
   let sat;
   let endFriday;
   let clock;
+  before(() => {
+    process.env.TEST_SUITE = 'dates-generator';
+  });
 
   beforeEach(() => {
     clock = lolex.install({ now: 1500344808897 });

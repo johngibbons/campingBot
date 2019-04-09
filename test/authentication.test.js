@@ -3,9 +3,10 @@ import request from 'supertest';
 import expect from 'expect';
 import app from '../src/app';
 
-process.env.TEST_SUITE = 'authentication-tests';
-
 describe('POST /register', () => {
+  before(() => {
+    process.env.TEST_SUITE = 'authentication-tests';
+  });
   it('it should create a user if a valid user is sent', async () => {
     expect.assertions(3);
     const validUser = {
