@@ -21,7 +21,6 @@ const mongoUrl =
 console.log('MONGO_URL', mongoUrl);
 
 app.set('port', process.env.PORT || 8080);
-app.set('secretKey', 'campingReserver');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());

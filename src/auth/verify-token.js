@@ -5,7 +5,7 @@ async function verifyToken(req, res, next) {
   if (!token)
     return res.status(401).send({ auth: false, message: 'No token provided.' });
   try {
-    const decoded = await jwt.verify(token, req.app.get('secretKey'));
+    const decoded = await jwt.verify(token, process.env.SECRET_KEY);
     req.userId = decoded.id;
     return next();
   } catch (err) {

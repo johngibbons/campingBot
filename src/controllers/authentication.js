@@ -13,7 +13,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
     const user = await User.create({ email, password: hashedPassword });
-    const token = jwt.sign({ id: user._id }, app.get('secretKey'), {
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: '1h'
     });
 
@@ -49,7 +49,7 @@ export const login = async (req, res) => {
     }
     const correctPassword = await bcrypt.compare(password, userWithPw.password);
     if (correctPassword) {
-      const token = jwt.sign({ id: user._id }, req.app.get('secretKey'), {
+      const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
         expiresIn: '1h'
       });
 

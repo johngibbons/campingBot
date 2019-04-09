@@ -34,6 +34,11 @@ export const updateCampsiteFinder = async (req, res) => {
       }
     );
 
+    if (!campsiteFinder) {
+      res.status(403).send({ error: 'Not authorized' });
+      return;
+    }
+
     res.json(campsiteFinder);
   } catch (err) {
     res.send(err);
@@ -42,7 +47,15 @@ export const updateCampsiteFinder = async (req, res) => {
 
 export const deleteCampsiteFinder = async (req, res) => {
   try {
-    await CampsiteFinder.remove({ _id: req.params.id, user: req.userId });
+    const { deletedCount } = await CampsiteFinder.deleteOne({
+      _id: req.params.id,
+      user: req.userId
+    });
+
+    if (deletedCount !== 1) {
+      res.status(403).send({ error: 'Not authorized' });
+      return;
+    }
 
     res.json({ message: 'successfully deleted' });
   } catch (err) {
