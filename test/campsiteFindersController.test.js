@@ -2,7 +2,6 @@
 import request from 'supertest';
 import expect from 'expect';
 import app from '../src/app';
-import Campground from '../src/models/campground';
 import CampsiteFinder, {
   CAMPSITE_FINDER_TYPES
 } from '../src/models/campsite-finder';

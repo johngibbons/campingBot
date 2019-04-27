@@ -25,10 +25,6 @@ beforeEach(async () => {
         useNewUrlParser: true
       }
     );
-    console.log(
-      'connected to',
-      `mongodb://localhost:27017/${process.env.TEST_SUITE}`
-    );
     await clearDB();
   } else {
     await clearDB();
