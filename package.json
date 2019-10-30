@@ -24,7 +24,7 @@
     "moment": "^2.18.1",
     "monet": "^0.8.10",
     "mongodb": "^2.2.26",
-    "mongoose": "^4.11.1",
+    "mongoose": "^5.7.5",
     "newrelic": "^1.40.0",
     "osmosis": "^1.1.4",
     "ramda": "^0.24.1",
