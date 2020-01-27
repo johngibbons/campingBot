@@ -129,6 +129,6 @@ module.exports = async function headlessScraper(campsiteFinder) {
     })
     .filter(resultObj => resultObj.siteCount !== 0);
 
-  await page.close();
+  await browser.close();
   return availabilities;
 };
