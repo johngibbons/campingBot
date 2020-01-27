@@ -1,4 +1,4 @@
-const postSearch = require('../external/caSearch');
+const postSearch = require('../jobs/reserveCaHeadlessScraper');
 const updateFinderResults = require('./updateFinderResults');
 const sendEmail = require('../mailers/mailer');
 const { differenceWith } = require('ramda');

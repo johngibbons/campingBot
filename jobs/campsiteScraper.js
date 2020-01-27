@@ -10,6 +10,8 @@ module.exports = async () => {
       isActive: true
     }).populate('campgroundId');
 
+    console.log('allCampsiteFinders', allCampsiteFinders);
+
     const withDates = allCampsiteFinders
       .map(campsiteFinder => setDates(campsiteFinder))
       .reduce((acc, curr) => [...acc, ...curr], []);
@@ -27,6 +29,7 @@ module.exports = async () => {
     await scrapeReserveAmerica(reserveAmericaCampsiteFinders);
     await scrapeReserveCa(reserveCaCampsiteFinders);
     const fiveMinutes = 5 * 60 * 1000;
-    await new Promise(resolve => setTimeout(resolve, fiveMinutes));
+    const waitTime = Number(process.env.SCRAPE_DELAY) || fiveMinutes;
+    await new Promise(resolve => setTimeout(resolve, waitTime));
   }
 };

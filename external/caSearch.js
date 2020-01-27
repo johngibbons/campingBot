@@ -28,7 +28,7 @@ const sessionOptions = {
 
 const searchOptions = (placeId, facilityId) => ({
   url:
-    'https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearchm.aspx',
+    'https://www.reservecalifornia.com/CaliforniaWebHome/Facilities/AdvanceSearch.aspx',
   method: 'POST',
   body: {
     ctl01$hdnLoginCaptchResponse: null,
