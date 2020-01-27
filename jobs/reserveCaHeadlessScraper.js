@@ -17,6 +17,7 @@ module.exports = async function headlessScraper(campsiteFinder) {
   const browser = await puppeteer.launch({
     headless,
     slowMo,
+    args: ['--no-sandbox'], // required for heroku
     defaultViewport: { width, height, deviceScaleFactor: 1 }
   });
   const page = await browser.newPage();
