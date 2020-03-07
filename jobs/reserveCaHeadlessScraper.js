@@ -51,6 +51,7 @@ module.exports = async function headlessScraper(campsiteFinder) {
     await page.waitForSelector('#mainContent_txtArrivalDate');
     await page.click('#mainContent_txtArrivalDate');
     await page.waitFor(500);
+    await page.waitForSelector('.ui-datepicker-close');
     await page.click('.ui-datepicker-close');
     await page.type(
       '#mainContent_txtArrivalDate',
