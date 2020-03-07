@@ -48,6 +48,7 @@ module.exports = async function headlessScraper(campsiteFinder) {
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('Enter');
 
+    await page.waitForSelector('#mainContent_txtArrivalDate');
     await page.click('#mainContent_txtArrivalDate');
     await page.waitFor(500);
     await page.click('.ui-datepicker-close');
@@ -141,7 +142,7 @@ module.exports = async function headlessScraper(campsiteFinder) {
     return availabilities;
   } catch (error) {
     console.log('There was a scraping error:', error);
-    return [];
+    throw new Error(error);
   } finally {
     await browser.close();
   }
