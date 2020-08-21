@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
 const CampsiteFinderSchema = new Schema({
@@ -28,6 +29,7 @@ const CampsiteFinderSchema = new Schema({
   },
   emailAddresses: [String],
   datesAvailable: [{}],
+  mostRecentNonEmptyDatesAvailable: [{}],
   dateOption: {
     type: String,
     enum: ['NEXT_SIX_MONTHS', 'SPECIFIC_DATES'],

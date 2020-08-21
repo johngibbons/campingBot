@@ -36,7 +36,17 @@ module.exports = async reserveCaCampsiteFinders => {
           (previousFinder && previousFinder.datesAvailable) || []
         );
 
-        if (newAvailabilites.length) {
+        const newAvailabilitesDifferentThanPreviouslyNonEmpty = differenceWith(
+          (newAvail, oldAvail) => newAvail.date === oldAvail.date,
+          availabilities || [],
+          (previousFinder && previousFinder.mostRecentNonEmptyDatesAvailable) ||
+            []
+        );
+
+        if (
+          newAvailabilites.length &&
+          newAvailabilitesDifferentThanPreviouslyNonEmpty.length
+        ) {
           campsiteFinder.emailAddresses.forEach(emailAddress => {
             console.log('-------------RESERVE CA-------------');
             console.log('sending an email for:', campsiteFinder);
@@ -44,9 +54,17 @@ module.exports = async reserveCaCampsiteFinders => {
               'previous availabilites were:',
               previousFinder.datesAvailable
             );
+            console.log(
+              'previous non empty availabilites were:',
+              previousFinder.mostRecentNonEmptyDatesAvailable
+            );
             console.log('new availabilities are:', newAvailabilites);
             console.log('-------------END RESERVE CA-------------');
-            sendEmail(emailAddress, newAvailabilites, campsiteFinder);
+            sendEmail(
+              emailAddress,
+              newAvailabilitesDifferentThanPreviouslyNonEmpty,
+              campsiteFinder
+            );
           });
         }
         console.log(
