@@ -48,18 +48,13 @@ module.exports = async function headlessScraper(campsiteFinder) {
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('Enter');
 
+    const startDate = moment()
+      .add(1, 'days')
+      .format('L');
     await page.waitForSelector('#mainContent_txtArrivalDate');
-    await page.click('#mainContent_txtArrivalDate');
-    await page.waitFor(500);
-    await page.waitForSelector('.ui-datepicker-close');
-    await page.click('.ui-datepicker-close');
-    await page.type(
-      '#mainContent_txtArrivalDate',
-      moment()
-        .add(1, 'days')
-        .format('L')
-    );
-
+    await page.evaluate(date => {
+      document.querySelector('#mainContent_txtArrivalDate').value = date;
+    }, startDate);
     await page.select('#ddlHomeNights', '1');
 
     await page.waitFor(500);
