@@ -26,9 +26,8 @@ module.exports = async reserveCaCampsiteFinders => {
           availabilities
         );
 
-        if (!previousFinder) {
-          return;
-        }
+        console.log('availabilites', availabilities);
+        console.log('previousFinder', previousFinder);
 
         const newAvailabilites = differenceWith(
           (newAvail, oldAvail) => newAvail.date === oldAvail.date,
@@ -41,6 +40,12 @@ module.exports = async reserveCaCampsiteFinders => {
           availabilities || [],
           (previousFinder && previousFinder.mostRecentNonEmptyDatesAvailable) ||
             []
+        );
+
+        console.log('newAvailabilities', newAvailabilites);
+        console.log(
+          'newAvailabilitesDifferentThanPreviouslyNonEmpty',
+          newAvailabilitesDifferentThanPreviouslyNonEmpty
         );
 
         if (
