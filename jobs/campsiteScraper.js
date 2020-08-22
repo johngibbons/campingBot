@@ -10,7 +10,7 @@ module.exports = async () => {
       isActive: true
     }).populate('campgroundId');
 
-    console.log('allCampsiteFinders', allCampsiteFinders);
+    // console.log('allCampsiteFinders', allCampsiteFinders);
 
     const withDates = allCampsiteFinders
       .map(campsiteFinder => setDates(campsiteFinder))
