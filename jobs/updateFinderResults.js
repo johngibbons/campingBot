@@ -11,7 +11,7 @@ module.exports = (_id, datesAvailable = []) => {
       }
     : { datesAvailable, lastCheckedAt };
 
-  CampsiteFinder.findOneAndUpdate({ _id }, updateObject).catch(err =>
+  return CampsiteFinder.findOneAndUpdate({ _id }, updateObject).catch(err =>
     console.log(err)
   );
 };
