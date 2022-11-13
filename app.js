@@ -19,7 +19,7 @@ app.use(cors());
 // use native promises with MongoDB
 mongoose.Promise = global.Promise;
 
-mongoose.connect(mongoUrl, { useMongoClient: true });
+mongoose.connect(mongoUrl);
 
 // API routes for CRUD campsite finders
 const campsiteFinderRoutes = require('./routes/campsiteFinderRoutes');
