@@ -10,7 +10,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const seedAllCampgrounds = require('./data/seedAllCampgrounds');
 const resetCampsiteFinders = require('./data/resetCampsiteFinders');
-const postSearch = require('./jobs/reserveCaHeadlessScraper');
 
 app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.urlencoded({ extended: true }));

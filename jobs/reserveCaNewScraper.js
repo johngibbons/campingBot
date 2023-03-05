@@ -37,7 +37,7 @@ module.exports = async function headlessScraper(campsiteFinder = {}) {
     }
   );
 
-  console.log('Facility', response.body.Facility);
+  // console.log('Facility', response.body.Facility);
 
   const unitsMap = Object.keys(response.body.Facility.Units).reduce(
     (acc, unitKey) => ({ ...acc, [unitKey]: [] }),
@@ -76,7 +76,7 @@ module.exports = async function headlessScraper(campsiteFinder = {}) {
       }
     );
 
-    console.log('Facility Second', currResponse.body.Facility);
+    // console.log('Facility Second', currResponse.body.Facility);
 
     Object.entries(currResponse.body.Facility.Units || []).forEach(
       ([unitKey, unitValue]) => {
