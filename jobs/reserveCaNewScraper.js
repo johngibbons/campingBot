@@ -82,8 +82,8 @@ module.exports = async function headlessScraper(campsiteFinder = {}) {
       .filter(
         ([_, unitValue]) =>
           unitValue.AllowWebBooking &&
-          unitValue.isWebViewable &&
-          !unitValue.isAda
+          unitValue.IsWebViewable &&
+          !unitValue.IsAda
       )
       .forEach(([unitKey, unitValue]) => {
         const slices = unitValue.Slices;
