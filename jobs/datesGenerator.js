@@ -1,10 +1,9 @@
 const moment = require('moment');
 
-const daysUntilFriday = startDate => {
-  return moment(startDate)
+const daysUntilFriday = startDate =>
+  moment(startDate)
     .day('Friday')
     .diff(moment(startDate), 'days');
-};
 
 const isInFuture = date => moment(date).diff(moment(), 'days') >= 0;
 const isValidStart = date => moment(date).diff(moment(), 'days') > 1;
@@ -25,12 +24,23 @@ const nextFriday = startDate => {
 
 exports.nextFriday = nextFriday;
 
-const formatted = date =>
-  moment(date, 'M/D/Y')
-    .toDate()
-    .toDateString();
+const formatted = date => moment(date, 'M/D/Y').format('M-D-YYYY');
 
 exports.formatted = formatted;
+
+const arrOfDateEveryThirtyDaysBetween = (startDate, endDate) => {
+  const datesArr = [];
+  const date = moment(startDate);
+
+  while (date < moment(endDate)) {
+    datesArr.push(formatted(date));
+    date.add(30, 'days');
+  }
+
+  return datesArr;
+};
+
+exports.arrOfDateEveryThirtyDaysBetween = arrOfDateEveryThirtyDaysBetween;
 
 const fridaysInRange = (
   startDate = moment(),
@@ -78,9 +88,10 @@ exports.generateLengthOfStay = ({
 };
 
 const getWeekendsFromFridays = fridays =>
-  fridays.reduce((all, curr) => {
-    return [...all, formatDates([curr, moment(curr).day('Saturday')])];
-  }, []);
+  fridays.reduce(
+    (all, curr) => [...all, formatDates([curr, moment(curr).day('Saturday')])],
+    []
+  );
 
 exports.generateAllDates = ({
   startDate,
