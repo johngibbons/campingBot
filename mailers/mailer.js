@@ -12,7 +12,7 @@ module.exports = async (emailAddress, newAvailabilities, campsiteFinder) => {
     const email = await template.render(
       { campsiteFinder, newAvailabilities },
       (err, results) => {
-        const fromEmail = new helper.Email('john@campsitefinder.com');
+        const fromEmail = new helper.Email('john@campsitefinder.info');
         const toEmail = new helper.Email(emailAddress);
         const subject = `New Availabilities at ${
           campsiteFinder.campgroundId.placeName
