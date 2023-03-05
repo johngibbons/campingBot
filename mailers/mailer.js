@@ -20,6 +20,10 @@ module.exports = async (emailAddress, newAvailabilities, campsiteFinder) => {
         const content = new helper.Content('text/html', results.html);
         const mail = new helper.Mail(fromEmail, subject, toEmail, content);
 
+        console.log('sending email: ');
+        console.log('from: ', fromEmail);
+        console.log('to: ', toEmail);
+
         const request = sg.emptyRequest({
           method: 'POST',
           path: '/v3/mail/send',
