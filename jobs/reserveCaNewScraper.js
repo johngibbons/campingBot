@@ -79,7 +79,12 @@ module.exports = async function headlessScraper(campsiteFinder = {}) {
     // console.log('Facility Second', currResponse.body.Facility);
 
     Object.entries(currResponse.body.Facility.Units || [])
-      .filter(([_, unitValue]) => unitValue.AllowWebBooking)
+      .filter(
+        ([_, unitValue]) =>
+          unitValue.AllowWebBooking &&
+          unitValue.isWebViewable &&
+          !unitValue.isAda
+      )
       .forEach(([unitKey, unitValue]) => {
         const slices = unitValue.Slices;
 
