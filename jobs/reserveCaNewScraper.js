@@ -78,8 +78,9 @@ module.exports = async function headlessScraper(campsiteFinder = {}) {
 
     // console.log('Facility Second', currResponse.body.Facility);
 
-    Object.entries(currResponse.body.Facility.Units || []).forEach(
-      ([unitKey, unitValue]) => {
+    Object.entries(currResponse.body.Facility.Units || [])
+      .filter(([_, unitValue]) => unitValue.AllowWebBooking)
+      .forEach(([unitKey, unitValue]) => {
         const slices = unitValue.Slices;
 
         Object.entries(slices).forEach(([date, dateAvailability]) => {
@@ -87,8 +88,7 @@ module.exports = async function headlessScraper(campsiteFinder = {}) {
             unitsMap[unitKey].push(moment(date).format('M-D-YYYY'));
           }
         });
-      }
-    );
+      });
   }
 
   const hasAllRequestedDates = (requestedDatesArr, datesAvailableArr) =>
