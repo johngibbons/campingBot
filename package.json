@@ -27,7 +27,7 @@
     "request": "^2.81.0",
     "request-promise-native": "^1.0.4",
     "rxjs": "^6.1.0",
-    "scrape-it": "^3.3.2",
+    "scrape-it": "^5.3.2",
     "sendgrid": "^5.1.2",
     "xml2js": "^0.4.17"
   },
