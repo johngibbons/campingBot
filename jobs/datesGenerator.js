@@ -113,6 +113,6 @@ exports.generateAllDates = ({
       allDates.push(currentDate);
       currentDate = currentDate.add(1, 'day');
     }
-    return formatDates(allDates);
+    return [formatDates(allDates)];
   }
 };
