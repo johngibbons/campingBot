@@ -107,7 +107,7 @@ exports.generateAllDates = ({
     const allDates = [];
     let currentDate = moment(startDate);
     const end = moment(endDate);
-    while (currentDate !== end) {
+    while (end.diff(currentDate, 'days') > 0) {
       console.log('currentDate', currentDate);
       console.log('end', end);
       allDates.push(currentDate);
