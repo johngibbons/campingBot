@@ -100,19 +100,16 @@ exports.generateAllDates = ({
   dateOption
 }) => {
   if (dateOption === 'NEXT_SIX_MONTHS') {
-    return getWeekendsFromFridays(fridaysInRange());
+    const weekendsDates = getWeekendsFromFridays(fridaysInRange());
+    console.log('weekendsDates', weekendsDates);
+    return weekendsDates;
   } else if (isWeekendsOnly) {
     return getWeekendsFromFridays(fridaysInRange(startDate, endDate));
   } else if (isValidStart(startDate)) {
-    const allDates = [];
     let currentDate = moment(startDate);
     const end = moment(endDate);
-    while (end.diff(currentDate, 'days') > 0) {
-      console.log('currentDate', currentDate);
-      console.log('end', end);
-      allDates.push(currentDate);
-      currentDate = currentDate.add(1, 'day');
-    }
-    return [formatDates(allDates)];
+    const startEnd = [formatDates([currentDate, end])];
+    console.log('startEnd', startEnd);
+    return startEnd;
   }
 };
